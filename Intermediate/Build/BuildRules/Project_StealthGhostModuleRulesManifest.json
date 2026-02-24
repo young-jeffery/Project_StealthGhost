@@ -1,0 +1,10 @@
+{
+	"SourceFiles": [
+		"C:\\Users\\mayow\\Documents\\Unreal Projects\\Project_StealthGhost\\Source\\Project_StealthGhost\\Project_StealthGhost.Build.cs",
+		"C:\\Users\\mayow\\Documents\\Unreal Projects\\Project_StealthGhost\\Plugins\\VisualStudioTools\\Source\\VisualStudioBlueprintDebuggerHelper\\VisualStudioBlueprintDebuggerHelper.Build.cs",
+		"C:\\Users\\mayow\\Documents\\Unreal Projects\\Project_StealthGhost\\Plugins\\VisualStudioTools\\Source\\VisualStudioTools\\VisualStudioTools.Build.cs",
+		"C:\\Users\\mayow\\Documents\\Unreal Projects\\Project_StealthGhost\\Source\\Project_StealthGhost.Target.cs",
+		"C:\\Users\\mayow\\Documents\\Unreal Projects\\Project_StealthGhost\\Source\\Project_StealthGhostEditor.Target.cs"
+	],
+	"EngineVersion": "5.6.1"
+}

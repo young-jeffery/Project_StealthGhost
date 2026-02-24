@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\Project_StealthGhost.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\Project_StealthGhost.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\Project_StealthGhostEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.editorconfig" />
+    <None Include="..\..\.vsconfig" />
+    <None Include="..\..\shadertoolsconfig.json" />
+    <None Include="..\..\UpgradeLog.htm" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Plugins">
+      <UniqueIdentifier>{BB38096A-B391-30DC-A0D4-4F3EA6B44507}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\VisualStudioTools">
+      <UniqueIdentifier>{41769F9C-1A97-316F-BB54-C3A5E5B67BD9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\VisualStudioTools\Source">
+      <UniqueIdentifier>{1D6F83A9-DB28-3ED2-9726-5CBD49662E2A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\VisualStudioTools\Source\VisualStudioBlueprintDebuggerHelper">
+      <UniqueIdentifier>{DA293EF3-DE5E-3E0C-8AB9-5D9B37A141A4}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioBlueprintDebuggerHelper\VisualStudioBlueprintDebuggerHelper.Build.cs">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioBlueprintDebuggerHelper</Filter>
+    </None>
+    <Filter Include="Plugins\VisualStudioTools\Source\VisualStudioBlueprintDebuggerHelper\Private">
+      <UniqueIdentifier>{D4B7A11D-48EF-383A-B625-62F4B65D3FD8}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioBlueprintDebuggerHelper\Private\VisualStudioBlueprintDebuggerHelperModule.cpp">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioBlueprintDebuggerHelper\Private</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioBlueprintDebuggerHelper\Private\VisualStudioBlueprintDebuggerHelperModule.h">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioBlueprintDebuggerHelper\Private</Filter>
+    </ClInclude>
+    <None Include="..\..\Plugins\VisualStudioTools\VisualStudioTools.uplugin">
+      <Filter>Plugins\VisualStudioTools</Filter>
+    </None>
+    <Filter Include="Plugins\VisualStudioTools\Config">
+      <UniqueIdentifier>{CB5E8725-3658-331E-9E61-542E2997D7C5}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Plugins\VisualStudioTools\Config\FilterPlugin.ini">
+      <Filter>Plugins\VisualStudioTools\Config</Filter>
+    </None>
+    <Filter Include="Plugins\VisualStudioTools\Source\VisualStudioTools">
+      <UniqueIdentifier>{E48AC123-3582-39B0-901B-970708A27A9A}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\VisualStudioTools.Build.cs">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools</Filter>
+    </None>
+    <Filter Include="Plugins\VisualStudioTools\Source\VisualStudioTools\Private">
+      <UniqueIdentifier>{75F6F5BA-F8E5-3E94-8434-FA6DC9ABBA70}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\BlueprintAssetHelper.cpp">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\BlueprintAssetHelpers.h">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\BlueprintReferencesCommandlet.cpp">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\BlueprintReferencesCommandlet.h">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\FSmartBSTR.h">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\VisualStudioTools.cpp">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\VisualStudioToolsBlueprintBreakpointExtension.cpp">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\VisualStudioToolsBlueprintBreakpointExtension.h">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\VisualStudioToolsCommandlet.cpp">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\VisualStudioToolsCommandlet.h">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\VisualStudioToolsCommandletBase.cpp">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\VisualStudioToolsCommandletBase.h">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\VSServerCommandlet.cpp">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\VSServerCommandlet.h">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\VSTestAdapterCommandlet.cpp">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\VSTestAdapterCommandlet.h">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Private</Filter>
+    </ClInclude>
+    <Filter Include="Plugins\VisualStudioTools\Source\VisualStudioTools\Public">
+      <UniqueIdentifier>{333EB5AC-492F-3ED7-9C7F-15701C1818EC}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Public\VisualStudioTools.h">
+      <Filter>Plugins\VisualStudioTools\Source\VisualStudioTools\Public</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost">
+      <UniqueIdentifier>{64D5A768-0BF1-3901-9D3E-5059CDF95B47}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\Project_StealthGhost\Project_StealthGhost.Build.cs">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Project_StealthGhost.cpp">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Project_StealthGhost.h">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Project_StealthGhostCharacter.cpp">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Project_StealthGhostCharacter.h">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Project_StealthGhostGameMode.cpp">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Project_StealthGhostGameMode.h">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Project_StealthGhostPlayerController.cpp">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Project_StealthGhostPlayerController.h">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_Combat">
+      <UniqueIdentifier>{8D02E9CC-F47F-39C6-9BB4-035073E3713F}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\CombatCharacter.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\CombatCharacter.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\CombatGameMode.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\CombatGameMode.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\CombatPlayerController.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\CombatPlayerController.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_Combat\AI">
+      <UniqueIdentifier>{61682550-170F-34F4-BF57-B96B5FB87324}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\AI\CombatAIController.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\AI\CombatAIController.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\AI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\AI\CombatEnemy.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\AI\CombatEnemy.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\AI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\AI\CombatEnemySpawner.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\AI\CombatEnemySpawner.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\AI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\AI\CombatStateTreeUtility.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\AI\CombatStateTreeUtility.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\AI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\AI\EnvQueryContext_Player.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\AI\EnvQueryContext_Player.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\AI</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_Combat\Animation">
+      <UniqueIdentifier>{AC376DEB-29B8-3686-8005-7E30D08E9090}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\Animation\AnimNotify_CheckChargedAttack.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Animation</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\Animation\AnimNotify_CheckChargedAttack.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Animation</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\Animation\AnimNotify_CheckCombo.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Animation</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\Animation\AnimNotify_CheckCombo.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Animation</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\Animation\AnimNotify_DoAttackTrace.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Animation</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\Animation\AnimNotify_DoAttackTrace.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Animation</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_Combat\Gameplay">
+      <UniqueIdentifier>{F19EB98D-C061-34DD-BB95-A51AA0AFAA98}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\Gameplay\CombatActivationVolume.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\Gameplay\CombatActivationVolume.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\Gameplay\CombatCheckpointVolume.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\Gameplay\CombatCheckpointVolume.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\Gameplay\CombatDamageableBox.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\Gameplay\CombatDamageableBox.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\Gameplay\CombatDummy.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\Gameplay\CombatDummy.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\Gameplay\CombatLavaFloor.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\Gameplay\CombatLavaFloor.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Gameplay</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_Combat\Interfaces">
+      <UniqueIdentifier>{ADA33D25-F63D-3899-B5CF-2A2D77BA775F}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\Interfaces\CombatActivatable.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Interfaces</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\Interfaces\CombatActivatable.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Interfaces</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\Interfaces\CombatAttacker.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Interfaces</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\Interfaces\CombatAttacker.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Interfaces</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\Interfaces\CombatDamageable.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Interfaces</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\Interfaces\CombatDamageable.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\Interfaces</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_Combat\UI">
+      <UniqueIdentifier>{CFF1802A-3CA2-3BDD-ACB4-6B455720EF27}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Combat\UI\CombatLifeBar.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Combat\UI\CombatLifeBar.h">
+      <Filter>Source\Project_StealthGhost\Variant_Combat\UI</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_Platforming">
+      <UniqueIdentifier>{47C27497-1E40-32CA-9E4D-94016209EFE3}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Platforming\PlatformingCharacter.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Platforming</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Platforming\PlatformingCharacter.h">
+      <Filter>Source\Project_StealthGhost\Variant_Platforming</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Platforming\PlatformingGameMode.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Platforming</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Platforming\PlatformingGameMode.h">
+      <Filter>Source\Project_StealthGhost\Variant_Platforming</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Platforming\PlatformingPlayerController.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Platforming</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Platforming\PlatformingPlayerController.h">
+      <Filter>Source\Project_StealthGhost\Variant_Platforming</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_Platforming\Animation">
+      <UniqueIdentifier>{3E97B3BD-95F8-368A-8865-EED4C523EE66}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_Platforming\Animation\AnimNotify_EndDash.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_Platforming\Animation</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_Platforming\Animation\AnimNotify_EndDash.h">
+      <Filter>Source\Project_StealthGhost\Variant_Platforming\Animation</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_SideScrolling">
+      <UniqueIdentifier>{35BF0A6F-0975-3635-BDED-12003B655646}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\SideScrollingCameraManager.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\SideScrollingCameraManager.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\SideScrollingCharacter.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\SideScrollingCharacter.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\SideScrollingGameMode.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\SideScrollingGameMode.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\SideScrollingPlayerController.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\SideScrollingPlayerController.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_SideScrolling\AI">
+      <UniqueIdentifier>{7157C6F6-9472-32AC-9E0A-B40AAD5DB5A1}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\AI\SideScrollingAIController.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\AI\SideScrollingAIController.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\AI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\AI\SideScrollingNPC.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\AI\SideScrollingNPC.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\AI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\AI\SideScrollingStateTreeUtility.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\AI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\AI\SideScrollingStateTreeUtility.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\AI</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_SideScrolling\Gameplay">
+      <UniqueIdentifier>{56F9FF95-C848-3754-A2DC-BEF58DE41201}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\Gameplay\SideScrollingJumpPad.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\Gameplay\SideScrollingJumpPad.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\Gameplay\SideScrollingMovingPlatform.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\Gameplay\SideScrollingMovingPlatform.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\Gameplay\SideScrollingPickup.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\Gameplay\SideScrollingPickup.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\Gameplay</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\Gameplay\SideScrollingSoftPlatform.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\Gameplay</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\Gameplay\SideScrollingSoftPlatform.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\Gameplay</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_SideScrolling\Interfaces">
+      <UniqueIdentifier>{2DD62428-233B-33A2-839F-7959D1D7C061}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\Interfaces\SideScrollingInteractable.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\Interfaces</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\Interfaces\SideScrollingInteractable.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\Interfaces</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project_StealthGhost\Variant_SideScrolling\UI">
+      <UniqueIdentifier>{B981EA92-9437-337A-8AE5-B702ABA3AE17}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\UI\SideScrollingUI.cpp">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\Variant_SideScrolling\UI\SideScrollingUI.h">
+      <Filter>Source\Project_StealthGhost\Variant_SideScrolling\UI</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
