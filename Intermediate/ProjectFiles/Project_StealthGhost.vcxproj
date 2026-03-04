@@ -67,7 +67,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{59F249E4-EAD4-3593-A5C4-21080031CA49}</ProjectGuid>
+    <ProjectGuid>{FC4A8B4B-6433-37D1-A7AD-D40C0115DC38}</ProjectGuid>
     <RootNamespace>Project_StealthGhost</RootNamespace>
   </PropertyGroup>
   <Import Project="UECommon.props" />
@@ -258,9 +258,12 @@
     <None Include="..\..\Source\Project_StealthGhost.Target.cs"/>
     <None Include="..\..\Source\Project_StealthGhostEditor.Target.cs"/>
     <None Include="..\..\.editorconfig"/>
+    <None Include="..\..\.gitattributes"/>
+    <None Include="..\..\.gitignore"/>
     <None Include="..\..\.vsconfig"/>
     <None Include="..\..\shadertoolsconfig.json"/>
     <None Include="..\..\UpgradeLog.htm"/>
+    <None Include="..\..\UpgradeLog2.htm"/>
     <None Include="..\..\Config\DefaultEditor.ini"/>
     <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini"/>
     <None Include="..\..\Config\DefaultEngine.ini"/>
@@ -316,6 +319,16 @@
     </ClCompile>
     <ClInclude Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Private\VSTestAdapterCommandlet.h"/>
     <ClInclude Include="..\..\Plugins\VisualStudioTools\Source\VisualStudioTools\Public\VisualStudioTools.h"/>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\BTTask_FindRandomPatrol.cpp">
+      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_2)</ForcedIncludeFiles>
+      <AdditionalOptions>$(ClCompile_AdditionalOptions_1)</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\BTTask_FindRandomPatrol.h"/>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\GhostAIController.cpp">
+      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_2)</ForcedIncludeFiles>
+      <AdditionalOptions>$(ClCompile_AdditionalOptions_1)</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\GhostAIController.h"/>
     <None Include="..\..\Source\Project_StealthGhost\Project_StealthGhost.Build.cs"/>
     <ClCompile Include="..\..\Source\Project_StealthGhost\Project_StealthGhost.cpp">
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_2)</ForcedIncludeFiles>
