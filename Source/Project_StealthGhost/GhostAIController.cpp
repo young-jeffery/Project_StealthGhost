@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"          // Needed to cast to the player
 #include "Engine/Engine.h"                    // Needed for the debug text
 #include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 // Constructor - This runs once when the AI is created to set up its components.
 AGhostAIController::AGhostAIController()
@@ -57,21 +58,29 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
     // Did the AI sense a Character?
     if (ACharacter* SensedCharacter = Cast<ACharacter>(Actor))
     {
+        // Gets access to the blackboard
+        UBlackboardComponent* BlackboardComp = GetBlackboardComponent();
+        if (!BlackboardComp) return;
+
         // Was it a successful detection? (True = entered radius, False = left radius)
         if (Stimulus.WasSuccessfullySensed())
         {
+            BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
             // Check WHICH sense was triggered by comparing the ID
             if (Stimulus.Type == SightConfig->GetSenseID())
             {
-                GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("AI: I SEE YOU!"));
+                GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("AI: I see you!"));
+                GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("AI: CHASING SIGHT"));
             }
             else if (Stimulus.Type == HearingConfig->GetSenseID())
             {
-                GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("AI: I HEARD SOMETHING!"));
+                GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("AI: I heard something."));
+                GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("AI: CHASING SOUND"));
             }
         }
         else
         {
+            BlackboardComp->ClearValue(FName("TargetActor"));
             GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("AI: I lost track of them."));
         }
     }
