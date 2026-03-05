@@ -122,7 +122,7 @@ void AProject_StealthGhostCharacter::Move(const FInputActionValue& Value)
 		else
 		{
 			// Loudness is 1 when speed is above 300 and 0.5 otherwise
-			float CurrentLoudness = (GetCharacterMovement()->MaxWalkSpeed > 500.0f) ? 1.0f : 0.5f;
+			float CurrentLoudness = (GetCharacterMovement()->MaxWalkSpeed > 500.0f) ? 0.7f : 0.3f;
 			MakeNoise(CurrentLoudness, this, GetActorLocation());
 		}
 	}
@@ -182,7 +182,7 @@ void AProject_StealthGhostCharacter::Landed(const FHitResult& Hit)
 	// declaring this first ensures we allow the default landing physics take place
 	Super::Landed(Hit);
 
-	MakeNoise(0.7f, this, GetActorLocation());
+	MakeNoise(0.5f, this, GetActorLocation());
 }
 
 void AProject_StealthGhostCharacter::DoJumpStart()
