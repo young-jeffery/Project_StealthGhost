@@ -73,6 +73,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stealth")
 	EPlayerMovementState CurrentState;
 
+	// Exposes this array to the editor for easy configuration of patrol routes.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Guard Patrol")
+	TArray<AActor*> PatrolRoute;
+
 protected:
 
 	/** Initialize input action bindings */
