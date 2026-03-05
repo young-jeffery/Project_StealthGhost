@@ -14,7 +14,6 @@ class PROJECT_STEALTHGHOST_API UBTTask_FindRandomPatrol : public UBTTask_Blackbo
 {
 	GENERATED_BODY()
 
-
 public:
 	UBTTask_FindRandomPatrol();
 
