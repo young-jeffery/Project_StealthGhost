@@ -13,5 +13,14 @@ UCLASS()
 class PROJECT_STEALTHGHOST_API UBTTask_GetNextPatrolPoint : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
+
+public:
+	UBTTask_GetNextPatrolPoint();
+
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector PatrolIndexKey;
 	
 };
