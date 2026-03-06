@@ -58,31 +58,63 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
     // Did the AI sense a Character?
     if (ACharacter* SensedCharacter = Cast<ACharacter>(Actor))
     {
+        // Prevent the guards from seeing themselves as enemies
+        if (!SensedCharacter->IsPlayerControlled()) return;
         // Gets access to the blackboard
         UBlackboardComponent* BlackboardComp = GetBlackboardComponent();
         if (!BlackboardComp) return;
 
-        // Was it a successful detection? (True = entered radius, False = left radius)
-        if (Stimulus.WasSuccessfullySensed())
+        // Sight logic
+        if (Stimulus.Type == SightConfig->GetSenseID())
         {
-            BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
-            // Check WHICH sense was triggered by comparing the ID
-            if (Stimulus.Type == SightConfig->GetSenseID())
+            if (Stimulus.WasSuccessfullySensed())
             {
-                GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("AI: I see you!"));
-                GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("AI: CHASING SIGHT"));
+                // Chase the player if seen and clear investigation points
+                BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
+                BlackboardComp->ClearValue(FName("InvestigateLocation"));
             }
-            else if (Stimulus.Type == HearingConfig->GetSenseID())
+            else
             {
-                GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("AI: I heard something."));
-                GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("AI: CHASING SOUND"));
+                // after losing sight, stop chasing but investigate last known location
+                BlackboardComp->ClearValue(FName("TargetActor"));
+                BlackboardComp->SetValueAsVector(FName("InvestigateLoccation"), Actor->GetActorLocation());
             }
         }
-        else
+        // Hearing Logic
+        else if (Stimulus.Type == HearingConfig->GetSenseID())
         {
-            BlackboardComp->ClearValue(FName("TargetActor"));
-            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("AI: I lost track of them."));
+            if (Stimulus.WasSuccessfullySensed())
+            {
+                // This enables investigate through hearing only if the player isn't currently being chased
+                UObject* CurrentTarget = BlackboardComp->GetValueAsObject(FName("TargetActor"));
+                if (!CurrentTarget)
+                {
+                    BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Actor->GetActorLocation());
+                }
+            }
         }
+
+    //    // Was it a successful detection? (True = entered radius, False = left radius)
+    //    if (Stimulus.WasSuccessfullySensed())
+    //    {
+    //        BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
+    //        // Check WHICH sense was triggered by comparing the ID
+    //        if (Stimulus.Type == SightConfig->GetSenseID())
+    //        {
+    //            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("AI: I see you!"));
+    //            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("AI: CHASING SIGHT"));
+    //        }
+    //        else if (Stimulus.Type == HearingConfig->GetSenseID())
+    //        {
+    //            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("AI: I heard something."));
+    //            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("AI: CHASING SOUND"));
+    //        }
+    //    }
+    //    else
+    //    {
+    //        BlackboardComp->ClearValue(FName("TargetActor"));
+    //        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("AI: I lost track of them."));
+    //    }
     }
 }
 
