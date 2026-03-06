@@ -42,8 +42,8 @@ EBTNodeResult::Type UBTTask_GetNextPatrolPoint::ExecuteTask(UBehaviorTreeCompone
 		BlackboardComp->SetValueAsVector(GetSelectedBlackboardKey(), TargetPoint->GetActorLocation());
 
 		// Add 1 to the bookmark to get to the next point and then loop back once it reaches the end
-		int32 NextIndex = (CurrentIndex + 1) % GhostGuard->PatrolRoute.Num();
-		BlackboardComp->SetValueAsInt(PatrolIndexKey.SelectedKeyName, NextIndex);
+		//int32 NextIndex = (CurrentIndex + 1) % GhostGuard->PatrolRoute.Num();
+		//BlackboardComp->SetValueAsInt(PatrolIndexKey.SelectedKeyName, NextIndex);
 
 		return EBTNodeResult::Succeeded;
 	}
