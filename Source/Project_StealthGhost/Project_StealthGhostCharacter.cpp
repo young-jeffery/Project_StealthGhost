@@ -375,12 +375,25 @@ void AProject_StealthGhostCharacter::Tick(float DeltaTime)
 
 					// calculate a constant distance between the player and the wall
 					FVector HugWallLocation = Hit.ImpactPoint + (Hit.Normal * 40.0f);
+					// Get our current location
+					FVector CurrentLocation = GetActorLocation();
+
+					// Isolate X and Y axis from Z to avoid falling bug
+					FVector2D CurrentXY(CurrentLocation.X, CurrentLocation.Y);
+					FVector2D TargetXY(HugWallLocation.X, HugWallLocation.Y);
+
+					// This interpolates only the 2D plane
+					FVector2D SmoothXY = FMath::Vector2DInterpTo(CurrentXY, TargetXY, DeltaTime, 10.0f);
+
+					// Combine the new X and Y with the Z we didn't touch
+					FVector SmoothLocation(SmoothXY.X, SmoothXY.Y, CurrentLocation.Z);
 
 					// This keeps the height stable
-					HugWallLocation.Z = GetActorLocation().Z;
+					//HugWallLocation.Z = GetActorLocation().Z;
 
-					// VInterpTo is used to pull the character to that distance
-					FVector SmoothLocation = FMath::VInterpTo(GetActorLocation(), HugWallLocation, DeltaTime, 10.0f);
+					//// VInterpTo is used to pull the character to that distance
+					//FVector2D SmoothLocation = FMath::VInterpTo(GetActorLocation(), HugWallLocation, DeltaTime, 10.0f);
+
 					SetActorLocation(SmoothLocation);
 
 					break; // stop loop once a wall is found
