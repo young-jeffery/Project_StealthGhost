@@ -77,6 +77,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Guard Patrol")
 	TArray<AActor*> PatrolRoute;
 
+	// Attempt to stealth kill
+	UFUNCTION(BlueprintCallable, Category = "Stealth Action")
+	void TryStealthKill();
+
+	// BP event to play animation and lock the camera
+	UFUNCTION(BlueprintImplementableEvent, Category = "Stealth Action")
+	void PlayStealthKillAnimation(AActor* TargetGuard);
+
 protected:
 
 	/** Initialize input action bindings */
@@ -106,6 +114,15 @@ protected:
 
 	// A simple Raycast function to see if a wall is in front of us.
 	bool CanTakeCover(FHitResult& OutHit);
+
+	// this sets the stealth kill range
+	UPROPERTY(EditAnywhere, Category = "Stealth Action")
+	float StealthKillRange = 150.0f;
+
+	// angle of tolerance for determining if the player is behind the guard
+	UPROPERTY(EditAnywhere, Category = "Stealth Action")
+	float StealthKillAngleTolerance = 0.3f;
+
 
 protected:
 

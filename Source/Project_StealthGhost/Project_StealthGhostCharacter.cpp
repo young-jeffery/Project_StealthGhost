@@ -201,6 +201,8 @@ void AProject_StealthGhostCharacter::DoJumpEnd()
 }
 
 // My additions
+
+// Wall detection logic
 bool AProject_StealthGhostCharacter::CanTakeCover(FHitResult& OutHit)
 {
 	// If the character is in the air then the cover logic should fail
@@ -289,6 +291,7 @@ bool AProject_StealthGhostCharacter::CanTakeCover(FHitResult& OutHit)
 //	return bHit;
 //}
 
+// Toggle Cover logic
 void AProject_StealthGhostCharacter::ToggleCover()
 {
 	// If we are already in cover, pressing the button takes us out of cover.
@@ -334,6 +337,7 @@ void AProject_StealthGhostCharacter::ToggleCover()
 	}
 }
 
+// Snapping logic
 void AProject_StealthGhostCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -409,6 +413,7 @@ void AProject_StealthGhostCharacter::Tick(float DeltaTime)
 	}
 }
 
+// Crouch Logic
 void AProject_StealthGhostCharacter::ToggleCrouch()
 {
 	// This prevents tampering with InCover logic
@@ -437,4 +442,55 @@ void AProject_StealthGhostCharacter::StartSprint()
 void AProject_StealthGhostCharacter::StopSprint()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 200.0f;
+}
+
+// Attempt Kill Logic
+void AProject_StealthGhostCharacter::TryStealthKill()
+{
+	// Send a small sphere in front of the player
+	FVector StartLoc = GetActorLocation();
+	FVector EndLoc = StartLoc + (GetActorForwardVector() * StealthKillRange);
+
+	// Creating the sphere and ignoring hits on the player
+	FHitResult HitResult;
+	FCollisionShape SphereShape = FCollisionShape::MakeSphere(50.0f);
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+
+	// look for guards
+	bool bHit = GetWorld()->SweepSingleByObjectType(HitResult, StartLoc, EndLoc, FQuat::Identity, FCollisionObjectQueryParams(ECC_Pawn), SphereShape, QueryParams);
+
+	if (bHit && HitResult.GetActor())
+	{
+		AActor* TargetGuard = HitResult.GetActor();
+
+		// Math to check if player is behind the guard using Dot Product
+		FVector PlayerForward = GetActorForwardVector();
+		FVector GuardForward = TargetGuard->GetActorForwardVector();
+
+		// 1 means they are facing the same way, -1 means facing each other
+		float FacingAlignment = FVector::DotProduct(PlayerForward, GuardForward);
+
+		// check if alignment is greater than tolerance angle
+		if (FacingAlignment > StealthKillAngleTolerance)
+		{
+			// Player can kill 
+			//GetCharacterMovement()->DisableMovement();
+
+			// Function call to kill will sit here
+
+			PlayStealthKillAnimation(TargetGuard);
+
+			//GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+
+			// Debug text
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Kill Successful"));
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Kill Failed. Not properly behind guard"));
+		}
+
+	}
 }
