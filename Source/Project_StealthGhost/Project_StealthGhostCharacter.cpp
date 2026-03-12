@@ -472,36 +472,44 @@ void AProject_StealthGhostCharacter::TryStealthKill()
 		// 1 means they are facing the same way, -1 means facing each other
 		float FacingAlignment = FVector::DotProduct(PlayerForward, GuardForward);
 
-		// check if alignment is greater than tolerance angle
-		if (FacingAlignment > StealthKillAngleTolerance)
+		// Cast to specific target class
+		if (AProject_StealthGhostCharacter* Guard = Cast<AProject_StealthGhostCharacter>(TargetGuard))
 		{
-			// Player can kill 
-			//GetCharacterMovement()->DisableMovement();
-
-			// Function call to kill
-			if (AProject_StealthGhostCharacter* Guard = Cast<AProject_StealthGhostCharacter>(TargetGuard))
+			if (Guard->bIsDead)
 			{
-				Guard->DieSilently();
+				return; // end function if the guard is dead
 			}
 
-			PlayStealthKillAnimation(TargetGuard);
+			// check if alignment is greater than tolerance angle
+			if (FacingAlignment > StealthKillAngleTolerance)
+			{
+				// Player can kill 
+				//GetCharacterMovement()->DisableMovement();
 
-			//GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+				// Function call to kill
+				Guard->DieSilently();
 
-			// Debug text
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Kill Successful"));
+				PlayStealthKillAnimation(TargetGuard);
+
+				//GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+
+				// Debug text
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Kill Successful"));
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Kill Failed. Not properly behind guard"));
+			}
+
 		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Kill Failed. Not properly behind guard"));
-		}
-
 	}
 }
 
 // Enemy Death Logic
 void AProject_StealthGhostCharacter::DieSilently()
 {
+	bIsDead = true; // tell the state machine that this character is ddead
+
 	// Kill the guards movement
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->DisableMovement();

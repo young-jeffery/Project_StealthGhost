@@ -93,6 +93,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Stealth Action")
 	UAnimMontage* DeathMontage;
 
+	// Let the AnimBP the target is dead
+	UPROPERTY(BlueprintReadOnly, Category = "Stealth Action")
+	bool bIsDead = false;
+
 
 protected:
 
