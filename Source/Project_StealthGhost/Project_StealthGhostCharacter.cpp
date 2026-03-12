@@ -478,7 +478,11 @@ void AProject_StealthGhostCharacter::TryStealthKill()
 			// Player can kill 
 			//GetCharacterMovement()->DisableMovement();
 
-			// Function call to kill will sit here
+			// Function call to kill
+			if (AProject_StealthGhostCharacter* Guard = Cast<AProject_StealthGhostCharacter>(TargetGuard))
+			{
+				Guard->DieSilently();
+			}
 
 			PlayStealthKillAnimation(TargetGuard);
 
@@ -492,5 +496,30 @@ void AProject_StealthGhostCharacter::TryStealthKill()
 			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Kill Failed. Not properly behind guard"));
 		}
 
+	}
+}
+
+// Enemy Death Logic
+void AProject_StealthGhostCharacter::DieSilently()
+{
+	// Kill the guards movement
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+
+	// Server AI controller from the guard
+	if (Controller)
+	{
+		Controller->UnPossess();
+	}
+	// Turn off collision capsule 
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// Keep mesh collision. (Might use physics ragdoll)
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+
+	// Play the death animation
+	if (DeathMontage && GetMesh()->GetAnimInstance())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(DeathMontage);
 	}
 }

@@ -85,6 +85,15 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Stealth Action")
 	void PlayStealthKillAnimation(AActor* TargetGuard);
 
+	// Called when this character is assassinated
+	UFUNCTION(BlueprintCallable, Category = "Stealth Action")
+	void DieSilently();
+
+	// Death animation to be played
+	UPROPERTY(EditAnywhere, Category = "Stealth Action")
+	UAnimMontage* DeathMontage;
+
+
 protected:
 
 	/** Initialize input action bindings */
@@ -121,7 +130,7 @@ protected:
 
 	// angle of tolerance for determining if the player is behind the guard
 	UPROPERTY(EditAnywhere, Category = "Stealth Action")
-	float StealthKillAngleTolerance = 0.3f;
+	float StealthKillAngleTolerance = 0.4f;
 
 
 protected:
