@@ -71,9 +71,15 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                 // Is it the player?
                 if (SensedCharacter->IsPlayerControlled())
                 {
-                    // Chase and clear investigation points
-                    BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
-                    BlackboardComp->ClearValue(FName("InvestigateLocation"));
+                    if (!BlackboardComp->GetValueAsObject(FName("TargetActor")))
+                    {
+                        // Chase and clear investigation points
+                        BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
+                        BlackboardComp->ClearValue(FName("InvestigateLocation"));
+
+                        // Call for backup
+                        UAISense_Hearing::ReportNoiseEvent(GetWorld(), SensedCharacter->GetActorLocation(), 1.0f, GetPawn(), 2000.0f, FName("Alarm"));
+                    }
                 }
                 // Not the player. Is it a dead guard?
                 else if (SensedCharacter->bIsDead)

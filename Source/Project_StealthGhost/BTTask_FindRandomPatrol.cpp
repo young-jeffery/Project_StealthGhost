@@ -28,9 +28,9 @@ EBTNodeResult::Type UBTTask_FindRandomPatrol::ExecuteTask(UBehaviorTreeComponent
 	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 	if (!NavSys) return EBTNodeResult::Failed;
 
-	// This finds a random spot within 15 meters of the guard
+	// This finds a random spot within 10 meters of the guard
 	FNavLocation RandomLocation;
-	if (NavSys->GetRandomReachablePointInRadius(AIPawn->GetActorLocation(), 1500.0f, RandomLocation))
+	if (NavSys->GetRandomReachablePointInRadius(AIPawn->GetActorLocation(), 1000.0f, RandomLocation))
 	{
 		// This saves the random spot to the Blackboard
 		OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), RandomLocation.Location);
