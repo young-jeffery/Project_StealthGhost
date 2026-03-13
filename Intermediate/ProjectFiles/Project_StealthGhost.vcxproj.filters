@@ -16,7 +16,7 @@
     <None Include="..\..\.gitignore" />
     <None Include="..\..\.vsconfig" />
     <None Include="..\..\shadertoolsconfig.json" />
-    <None Include="..\..\UpgradeLog.htm" />
+    <None Include="..\..\UpgradeLog2.htm" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
     </Filter>
@@ -150,6 +150,12 @@
       <Filter>Source\Project_StealthGhost</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\Project_StealthGhost\BTTask_GetNextPatrolPoint.h">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\BTTask_RaiseAlarm.cpp">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\BTTask_RaiseAlarm.h">
       <Filter>Source\Project_StealthGhost</Filter>
     </ClInclude>
     <ClCompile Include="..\..\Source\Project_StealthGhost\GhostAIController.cpp">

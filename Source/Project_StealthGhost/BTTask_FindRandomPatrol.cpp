@@ -24,20 +24,41 @@ EBTNodeResult::Type UBTTask_FindRandomPatrol::ExecuteTask(UBehaviorTreeComponent
 	APawn* AIPawn = AIController->GetPawn();
 	if (!AIPawn) return EBTNodeResult::Failed;
 
-	// This hets the navigation system
+	// This gets the navigation system
 	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 	if (!NavSys) return EBTNodeResult::Failed;
 
-	// This finds a random spot within 10 meters of the guard
+	// This finds a random spot within 15 meters of the guard
 	FNavLocation RandomLocation;
-	if (NavSys->GetRandomReachablePointInRadius(AIPawn->GetActorLocation(), 1000.0f, RandomLocation))
-	{
-		// This saves the random spot to the Blackboard
-		OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), RandomLocation.Location);
+	FVector Origin = AIPawn->GetActorLocation();
+	bool bFoundValidSpot = false;
 
-		return EBTNodeResult::Succeeded;
+	// Loop to get a valid distance from the guard. Restrict it to 10 attempts to avoid infinite loops in case of bad nav mesh
+	for (int32 Attempt = 0; Attempt < 10; Attempt++)
+	{
+		// Pick a random location within 15 meters
+		if (NavSys->GetRandomReachablePointInRadius(Origin, 1500.0f, RandomLocation))
+		{
+			// Measure the 3D distance from the guard to the random location
+			float Distance = FVector::Dist(Origin, RandomLocation.Location);
+
+			// if the distance is greater than 8 meters, we consider it a valid patrol point. 
+			// This prevents the guard from picking a spot that's too close to its current location, which could look unnatural.
+			if (Distance >= 800.0f)
+			{
+				bFoundValidSpot = true; 
+				break;
+			}
+		}
 	}
 
+	// If we found a valid spot, set it in the blackboard and return success. Otherwise, return failure.
+	if (bFoundValidSpot)
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), RandomLocation.Location);
+		return EBTNodeResult::Succeeded;
+	}
+	// If we failed to find a valid spot after 10 attempts, return failure.
 	return EBTNodeResult::Failed;
 }
 

@@ -520,7 +520,7 @@ void AProject_StealthGhostCharacter::DieSilently()
 	// Server AI controller from the guard
 	if (Controller)
 	{
-		Controller->UnPossess();
+		Controller->Destroy();
 	}
 	// Turn off collision capsule 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);

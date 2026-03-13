@@ -57,6 +57,9 @@ void AGhostAIController::BeginPlay()
 // What sense was triggered
 void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
 {
+    // If the noise is from me then ignore it
+	if (Actor == GetPawn()) return;
+
     // Cast to custom character to access IsDead state
     if (AProject_StealthGhostCharacter* SensedCharacter = Cast<AProject_StealthGhostCharacter>(Actor))
     {
@@ -96,8 +99,8 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                         // Go to the location
                         BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SensedCharacter->GetActorLocation());
 
-                        // Alert other nearby guards
-                        UAISense_Hearing::ReportNoiseEvent(GetWorld(), SensedCharacter->GetActorLocation(), 1.0f, GetPawn(), 0.0f, FName("Alarm"));
+						// Alert other nearby guards (This is now handled by the New C++ class BTTask_RaiseAlarm, but this is how it would look in C++)
+                        //UAISense_Hearing::ReportNoiseEvent(GetWorld(), SensedCharacter->GetActorLocation(), 1.0f, GetPawn(), 0.0f, FName("Alarm"));
                     }
                 }
             }
@@ -120,7 +123,13 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                 UObject* CurrentTarget = BlackboardComp->GetValueAsObject(FName("TargetActor"));
                 if (!CurrentTarget)
                 {
-                    // Investigate if any soound is heard
+					//// Check where we are currentlty investigating
+					//FVector CurrentInvestigateLocation = BlackboardComp->GetValueAsVector(FName("InvestigateLocation"));
+
+     //               //If the noise is at our location or we are already on our way there, then ignore it
+					//if (FVector::Dist(CurrentInvestigateLocation, Stimulus.StimulusLocation) < 50.0f) return
+
+					// Investigate the noise location
                     BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Stimulus.StimulusLocation);
 
                     // Debug to confirm the guards communicate with each other
