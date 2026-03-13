@@ -97,6 +97,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Stealth Action")
 	bool bIsDead = false;
 
+	// Checks if a dead body has already triggered an alarm
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stealth Action")
+	bool bHasBeenDiscovered = false;
+
 
 protected:
 

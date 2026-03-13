@@ -81,14 +81,17 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                         UAISense_Hearing::ReportNoiseEvent(GetWorld(), SensedCharacter->GetActorLocation(), 1.0f, GetPawn(), 2000.0f, FName("Alarm"));
                     }
                 }
-                // Not the player. Is it a dead guard?
-                else if (SensedCharacter->bIsDead)
+                // Not the player. Is it a dead guard? And has the guard been discovered before?
+                else if (SensedCharacter->bIsDead && !SensedCharacter->bHasBeenDiscovered)
                 {
                     // Check if there is already a target
                     if (!BlackboardComp->GetValueAsObject(FName("TargetActor")))
                     {
                         // Debug Text
                         GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: HEYYY!!! There's a dead body here. Raise the alarm"));
+
+                        // Mark body as discovered to prevent multiple and constant alarms
+                        SensedCharacter->bHasBeenDiscovered = true;
 
                         // Go to the location
                         BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SensedCharacter->GetActorLocation());
@@ -195,6 +198,7 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
     //    }
     //}
 
+// Triggers the Behavior Tree
 void AGhostAIController::OnPossess(APawn* InPawn)
 {
     Super::OnPossess(InPawn);

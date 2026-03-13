@@ -291,6 +291,9 @@ bool AProject_StealthGhostCharacter::CanTakeCover(FHitResult& OutHit)
 //	return bHit;
 //}
 
+
+
+
 // Toggle Cover logic
 void AProject_StealthGhostCharacter::ToggleCover()
 {
@@ -524,6 +527,13 @@ void AProject_StealthGhostCharacter::DieSilently()
 
 	// Keep mesh collision. (Might use physics ragdoll)
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+
+	// Change the actor's tag if it's used for any 
+	Tags.Add(FName("Dead Body"));
+	Tags.Remove(FName("Guard"));
+
+	// Disable the actor's Tick
+	SetActorTickEnabled(false);
 
 	// Play the death animation
 	if (DeathMontage && GetMesh()->GetAnimInstance())
