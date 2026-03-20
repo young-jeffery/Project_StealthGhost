@@ -99,6 +99,9 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                         // Go to the location
                         BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SensedCharacter->GetActorLocation());
 
+						// Give the specific guard the right to call for backup, so that not all guards who see the body will call for backup at the same time
+						BlackboardComp->SetValueAsBool(FName("bSpottedbody"), true);
+
 						// Alert other nearby guards (This is now handled by the New C++ class BTTask_RaiseAlarm, but this is how it would look in C++)
                         //UAISense_Hearing::ReportNoiseEvent(GetWorld(), SensedCharacter->GetActorLocation(), 1.0f, GetPawn(), 0.0f, FName("Alarm"));
                     }
@@ -215,5 +218,8 @@ void AGhostAIController::OnPossess(APawn* InPawn)
     if (GuardBehaviorTree != nullptr)
     {
         RunBehaviorTree(GuardBehaviorTree);
+
+		// Cache the blackboard for easy access in other functions
+		CachedBlackboard = GetBlackboardComponent();
     }
 }

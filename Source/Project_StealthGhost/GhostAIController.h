@@ -8,6 +8,7 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AIPerceptionTypes.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "GhostAIController.generated.h"
 
 /**
@@ -35,6 +36,10 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
     UAISenseConfig_Hearing* HearingConfig;
 
+    // Cached Blackboard Reference
+    UPROPERTY(BlueprintReadOnly, Category = "AI")
+    UBlackboardComponent* CachedBlackboard;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -44,6 +49,7 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI");
     class UBehaviorTree* GuardBehaviorTree;
+
 
 
     // This enables us to know which sense was triggered
