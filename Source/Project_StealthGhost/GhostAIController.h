@@ -40,6 +40,13 @@ public:
     UPROPERTY(BlueprintReadOnly, Category = "AI")
     UBlackboardComponent* CachedBlackboard;
 
+    // Allows this AI Controller to update every frame
+    virtual void Tick(float DeltaTime) override;
+
+    // A toggle switch you can easily click in the Unreal Editor
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
+    bool bShowDebugVisuals = true;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;

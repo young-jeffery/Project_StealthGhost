@@ -1,11 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "AITypes.h"
 #include "GhostAIController.h"
 #include "Perception/AISenseConfig_Hearing.h" // Needed for the ears
 #include "GameFramework/Character.h"          // Needed to cast to the player
 #include "Engine/Engine.h"                    // Needed for the debug text
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "DrawDebugHelpers.h"
 #include "Project_StealthGhostCharacter.h"
 //#include "Perception/AISense_Hearing.h"
 
@@ -40,6 +42,9 @@ AGhostAIController::AGhostAIController()
     AIPerception->ConfigureSense(*SightConfig);
     AIPerception->ConfigureSense(*HearingConfig);
     AIPerception->SetDominantSense(SightConfig->GetSenseImplementation());
+
+    // Enable ticking so we can draw our debug visuals every frame
+    PrimaryActorTick.bCanEverTick = true;
 }
 
 // The BeginPlay function
@@ -221,5 +226,71 @@ void AGhostAIController::OnPossess(APawn* InPawn)
 
 		// Cache the blackboard for easy access in other functions
 		CachedBlackboard = GetBlackboardComponent();
+    }
+}
+
+// Debug Visuals Tick function
+void AGhostAIController::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    // If we turned off the visuals in the editor, or if we don't have a body, stop here
+    if (!bShowDebugVisuals) return;
+    APawn* ControlledPawn = GetPawn();
+    if (!ControlledPawn) return;
+
+    // --- 1. DEBUG HEARING RANGE (Yellow Sphere) ---
+    // Draws a yellow wireframe sphere around the guard representing their 20m hearing radius
+    DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), HearingConfig->HearingRange, 16, FColor::Yellow, false, -1.0f, 0, 2.0f);
+
+    // --- 2. DEBUG SIGHT RANGE (Green Cone) ---
+    FVector EyeLocation;
+    FRotator EyeRotation;
+    ControlledPawn->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+
+    // Draws a green cone representing the distance and peripheral angle of their vision
+    DrawDebugCone(
+        GetWorld(),
+        EyeLocation,
+        EyeRotation.Vector(),
+        SightConfig->SightRadius,
+        FMath::DegreesToRadians(SightConfig->PeripheralVisionAngleDegrees),
+        FMath::DegreesToRadians(SightConfig->PeripheralVisionAngleDegrees),
+        16,
+        FColor::Green,
+        false,
+        -1.0f,
+        0,
+        2.0f
+    );
+
+    // --- 3. DEBUG INTERACTION STATE (Floating Text) ---
+    UBlackboardComponent* BB = GetBlackboardComponent();
+    if (BB)
+    {
+        FString CurrentState = TEXT("Patrolling");
+        FColor TextColor = FColor::White;
+
+        // Check the blackboard to see what the AI is currently prioritizing
+        if (BB->GetValueAsObject(FName("TargetActor")))
+        {
+            CurrentState = TEXT("CHASING PLAYER!");
+            TextColor = FColor::Red;
+        }
+        else if (BB->GetValueAsBool(FName("bSpottedBody")))
+        {
+            CurrentState = TEXT("RAISING ALARM!");
+            TextColor = FColor::Orange;
+        }
+        // Check if the vector is NOT empty/invalid
+        else if (BB->GetValueAsVector(FName("InvestigateLocation")) != FAISystem::InvalidLocation)
+        {
+            CurrentState = TEXT("INVESTIGATING");
+            TextColor = FColor::Yellow;
+        }
+
+        // Draw the text 100 units above the guard's head
+        FVector TextLocation = ControlledPawn->GetActorLocation() + FVector(0, 0, 100.0f);
+        DrawDebugString(GetWorld(), TextLocation, CurrentState, nullptr, TextColor, DeltaTime, true);
     }
 }
