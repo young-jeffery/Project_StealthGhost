@@ -9,7 +9,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Project_StealthGhostCharacter.h"
-//#include "Perception/AISense_Hearing.h"
+#include "Perception/AISense_Hearing.h"
 
 // Constructor - This runs once when the AI is created to set up its components.
 AGhostAIController::AGhostAIController()
@@ -79,16 +79,10 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                 // Is it the player?
                 if (SensedCharacter->IsPlayerControlled())
                 {
-                    if (!BlackboardComp->GetValueAsObject(FName("TargetActor")))
-                    {
-                        // Chase and clear investigation points
-                        BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
-                        BlackboardComp->ClearValue(FName("InvestigateLocation"));
-
-                        // Call for backup
-                        UAISense_Hearing::ReportNoiseEvent(GetWorld(), SensedCharacter->GetActorLocation(), 1.0f, GetPawn(), 2000.0f, FName("Alarm"));
-                    }
+                    // Look at the player to start building suspicion
+                    CurrentVisibleTarget = Actor;
                 }
+               
                 // Not the player. Is it a dead guard? And has the guard been discovered before?
                 else if (SensedCharacter->bIsDead && !SensedCharacter->bHasBeenDiscovered)
                 {
@@ -114,11 +108,24 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
             }
             else
             {
-                // If the player gets out of sight
+                // Player got out of sight
                 if (SensedCharacter->IsPlayerControlled())
                 {
-                    BlackboardComp->ClearValue(FName("TargetActor"));
-                    BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Actor->GetActorLocation());
+                    CurrentVisibleTarget = nullptr;
+
+                    // If they weren't fully detected yet but suspicion is high, investigate!
+                    if (!BlackboardComp->GetValueAsObject(FName("TargetActor")) && SuspicionLevel > 60.0f)
+                    {
+                        BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Actor->GetActorLocation());
+                        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Did I see something?"));
+                    }
+
+                    // If they WERE fully detected, go to their last known location
+                    if (BlackboardComp->GetValueAsObject(FName("TargetActor")) == Actor)
+                    {
+                        BlackboardComp->ClearValue(FName("TargetActor"));
+                        BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Actor->GetActorLocation());
+                    }
                 }
             }
         }
@@ -176,6 +183,76 @@ void AGhostAIController::Tick(float DeltaTime)
     APawn* ControlledPawn = GetPawn();
     if (!ControlledPawn) return;
 
+    // --- SUSPICION METER LOGIC ---
+    UBlackboardComponent* BB = GetBlackboardComponent();
+    if (BB)
+    {
+        if (CurrentVisibleTarget)
+        {
+            float CurrentBuildRate = SuspicionBuildRate;
+
+            // Scale detection speed based on player stance and distance
+            if (AProject_StealthGhostCharacter* StealthPlayer = Cast<AProject_StealthGhostCharacter>(CurrentVisibleTarget))
+            {
+                // Calculate the 3D distance between the guard (GetPawn) and the player
+                float Distance = FVector::Dist(GetPawn()->GetActorLocation(), StealthPlayer->GetActorLocation());
+
+                // --- DISTANCE MODIFIERS ---
+                // 1 Unreal Unit = 1 cm. So 200.0f is 2 meters.
+                if (Distance < 500.0f)
+                {
+                    CurrentBuildRate *= 8.0f;
+                }
+                else if (Distance < 700.0f)
+                {
+                    CurrentBuildRate *= 2.0f;
+                }
+                else if (Distance > 1000.0f)
+                {
+                    CurrentBuildRate *= 0.5f;
+                }
+
+                // --- STANCE MODIFIERS ---
+                // We check the stance AFTER distance. This means if they are crouching 
+                // but only 1 meter away, the 5.0x multiplier still makes them get caught quickly!
+                if (StealthPlayer->CurrentState == EPlayerMovementState::VE_Crouching)
+                {
+                    // Crouching reduces visibility build up by 60% (multiplying by 0.4)
+                    CurrentBuildRate *= 0.4f;
+                }
+            }
+
+            // Increase suspicion
+            SuspicionLevel += CurrentBuildRate * DeltaTime;
+            SuspicionLevel = FMath::Clamp(SuspicionLevel, 0.0f, MaxSuspicion);
+
+            // Full Detection Trigger
+            if (SuspicionLevel >= MaxSuspicion && !BB->GetValueAsObject(FName("TargetActor")))
+            {
+                BB->SetValueAsObject(FName("TargetActor"), CurrentVisibleTarget);
+                BB->ClearValue(FName("InvestigateLocation"));
+                UAISense_Hearing::ReportNoiseEvent(GetWorld(), CurrentVisibleTarget->GetActorLocation(), 1.0f, GetPawn(), 2000.0f, FName("Alarm"));
+            }
+        }
+        else
+        {
+            // Decay suspicion when target is out of sight
+            if (SuspicionLevel > 0.0f)
+            {
+                SuspicionLevel -= SuspicionDecayRate * DeltaTime;
+                SuspicionLevel = FMath::Clamp(SuspicionLevel, 0.0f, MaxSuspicion);
+            }
+        }
+
+        // Draw Suspicion Text
+        if (bShowDebugVisuals && GetPawn())
+        {
+            FVector TextLoc = GetPawn()->GetActorLocation() + FVector(0, 0, 130.0f);
+            FString SuspicionText = FString::Printf(TEXT("Suspicion: %d%%"), FMath::RoundToInt((SuspicionLevel / MaxSuspicion) * 100.0f));
+            DrawDebugString(GetWorld(), TextLoc, SuspicionText, nullptr, FColor::Purple, DeltaTime, true);
+        }
+    }
+
     // --- DEBUG HEARING RANGE (Yellow Sphere) ---
     // Draws a yellow wireframe sphere around the guard representing their 20m hearing radius
     DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), HearingConfig->HearingRange, 64, FColor::Yellow, false, -1.0f, 0, 2.0f);
@@ -202,7 +279,6 @@ void AGhostAIController::Tick(float DeltaTime)
     );
 
     // --- DEBUG INTERACTION STATE (Floating Text) ---
-    UBlackboardComponent* BB = GetBlackboardComponent();
     if (BB)
     {
         FString CurrentState = TEXT("Patrolling");

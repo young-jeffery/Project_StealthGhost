@@ -51,6 +51,25 @@ public:
     UFUNCTION(BlueprintCallable, Category = "AI State")
     bool IsAlerted() const;
 
+    // --- SUSPICION SYSTEM ---
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI Suspicion")
+    float SuspicionLevel = 0.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Suspicion")
+    float MaxSuspicion = 100.0f;
+
+    // How fast suspicion builds per second
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Suspicion")
+    float SuspicionBuildRate = 45.0f;
+
+    // How fast suspicion drops per second when player is out of sight
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Suspicion")
+    float SuspicionDecayRate = 20.0f;
+
+    // The current target the guard is looking at
+    UPROPERTY()
+    AActor* CurrentVisibleTarget = nullptr;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
