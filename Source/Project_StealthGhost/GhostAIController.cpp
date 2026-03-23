@@ -96,16 +96,16 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                     if (!BlackboardComp->GetValueAsObject(FName("TargetActor")))
                     {
                         // Debug Text
-                        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: HEYYY!!! There's a dead body here. Raise the alarm"));
+                        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Hmm, What's that? Lemme check."));
 
-                        // Mark body as discovered to prevent multiple and constant alarms
-                        SensedCharacter->bHasBeenDiscovered = true;
+                        //// Mark body as discovered to prevent multiple and constant alarms
+                        //SensedCharacter->bHasBeenDiscovered = true;
 
                         // Go to the location
                         BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SensedCharacter->GetActorLocation());
 
-						// Give the specific guard the right to call for backup, so that not all guards who see the body will call for backup at the same time
-						BlackboardComp->SetValueAsBool(FName("bSpottedbody"), true);
+						// Save body to memeory for inspection on arrival
+						BlackboardComp->SetValueAsObject(FName("Spottedbody"), SensedCharacter);
 
 						// Alert other nearby guards (This is now handled by the New C++ class BTTask_RaiseAlarm, but this is how it would look in C++)
                         //UAISense_Hearing::ReportNoiseEvent(GetWorld(), SensedCharacter->GetActorLocation(), 1.0f, GetPawn(), 0.0f, FName("Alarm"));
@@ -151,69 +151,6 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
         }
     }
 }
-    
-    
-    //// Did the AI sense a Character?
-    //if (ACharacter* SensedCharacter = Cast<ACharacter>(Actor))
-    //{
-    //    // Prevent the guards from seeing themselves as enemies
-    //    if (!SensedCharacter->IsPlayerControlled()) return;
-    //    // Gets access to the blackboard
-    //    UBlackboardComponent* BlackboardComp = GetBlackboardComponent();
-    //    if (!BlackboardComp) return;
-
-    //    // Sight logic
-    //    if (Stimulus.Type == SightConfig->GetSenseID())
-    //    {
-    //        if (Stimulus.WasSuccessfullySensed())
-    //        {
-    //            // Chase the player if seen and clear investigation points
-    //            BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
-    //            BlackboardComp->ClearValue(FName("InvestigateLocation"));
-    //        }
-    //        else
-    //        {
-    //            // after losing sight, stop chasing but investigate last known location
-    //            BlackboardComp->ClearValue(FName("TargetActor"));
-    //            BlackboardComp->SetValueAsVector(FName("InvestigateLoccation"), Actor->GetActorLocation());
-    //        }
-    //    }
-    //    // Hearing Logic
-    //    else if (Stimulus.Type == HearingConfig->GetSenseID())
-    //    {
-    //        if (Stimulus.WasSuccessfullySensed())
-    //        {
-    //            // This enables investigate through hearing only if the player isn't currently being chased
-    //            UObject* CurrentTarget = BlackboardComp->GetValueAsObject(FName("TargetActor"));
-    //            if (!CurrentTarget)
-    //            {
-    //                BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Actor->GetActorLocation());
-    //            }
-    //        }
-    //    }
-
-    //    // Was it a successful detection? (True = entered radius, False = left radius)
-    //    if (Stimulus.WasSuccessfullySensed())
-    //    {
-    //        BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
-    //        // Check WHICH sense was triggered by comparing the ID
-    //        if (Stimulus.Type == SightConfig->GetSenseID())
-    //        {
-    //            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("AI: I see you!"));
-    //            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("AI: CHASING SIGHT"));
-    //        }
-    //        else if (Stimulus.Type == HearingConfig->GetSenseID())
-    //        {
-    //            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("AI: I heard something."));
-    //            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("AI: CHASING SOUND"));
-    //        }
-    //    }
-    //    else
-    //    {
-    //        BlackboardComp->ClearValue(FName("TargetActor"));
-    //        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("AI: I lost track of them."));
-    //    }
-    //}
 
 // Triggers the Behavior Tree
 void AGhostAIController::OnPossess(APawn* InPawn)
@@ -234,16 +171,16 @@ void AGhostAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    // If we turned off the visuals in the editor, or if we don't have a body, stop here
+    // If debug visuals are turned of in the editor or if we don't have a body, stop here
     if (!bShowDebugVisuals) return;
     APawn* ControlledPawn = GetPawn();
     if (!ControlledPawn) return;
 
-    // --- 1. DEBUG HEARING RANGE (Yellow Sphere) ---
+    // --- DEBUG HEARING RANGE (Yellow Sphere) ---
     // Draws a yellow wireframe sphere around the guard representing their 20m hearing radius
-    DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), HearingConfig->HearingRange, 16, FColor::Yellow, false, -1.0f, 0, 2.0f);
+    DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), HearingConfig->HearingRange, 64, FColor::Yellow, false, -1.0f, 0, 2.0f);
 
-    // --- 2. DEBUG SIGHT RANGE (Green Cone) ---
+    // --- DEBUG SIGHT RANGE (Green Cone) ---
     FVector EyeLocation;
     FRotator EyeRotation;
     ControlledPawn->GetActorEyesViewPoint(EyeLocation, EyeRotation);
@@ -256,7 +193,7 @@ void AGhostAIController::Tick(float DeltaTime)
         SightConfig->SightRadius,
         FMath::DegreesToRadians(SightConfig->PeripheralVisionAngleDegrees),
         FMath::DegreesToRadians(SightConfig->PeripheralVisionAngleDegrees),
-        16,
+        64,
         FColor::Green,
         false,
         -1.0f,
@@ -264,7 +201,7 @@ void AGhostAIController::Tick(float DeltaTime)
         2.0f
     );
 
-    // --- 3. DEBUG INTERACTION STATE (Floating Text) ---
+    // --- DEBUG INTERACTION STATE (Floating Text) ---
     UBlackboardComponent* BB = GetBlackboardComponent();
     if (BB)
     {
@@ -277,7 +214,7 @@ void AGhostAIController::Tick(float DeltaTime)
             CurrentState = TEXT("CHASING PLAYER!");
             TextColor = FColor::Red;
         }
-        else if (BB->GetValueAsBool(FName("bSpottedBody")))
+        else if (BB->GetValueAsBool(FName("bIsRaisingAlarm")))
         {
             CurrentState = TEXT("RAISING ALARM!");
             TextColor = FColor::Orange;
