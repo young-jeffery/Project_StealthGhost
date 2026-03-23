@@ -47,6 +47,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
     bool bShowDebugVisuals = true;
 
+    // Checks the Blackboard to see if the AI is currently busy with combat or investigation
+    UFUNCTION(BlueprintCallable, Category = "AI State")
+    bool IsAlerted() const;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;

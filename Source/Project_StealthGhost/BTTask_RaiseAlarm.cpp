@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "Perception/AISense_Hearing.h" // Access Unreal's sound broadcast system
 #include "Engine/Engine.h"				//  Enable debug messages
+#include "BehaviorTree/BlackboardComponent.h"
 
 
 UBTTask_RaiseAlarm::UBTTask_RaiseAlarm()
@@ -31,6 +32,9 @@ EBTNodeResult::Type UBTTask_RaiseAlarm::ExecuteTask(UBehaviorTreeComponent& Owne
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: We have a man down!"));
 	}
+
+	// Clear the "bSpottedBody" key so that the guard can run their investigate BT properly without the possibility of a double call
+	OwnerComp.GetBlackboardComponent()->ClearValue(FName("bSpottedBody"));
 
 	return EBTNodeResult::Succeeded;
 

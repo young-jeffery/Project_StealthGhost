@@ -294,3 +294,22 @@ void AGhostAIController::Tick(float DeltaTime)
         DrawDebugString(GetWorld(), TextLocation, CurrentState, nullptr, TextColor, DeltaTime, true);
     }
 }
+
+bool AGhostAIController::IsAlerted() const
+{
+    // If we don't have a Blackboard, assume we aren't alerted
+    if (!CachedBlackboard) return false;
+
+    // Are we chasing the player?
+    if (CachedBlackboard->GetValueAsObject(FName("TargetActor")) != nullptr) return true;
+
+    // Are we investigating a noise or a body? 
+    // FAISystem::InvalidLocation checks if the vector is set
+    if (CachedBlackboard->GetValueAsVector(FName("InvestigateLocation")) != FAISystem::InvalidLocation) return true;
+
+    // Are we actively raising an alarm?
+    if (CachedBlackboard->GetValueAsBool(FName("bSpottedBody"))) return true;
+
+    // If all checks fail, the guard is calm and patrolling normally
+    return false;
+}
