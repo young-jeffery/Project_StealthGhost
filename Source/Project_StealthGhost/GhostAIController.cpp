@@ -156,7 +156,7 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                             FVector DirectionToBody = (SensedCharacter->GetActorLocation() - GetPawn()->GetActorLocation()).GetSafeNormal();
 
                             // Calculate a point 150 units (1.5 meters) BACKWARDS from the body along that direction line
-                            FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 150.0f);
+                            FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 500.0f);
 
                             BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), StopLocation);
                             BlackboardComp->SetValueAsObject(FName("Spottedbody"), SensedCharacter);
@@ -275,7 +275,7 @@ void AGhostAIController::Tick(float DeltaTime)
 
                 // --- STANCE MODIFIERS ---
                 // We check the stance AFTER distance. This means if they are crouching 
-                // but only 1 meter away, the 5.0x multiplier still makes them get caught quickly!
+                // but only 1 meter away, the 20.0x multiplier still makes them get caught quickly!
                 if (StealthPlayer->CurrentState == EPlayerMovementState::VE_Crouching)
                 {
                     // Crouching reduces visibility build up by 60% (multiplying by 0.4)

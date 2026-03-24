@@ -1,19 +1,130 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "BTTask_RaiseAlarm.h"
 #include "AIController.h"
-#include "Perception/AISense_Hearing.h" // Access Unreal's sound broadcast system
-#include "Engine/Engine.h"				//  Enable debug messages
+#include "Perception/AISense_Hearing.h"
+#include "Engine/Engine.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Project_StealthGhostCharacter.h"
 
-
 UBTTask_RaiseAlarm::UBTTask_RaiseAlarm()
 {
-	NodeName = TEXT("Raise Alarm");
+    NodeName = TEXT("Raise Alarm (Delayed)");
+
+    // IMPORTANT: Because we are using Timers and Variables inside the task, 
+    // we MUST tell the engine to create a separate instance of this node for every guard. 
+    // Otherwise, multiple guards raising an alarm at the same time will overwrite each other's memory!
+    bCreateNodeInstance = true;
 }
 
+EBTNodeResult::Type UBTTask_RaiseAlarm::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+    AAIController* AIController = OwnerComp.GetAIOwner();
+    if (!AIController || !AIController->GetPawn()) return EBTNodeResult::Failed;
+
+    UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
+    if (!BB) return EBTNodeResult::Failed;
+
+    UObject* BodyObject = BB->GetValueAsObject(FName("SpottedBody"));
+    TargetBody = Cast<AProject_StealthGhostCharacter>(BodyObject);
+
+    // Are we just investigating a noise? Or did another guard get here first?
+    if (!TargetBody || TargetBody->bHasBeenDiscovered)
+    {
+        BB->ClearValue(FName("SpottedBody"));
+        return EBTNodeResult::Succeeded; // Exit silently
+    }
+
+    // Claim the body so no other guard tries to yell about it right now
+    TargetBody->bHasBeenDiscovered = true;
+
+    // Set our blackboard state
+    BB->SetValueAsBool(FName("bIsRaisingAlarm"), true);
+
+    // Cache the OwnerComp so the Timer can access it later
+    CachedOwnerComp = &OwnerComp;
+
+    // Start the delay timer!
+    GetWorld()->GetTimerManager().SetTimer(AlarmTimerHandle, this, &UBTTask_RaiseAlarm::FinishAlarm, AlarmDelay, false);
+
+    // Return InProgress so the Behavior Tree pauses on this node and waits!
+    return EBTNodeResult::InProgress;
+}
+
+void UBTTask_RaiseAlarm::FinishAlarm()
+{
+    if (!CachedOwnerComp) return;
+
+    AAIController* AIController = CachedOwnerComp->GetAIOwner();
+    if (AIController && AIController->GetPawn())
+    {
+        // The delay is over, broadcast the Yell!
+        UAISense_Hearing::ReportNoiseEvent(GetWorld(), AIController->GetPawn()->GetActorLocation(), 1.0f, AIController->GetPawn(), 2000.0f, FName("Alarm"));
+
+        if (GEngine)
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: WE HAVE A MAN DOWN!"));
+        }
+    }
+
+    // Clean up Blackboard
+    UBlackboardComponent* BB = CachedOwnerComp->GetBlackboardComponent();
+    if (BB)
+    {
+        BB->ClearValue(FName("SpottedBody"));
+        BB->ClearValue(FName("bIsRaisingAlarm"));
+    }
+
+    // Tell the Behavior Tree that we are finally done!
+    FinishLatentTask(*CachedOwnerComp, EBTNodeResult::Succeeded);
+}
+
+EBTNodeResult::Type UBTTask_RaiseAlarm::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+	// The Guard got killed or spotted the player during the alarm delay! We need to clean up our mess so another guard can find the body and call for backup.
+
+    // Cancel the timer so the alarm never goes off
+    GetWorld()->GetTimerManager().ClearTimer(AlarmTimerHandle);
+
+    // Unclaim the body. Since we failed to report it, another guard should be able to find it later.
+    if (TargetBody)
+    {
+        TargetBody->bHasBeenDiscovered = false;
+    }
+
+    // Clean up the blackboard
+    UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
+    if (BB)
+    {
+        BB->ClearValue(FName("bIsRaisingAlarm"));
+    }
+
+    // Acknowledge the abort
+    return EBTNodeResult::Aborted;
+}
+
+
+
+
+
+
+
+//
+//
+//#include "BTTask_RaiseAlarm.h"
+//#include "AIController.h"
+//#include "Perception/AISense_Hearing.h" // Access Unreal's sound broadcast system
+//#include "Engine/Engine.h"				//  Enable debug messages
+//#include "BehaviorTree/BlackboardComponent.h"
+//#include "Project_StealthGhostCharacter.h"
+//
+//
+//UBTTask_RaiseAlarm::UBTTask_RaiseAlarm()
+//{
+//	NodeName = TEXT("Raise Alarm");
+//}
+//
+//
 //EBTNodeResult::Type UBTTask_RaiseAlarm::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 //{
 //	// Get the AI controller that owns this behavior tree
@@ -24,67 +135,38 @@ UBTTask_RaiseAlarm::UBTTask_RaiseAlarm()
 //	APawn* AIPawn = AIController->GetPawn();
 //	if (!AIPawn) return EBTNodeResult::Failed;
 //
-//	// Broadcast a noise event at the character's location
-//	// Parameters are the world context, location of the noise, volume (1.0f is max), the actor that made the noise, and the max range of the noise (0.0f means infinite),Tag name
-//	UAISense_Hearing::ReportNoiseEvent(GetWorld(), AIPawn->GetActorLocation(), 1.0f, AIPawn, 2000.0f, FName("Alarm"));
+//	// Get the blackboard to access our memory
+//	UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
+//	if (!BB) return EBTNodeResult::Failed;
 //
-//	// Debug message
-//	if (GEngine)
+//	// Look in our memory to see if we walked over here because of a body
+//	UObject* BodyObject = BB->GetValueAsObject(FName("SpottedBody"));
+//	AProject_StealthGhostCharacter* DeadBody = Cast<AProject_StealthGhostCharacter>(BodyObject);
+//
+//	// Are we just investigating a noise? Or did another guard get here first and already report it?
+//	if (!DeadBody || DeadBody->bHasBeenDiscovered)
 //	{
-//		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: We have a man down!"));
+//		// Stay silent. Wipe our memory of the body just in case, and successfully move to the search phase.
+//		BB->ClearValue(FName("SpottedBody"));
+//		return EBTNodeResult::Succeeded;
 //	}
 //
-//	// Clear the "bSpottedBody" key so that the guard can run their investigate BT properly without the possibility of a double call
-//	OwnerComp.GetBlackboardComponent()->ClearValue(FName("bSpottedBody"));
+//	// We are the first guard to reach the undiscovered body!
+//	DeadBody->bHasBeenDiscovered = true; // Lock the body NOW so no one else yells
+//
+//	// Broadcast the Yell
+//	UAISense_Hearing::ReportNoiseEvent(GetWorld(), AIPawn->GetActorLocation(), 1.0f, AIPawn, 2000.0f, FName("Alarm"));
+//
+//	if (GEngine)
+//	{
+//		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: WE HAVE A MAN DOWN!"));
+//	}
+//
+//	// Wipe our memory of the body so we can cleanly transition to searching
+//	BB->ClearValue(FName("SpottedBody"));
+//
+//	// Set alarming state so we can see the debug text
+//	BB->SetValueAsBool(FName("bIsRaisingAlarm"), true);
 //
 //	return EBTNodeResult::Succeeded;
-//
 //}
-
-
-
-EBTNodeResult::Type UBTTask_RaiseAlarm::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
-{
-	// Get the AI controller that owns this behavior tree
-	AAIController* AIController = OwnerComp.GetAIOwner();
-	if (!AIController) return EBTNodeResult::Failed;
-
-	// Get the characater the sound will originate from
-	APawn* AIPawn = AIController->GetPawn();
-	if (!AIPawn) return EBTNodeResult::Failed;
-
-	// Get the blackboard to access our memory
-	UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
-	if (!BB) return EBTNodeResult::Failed;
-
-	// Look in our memory to see if we walked over here because of a body
-	UObject* BodyObject = BB->GetValueAsObject(FName("SpottedBody"));
-	AProject_StealthGhostCharacter* DeadBody = Cast<AProject_StealthGhostCharacter>(BodyObject);
-
-	// Are we just investigating a noise? Or did another guard get here first and already report it?
-	if (!DeadBody || DeadBody->bHasBeenDiscovered)
-	{
-		// Stay silent. Wipe our memory of the body just in case, and successfully move to the search phase.
-		BB->ClearValue(FName("SpottedBody"));
-		return EBTNodeResult::Succeeded;
-	}
-
-	// We are the first guard to reach the undiscovered body!
-	DeadBody->bHasBeenDiscovered = true; // Lock the body NOW so no one else yells
-
-	// Broadcast the Yell
-	UAISense_Hearing::ReportNoiseEvent(GetWorld(), AIPawn->GetActorLocation(), 1.0f, AIPawn, 2000.0f, FName("Alarm"));
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: WE HAVE A MAN DOWN!"));
-	}
-
-	// Wipe our memory of the body so we can cleanly transition to searching
-	BB->ClearValue(FName("SpottedBody"));
-
-	// Set alarming state so we can see the debug text
-	BB->SetValueAsBool(FName("bIsRaisingAlarm"), true);
-
-	return EBTNodeResult::Succeeded;
-}
