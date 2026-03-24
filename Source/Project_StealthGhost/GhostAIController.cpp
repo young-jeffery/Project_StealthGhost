@@ -76,55 +76,116 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
         {
             if (Stimulus.WasSuccessfullySensed())
             {
-                // Is it the player?
                 if (SensedCharacter->IsPlayerControlled())
                 {
-                    // Look at the player to start building suspicion
-                    CurrentVisibleTarget = Actor;
+                        // --- ADVANCED LINE OF SIGHT VERIFICATION (Multi-Bone Trace) ---
+                        FHitResult HitResult;
+                        FCollisionQueryParams TraceParams;
+                        TraceParams.AddIgnoredActor(GetPawn()); // Guard ignores himself 
+
+                        FVector GuardEyes = GetPawn()->GetActorLocation() + FVector(0, 0, 70.0f);
+                        bool bHasTrueLOS = false;
+
+                        // Array of bones to check. 
+                        TArray<FName> BonesToCheck = {
+                            FName("head"),
+                            FName("spine_02"), // Main body/Chest
+                            FName("spine_03"), // Main body/Chest
+                            FName("spine_04"), // Main body/Chest
+                            FName("spine_05"), // Main body/Chest
+                            FName("pelvis"),   // Hips
+                            FName("thigh_l"),  // Left Thigh
+                            FName("thigh_r"),  // Right Thigh
+                            FName("hand_r"),    // Right Hand
+                            FName("hand_l"),    // Left Hand
+                            FName("clavicle_l")    // Clavicle
+                        };
+
+                        for (FName BoneName : BonesToCheck)
+                        {
+                            // Get the location of the current bone we are checking
+                            FVector TargetLocation = SensedCharacter->GetMesh()->GetSocketLocation(BoneName);
+
+                            bool bHitSomething = GetWorld()->LineTraceSingleByChannel(
+                                HitResult,
+                                GuardEyes,
+                                TargetLocation,
+                                ECC_Visibility,
+                                TraceParams
+                            );
+
+                            // --- DEBUG VISUALS ---
+                            // If your debug bool is checked in the editor, draw the lasers!
+                            if (bShowDebugVisuals)
+                            {
+                                FColor LaserColor = FColor::Red; // Default to red (blocked/can't see)
+
+                                if (!bHitSomething || (HitResult.GetActor() == SensedCharacter))
+                                {
+                                    LaserColor = FColor::Green; // Green if we have a clear line of sight!
+                                }
+
+                                // Draw a line from the eyes to the bone, lasting 2 seconds
+                                DrawDebugLine(GetWorld(), GuardEyes, TargetLocation, LaserColor, false, 2.0f, 0, 1.0f);
+                                // Draw a little sphere at the exact bone location
+                                DrawDebugSphere(GetWorld(), TargetLocation, 10.0f, 8, LaserColor, false, 2.0f);
+                            }
+
+                            // If we hit nothing, or the thing we hit was the player, we can see this bone!
+                            if (!bHitSomething || (HitResult.GetActor() == SensedCharacter))
+                            {
+                                bHasTrueLOS = true;
+                                // We saw at least one part of them, so we break the loop to save performance
+                                break;
+                            }
+                        }
+
+                        if (bHasTrueLOS)
+                        {
+                            CurrentVisibleTarget = Actor; // Start building suspicion!
+                        }
                 }
-               
-                // Not the player. Is it a dead guard? And has the guard been discovered before?
-                else if (SensedCharacter->bIsDead && !SensedCharacter->bHasBeenDiscovered)
-                {
-                    // Check if there is already a target
-                    if (!BlackboardComp->GetValueAsObject(FName("TargetActor")))
+                    // --- FIX: BODY AVOIDANCE ---
+                    else if (SensedCharacter->bIsDead && !SensedCharacter->bHasBeenDiscovered)
                     {
-                        // Debug Text
-                        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Hmm, What's that? Lemme check."));
+                        if (!BlackboardComp->GetValueAsObject(FName("TargetActor")))
+                        {
+                            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Hmm, What's that? Lemme check."));
 
-                        //// Mark body as discovered to prevent multiple and constant alarms
-                        //SensedCharacter->bHasBeenDiscovered = true;
+                            // Get the direction pointing from the Guard to the Dead Body
+                            FVector DirectionToBody = (SensedCharacter->GetActorLocation() - GetPawn()->GetActorLocation()).GetSafeNormal();
 
-                        // Go to the location
-                        BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SensedCharacter->GetActorLocation());
+                            // Calculate a point 150 units (1.5 meters) BACKWARDS from the body along that direction line
+                            FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 150.0f);
 
-						// Save body to memeory for inspection on arrival
-						BlackboardComp->SetValueAsObject(FName("Spottedbody"), SensedCharacter);
-
-						// Alert other nearby guards (This is now handled by the New C++ class BTTask_RaiseAlarm, but this is how it would look in C++)
-                        //UAISense_Hearing::ReportNoiseEvent(GetWorld(), SensedCharacter->GetActorLocation(), 1.0f, GetPawn(), 0.0f, FName("Alarm"));
+                            BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), StopLocation);
+                            BlackboardComp->SetValueAsObject(FName("Spottedbody"), SensedCharacter);
+                        }
                     }
-                }
             }
             else
             {
                 // Player got out of sight
-                if (SensedCharacter->IsPlayerControlled())
+                // FIX: Cast Actor to APawn so we can safely check IsPlayerControlled()
+                if (APawn* SensedPawn = Cast<APawn>(Actor))
                 {
-                    CurrentVisibleTarget = nullptr;
-
-                    // If they weren't fully detected yet but suspicion is high, investigate!
-                    if (!BlackboardComp->GetValueAsObject(FName("TargetActor")) && SuspicionLevel > 60.0f)
+                    if (SensedPawn->IsPlayerControlled())
                     {
-                        BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Actor->GetActorLocation());
-                        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Did I see something?"));
-                    }
+                        CurrentVisibleTarget = nullptr;
 
-                    // If they WERE fully detected, go to their last known location
-                    if (BlackboardComp->GetValueAsObject(FName("TargetActor")) == Actor)
-                    {
-                        BlackboardComp->ClearValue(FName("TargetActor"));
-                        BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Actor->GetActorLocation());
+                        // If they weren't fully detected yet but suspicion is high, investigate!
+                        if (!BlackboardComp->GetValueAsObject(FName("TargetActor")) && SuspicionLevel > 30.0f)
+                        {
+                            BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Actor->GetActorLocation());
+                            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Did I see something?"));
+                        }
+
+                        // If they WERE fully detected, go to their last known location
+                        if (BlackboardComp->GetValueAsObject(FName("TargetActor")) == Actor)
+                        {
+                            BlackboardComp->ClearValue(FName("TargetActor"));
+                            BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Actor->GetActorLocation());
+                        }
                     }
                 }
             }
@@ -249,7 +310,7 @@ void AGhostAIController::Tick(float DeltaTime)
         {
             FVector TextLoc = GetPawn()->GetActorLocation() + FVector(0, 0, 130.0f);
             FString SuspicionText = FString::Printf(TEXT("Suspicion: %d%%"), FMath::RoundToInt((SuspicionLevel / MaxSuspicion) * 100.0f));
-            DrawDebugString(GetWorld(), TextLoc, SuspicionText, nullptr, FColor::Purple, DeltaTime, true);
+            DrawDebugString(GetWorld(), TextLoc, SuspicionText, nullptr, FColor::Yellow, DeltaTime, true);
         }
     }
 
