@@ -156,7 +156,7 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                             FVector DirectionToBody = (SensedCharacter->GetActorLocation() - GetPawn()->GetActorLocation()).GetSafeNormal();
 
                             // Calculate a point 150 units (1.5 meters) BACKWARDS from the body along that direction line
-                            FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 500.0f);
+                            FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 200.0f);
 
                             BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), StopLocation);
                             BlackboardComp->SetValueAsObject(FName("Spottedbody"), SensedCharacter);

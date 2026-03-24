@@ -511,11 +511,12 @@ void AProject_StealthGhostCharacter::TryStealthKill()
 // Enemy Death Logic
 void AProject_StealthGhostCharacter::DieSilently()
 {
-	bIsDead = true; // tell the state machine that this character is ddead
+	bIsDead = true; // tell the state machine that this character is dead
 
 	// Kill the guards movement
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->DisableMovement();
+	GetCharacterMovement()->SetAvoidanceEnabled(false);
 
 	// Server AI controller from the guard
 	if (Controller)
