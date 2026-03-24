@@ -262,11 +262,11 @@ void AGhostAIController::Tick(float DeltaTime)
                 // 1 Unreal Unit = 1 cm. So 200.0f is 2 meters.
                 if (Distance < 500.0f)
                 {
-                    CurrentBuildRate *= 8.0f;
+                    CurrentBuildRate *= 20.0f;
                 }
                 else if (Distance < 700.0f)
                 {
-                    CurrentBuildRate *= 2.0f;
+                    CurrentBuildRate *= 8.0f;
                 }
                 else if (Distance > 1000.0f)
                 {
