@@ -32,9 +32,11 @@ protected:
     FTimerHandle AlarmTimerHandle;
 
     // A cached pointer to the behavior tree component so we can finish the task later
+    UPROPERTY()
     UBehaviorTreeComponent* CachedOwnerComp;
 
     // A cached pointer to the dead body we are currently looking at
+    UPROPERTY()
     AProject_StealthGhostCharacter* TargetBody;
 
     // The function that runs when the timer finishes

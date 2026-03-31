@@ -159,7 +159,7 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                             FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 200.0f);
 
                             BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), StopLocation);
-                            BlackboardComp->SetValueAsObject(FName("Spottedbody"), SensedCharacter);
+                            BlackboardComp->SetValueAsObject(FName("SpottedBody"), SensedCharacter);
                         }
                     }
             }

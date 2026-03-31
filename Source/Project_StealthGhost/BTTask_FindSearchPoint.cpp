@@ -59,31 +59,3 @@ EBTNodeResult::Type UBTTask_FindSearchPoint::ExecuteTask(UBehaviorTreeComponent&
 	// If we couldn't find a spot after 10 tries (maybe they are stuck in a tiny corner), fail gracefully
 	return EBTNodeResult::Failed;
 };
-
-
-//EBTNodeResult::Type UBTTask_FindSearchPoint::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
-//{
-//	UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
-//	if (!BB) return EBTNodeResult::Failed;
-//
-//	// Get the center of our search area (The Last Known Location)
-//	FVector SearchOrigin = BB->GetValueAsVector(InvestigateLocationKey.SelectedKeyName);
-//
-//	// Access the Unreal Navigation System
-//	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-//	if (!NavSystem) return EBTNodeResult::Failed;
-//
-//	// Find a random reachable point on the NavMesh around the SearchOrigin
-//	FNavLocation RandomLocation;
-//	bool bFoundPoint = NavSystem->GetRandomReachablePointInRadius(SearchOrigin, SearchRadius, RandomLocation);
-//
-//	if (bFoundPoint)
-//	{
-//		// Save that random point to the blackboard so the AI can move to it
-//		BB->SetValueAsVector(SearchPointKey.SelectedKeyName, RandomLocation.Location);
-//		return EBTNodeResult::Succeeded;
-//	}
-//
-//	return EBTNodeResult::Failed;
-//};
-

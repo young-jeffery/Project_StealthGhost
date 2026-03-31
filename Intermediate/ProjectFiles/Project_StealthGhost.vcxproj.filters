@@ -16,9 +16,8 @@
     <None Include="..\..\.gitignore" />
     <None Include="..\..\.vsconfig" />
     <None Include="..\..\BP_GhostGuard Node.txt" />
-    <None Include="..\..\BT_GhostGuard Node.txt" />
+    <None Include="..\..\BT_GhostGuard Investigate Branch Nodes.txt" />
     <None Include="..\..\shadertoolsconfig.json" />
-    <None Include="..\..\UpgradeLog.htm" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
     </Filter>

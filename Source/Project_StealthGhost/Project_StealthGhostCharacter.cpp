@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 #include "Project_StealthGhost.h"
 #include "DrawDebugHelpers.h" // This draws visual lines for testing
+#include <Perception/AISense_Hearing.h>
 
 AProject_StealthGhostCharacter::AProject_StealthGhostCharacter()
 {
@@ -41,7 +42,7 @@ AProject_StealthGhostCharacter::AProject_StealthGhostCharacter()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 500.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
@@ -123,7 +124,8 @@ void AProject_StealthGhostCharacter::Move(const FInputActionValue& Value)
 		{
 			// Loudness is 1 when speed is above 300 and 0.5 otherwise
 			float CurrentLoudness = (GetCharacterMovement()->MaxWalkSpeed > 500.0f) ? 0.7f : 0.3f;
-			MakeNoise(CurrentLoudness, this, GetActorLocation());
+			//MakeNoise(CurrentLoudness, this, GetActorLocation());
+			UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), CurrentLoudness, this, 1000.0f, FName("Footstep"));
 		}
 	}
 	
@@ -444,7 +446,7 @@ void AProject_StealthGhostCharacter::StartSprint()
 
 void AProject_StealthGhostCharacter::StopSprint()
 {
-	GetCharacterMovement()->MaxWalkSpeed = 200.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 }
 
 // Attempt Kill Logic
