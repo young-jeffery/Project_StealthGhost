@@ -392,3 +392,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+Intermediate/ProjectFiles/Project_StealthGhost.vcxproj
+Intermediate/ProjectFiles/UE5.vcxproj
