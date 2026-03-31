@@ -303,9 +303,10 @@ void AProject_StealthGhostCharacter::ToggleCover()
 	if (CurrentState == EPlayerMovementState::VE_InCover)
 	{
 		CurrentState = EPlayerMovementState::VE_Default;
-		// NOTE: We will add the logic to un-stick from the wall here later.
-
 		GetCharacterMovement()->bOrientRotationToMovement = true;
+
+		// Stop cover update timer when leaving cover
+		//GetWorldTimerManager().ClearTimer(CoverUpdateTimer);
 	}
 	// If we are NOT in cover, check if there is a wall in front of us.
 	else
@@ -338,11 +339,83 @@ void AProject_StealthGhostCharacter::ToggleCover()
 
 			SmoothSnapToCover(CoverLocation, WallRotation);
 
+
+			//GetWorldTimerManager().SetTimer(CoverUpdateTimer, this, &AProject_StealthGhostCharacter::UpdateCoverHug, 0.05f, true);
 		}
 	}
 }
+//
+//// Snapping and wall hugging logic
+//void AProject_StealthGhostCharacter::UpdateCoverHug()
+//{
+//	FVector StartLocation = GetActorLocation();
+//	// Trace backwards from the player using a negative forward vector
+//	FVector EndLocation = StartLocation - (GetActorForwardVector() * 80.0f);
+//	// Sphere size
+//	float SphereRadius = 35.0f;
+//
+//	FCollisionQueryParams CollisionParams;
+//	CollisionParams.AddIgnoredActor(this);
+//	FCollisionShape SphereShape = FCollisionShape::MakeSphere(SphereRadius);
+//
+//	TArray<FHitResult> HitResults;
+//
+//	bool bHit = GetWorld()->SweepMultiByChannel(HitResults, StartLocation, EndLocation, FQuat::Identity, ECC_Visibility, SphereShape, CollisionParams);
+//
+//	bool bFoundWall = false;
+//
+//	if (bHit)
+//	{
+//		for (const FHitResult& Hit : HitResults)
+//		{
+//			// checks if this is a vertical wall
+//			if (FMath::Abs(Hit.Normal.Z) < 0.2f)
+//			{
+//				bFoundWall = true;
+//				// Save the current location
+//				LastValidCoverLocation = GetActorLocation();
+//
+//				// smoothly roatate the character to match the wall's new curve
+//				FRotator TargetRotation = Hit.Normal.Rotation();
+//				FRotator SmoothRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, 0.05f, 10.0f);
+//				SetActorRotation(SmoothRotation);
+//
+//				// calculate a constant distance between the player and the wall
+//				FVector HugWallLocation = Hit.ImpactPoint + (Hit.Normal * 40.0f);
+//				// Get our current location
+//				FVector CurrentLocation = GetActorLocation();
+//
+//				// Isolate X and Y axis from Z to avoid falling bug
+//				FVector2D CurrentXY(CurrentLocation.X, CurrentLocation.Y);
+//				FVector2D TargetXY(HugWallLocation.X, HugWallLocation.Y);
+//
+//				// This interpolates only the 2D plane
+//				FVector2D SmoothXY = FMath::Vector2DInterpTo(CurrentXY, TargetXY, 0.05f, 10.0f);
+//
+//				// Combine the new X and Y with the Z we didn't touch
+//				FVector SmoothLocation(SmoothXY.X, SmoothXY.Y, CurrentLocation.Z);
+//
+//				// This keeps the height stable
+//				//HugWallLocation.Z = GetActorLocation().Z;
+//
+//				//// VInterpTo is used to pull the character to that distance
+//				//FVector2D SmoothLocation = FMath::VInterpTo(GetActorLocation(), HugWallLocation, DeltaTime, 10.0f);
+//
+//				SetActorLocation(SmoothLocation);
+//
+//				break; // stop loop once a wall is found
+//			}
+//		}
+//	}
+//	// if no wall is found after looping
+//	if (!bFoundWall)
+//	{
+//		SetActorLocation(LastValidCoverLocation);
+//		GetCharacterMovement()->Velocity = FVector::ZeroVector;
+//	}
+//}
 
-// Snapping logic
+
 void AProject_StealthGhostCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

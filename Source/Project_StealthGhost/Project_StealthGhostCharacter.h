@@ -140,6 +140,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Stealth Action")
 	float StealthKillAngleTolerance = 0.4f;
 
+	// Timer to handle player smooth movement in cover
+	FTimerHandle CoverUpdateTimer;
+
+	UFUNCTION()
+	void UpdateCoverHug();
+
 
 protected:
 

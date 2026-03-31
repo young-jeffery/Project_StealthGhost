@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "AITypes.h"
 #include "GhostAIController.h"
+#include "AITypes.h"
 #include "Perception/AISenseConfig_Hearing.h" // Needed for the ears
 #include "GameFramework/Character.h"          // Needed to cast to the player
 #include "Engine/Engine.h"                    // Needed for the debug text
@@ -85,6 +85,7 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
 
                         FVector GuardEyes = GetPawn()->GetActorLocation() + FVector(0, 0, 70.0f);
                         bool bHasTrueLOS = false;
+						FName VisibleBone = NAME_None; // Variable to store which bone we can see (for debugging purposes)
 
                         // Array of bones to check. 
                         TArray<FName> BonesToCheck = {
@@ -114,38 +115,41 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                                 TraceParams
                             );
 
-                            // --- DEBUG VISUALS ---
-                            // If your debug bool is checked in the editor, draw the lasers!
-                            if (bShowDebugVisuals)
-                            {
-                                FColor LaserColor = FColor::Red; // Default to red (blocked/can't see)
-
-                                if (!bHitSomething || (HitResult.GetActor() == SensedCharacter))
-                                {
-                                    LaserColor = FColor::Green; // Green if we have a clear line of sight!
-                                }
-
-                                // Draw a line from the eyes to the bone, lasting 2 seconds
-                                DrawDebugLine(GetWorld(), GuardEyes, TargetLocation, LaserColor, false, 2.0f, 0, 1.0f);
-                                // Draw a little sphere at the exact bone location
-                                DrawDebugSphere(GetWorld(), TargetLocation, 10.0f, 8, LaserColor, false, 2.0f);
-                            }
-
                             // If we hit nothing, or the thing we hit was the player, we can see this bone!
                             if (!bHitSomething || (HitResult.GetActor() == SensedCharacter))
                             {
                                 bHasTrueLOS = true;
+								VisibleBone = BoneName; // Store the name of the bone we can see for debugging
                                 // We saw at least one part of them, so we break the loop to save performance
                                 break;
                             }
                         }
 
+                        // DEBUG VISUALS
+                            // If your debug bool is checked in the editor, draw the lasers!
+                        if (bShowDebugVisuals)
+                        {
+                            if (bHasTrueLOS)
+                            {
+                                FVector ConfirmedBoneLocation = SensedCharacter->GetMesh()->GetSocketLocation(VisibleBone);
+                                DrawDebugLine(GetWorld(), GuardEyes, ConfirmedBoneLocation, FColor::Green, false, 2.0f, 0, 1.0f);
+                                DrawDebugSphere(GetWorld(), ConfirmedBoneLocation, 10.0f, 8, FColor::Green, false, 2.0f);
+                            }
+                            else
+                            {
+                                // No LOS - draw a single red line to the head as indicator
+                                FVector HeadLocation = SensedCharacter->GetMesh()->GetSocketLocation(FName("head"));
+                                DrawDebugLine(GetWorld(), GuardEyes, HeadLocation, FColor::Red, false, 2.0f, 0, 1.0f);
+                            }
+                        }
+               
                         if (bHasTrueLOS)
                         {
                             CurrentVisibleTarget = Actor; // Start building suspicion!
                         }
                 }
-                    // --- FIX: BODY AVOIDANCE ---
+                
+				// If the character we see is already dead and we haven't discovered the body yet, investigate it!
                     else if (SensedCharacter->bIsDead && !SensedCharacter->bHasBeenDiscovered)
                     {
                         if (!BlackboardComp->GetValueAsObject(FName("TargetActor")))
