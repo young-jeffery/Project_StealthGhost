@@ -45,7 +45,7 @@ public:
 
     // A toggle switch you can easily click in the Unreal Editor
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
-    bool bShowDebugVisuals = true;
+    bool bShowDebugVisuals = false;
 
     // Checks the Blackboard to see if the AI is currently busy with combat or investigation
     UFUNCTION(BlueprintCallable, Category = "AI State")

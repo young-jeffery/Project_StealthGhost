@@ -239,13 +239,12 @@ void AGhostAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    // If debug visuals are turned of in the editor or if we don't have a body, stop here
-    if (!bShowDebugVisuals) return;
     APawn* ControlledPawn = GetPawn();
     if (!ControlledPawn) return;
 
-    // --- SUSPICION METER LOGIC ---
     UBlackboardComponent* BB = GetBlackboardComponent();
+
+    // --- SUSPICION METER LOGIC ---
     if (BB)
     {
         if (CurrentVisibleTarget)
@@ -305,8 +304,10 @@ void AGhostAIController::Tick(float DeltaTime)
             }
         }
 
+		if (!bShowDebugVisuals) return;
+
         // Draw Suspicion Text
-        if (bShowDebugVisuals && GetPawn())
+        if (BB)
         {
             FVector TextLoc = GetPawn()->GetActorLocation() + FVector(0, 0, 130.0f);
             FString SuspicionText = FString::Printf(TEXT("Suspicion: %d%%"), FMath::RoundToInt((SuspicionLevel / MaxSuspicion) * 100.0f));
@@ -382,7 +383,7 @@ bool AGhostAIController::IsAlerted() const
     if (CachedBlackboard->GetValueAsVector(FName("InvestigateLocation")) != FAISystem::InvalidLocation) return true;
 
     // Are we actively raising an alarm?
-    if (CachedBlackboard->GetValueAsBool(FName("bSpottedBody"))) return true;
+    if (CachedBlackboard->GetValueAsBool(FName("bIsRaisingAlarm"))) return true;
 
     // If all checks fail, the guard is calm and patrolling normally
     return false;

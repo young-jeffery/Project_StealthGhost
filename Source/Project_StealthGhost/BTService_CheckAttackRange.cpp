@@ -38,7 +38,7 @@ void UBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 			}
 
 			// Attacking and player goes out of range then stop attacking
-			if (bCurrentlyAttacking && Distance > AttackRange)
+			if (bCurrentlyAttacking && Distance > LoseAttackRange)
 			{
 				BlackboardComp->SetValueAsBool(FName("CanAttack"), false);
 			}
