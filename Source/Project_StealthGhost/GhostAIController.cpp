@@ -160,10 +160,12 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                             FVector DirectionToBody = (SensedCharacter->GetActorLocation() - GetPawn()->GetActorLocation()).GetSafeNormal();
 
                             // Calculate a point 150 units (1.5 meters) BACKWARDS from the body along that direction line
-                            FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 200.0f);
+                            FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 150.0f);
 
                             BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), StopLocation);
                             BlackboardComp->SetValueAsObject(FName("SpottedBody"), SensedCharacter);
+
+							bIsSpooked = true; // Finding a dead body spooks the guard, making them more alert in the future
                         }
                     }
             }
@@ -216,6 +218,7 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                     if (Stimulus.Tag == "Alarm")
                     {
                         GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("Guard: Alarm!? On my way bro."));
+						bIsSpooked = true; // Hearing an alarm spooks the guard, making them more alert in the future
                     }
 
                 }
@@ -269,11 +272,11 @@ void AGhostAIController::Tick(float DeltaTime)
                 }
                 else if (Distance < 700.0f)
                 {
-                    CurrentBuildRate *= 8.0f;
+                    CurrentBuildRate *= 12.0f;
                 }
                 else if (Distance > 1000.0f)
                 {
-                    CurrentBuildRate *= 0.5f;
+                    CurrentBuildRate *= 1.0f;
                 }
 
                 // --- STANCE MODIFIERS ---
@@ -283,6 +286,13 @@ void AGhostAIController::Tick(float DeltaTime)
                 {
                     // Crouching reduces visibility build up by 60% (multiplying by 0.4)
                     CurrentBuildRate *= 0.4f;
+                }
+
+                // --- MEMORY MODIFIER ---
+                // If the guard has been spooked before, they catch you much faster!
+                if (bIsSpooked)
+                {
+                    CurrentBuildRate *= SpookedBuildMultiplier;
                 }
             }
 
@@ -295,6 +305,7 @@ void AGhostAIController::Tick(float DeltaTime)
             {
                 BB->SetValueAsObject(FName("TargetActor"), CurrentVisibleTarget);
                 BB->ClearValue(FName("InvestigateLocation"));
+				bIsSpooked = true; // Once fully detected, the guard is permanently spooked and will be more alert in the future!
                 UAISense_Hearing::ReportNoiseEvent(GetWorld(), CurrentVisibleTarget->GetActorLocation(), 1.0f, GetPawn(), 2000.0f, FName("Alarm"));
             }
         }
@@ -314,8 +325,13 @@ void AGhostAIController::Tick(float DeltaTime)
         if (BB)
         {
             FVector TextLoc = GetPawn()->GetActorLocation() + FVector(0, 0, 130.0f);
-            FString SuspicionText = FString::Printf(TEXT("Suspicion: %d%%"), FMath::RoundToInt((SuspicionLevel / MaxSuspicion) * 100.0f));
-            DrawDebugString(GetWorld(), TextLoc, SuspicionText, nullptr, FColor::Yellow, DeltaTime, true);
+            FString SpookedTag = bIsSpooked ? TEXT(" (SPOOKED)") : TEXT("");
+            FString SuspicionText = FString::Printf(TEXT("Suspicion: %d%%%s"), FMath::RoundToInt((SuspicionLevel / MaxSuspicion) * 100.0f), *SpookedTag);
+
+            // Turn the text Red if spooked, otherwise keep it Cyan
+            FColor TextColor = bIsSpooked ? FColor::Red : FColor::Cyan;
+
+            DrawDebugString(GetWorld(), TextLoc, SuspicionText, nullptr, TextColor, DeltaTime, true);
         }
     }
 

@@ -70,6 +70,16 @@ public:
     UPROPERTY()
     AActor* CurrentVisibleTarget = nullptr;
 
+    // --- MEMORY & ALERT STATE ---
+
+    // Tracks if the guard has been permanently put on high alert
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI Memory")
+    bool bIsSpooked = false;
+
+    // How much faster suspicion builds when the guard is spooked (2.0 = twice as fast)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Memory")
+    float SpookedBuildMultiplier = 2.0f;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;

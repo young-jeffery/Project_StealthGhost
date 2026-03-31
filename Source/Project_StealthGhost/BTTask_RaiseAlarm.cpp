@@ -38,6 +38,7 @@ EBTNodeResult::Type UBTTask_RaiseAlarm::ExecuteTask(UBehaviorTreeComponent& Owne
     // Claim the body so no other guard tries to yell about it right now
     TargetBody->bHasBeenDiscovered = true;
 
+
     // Set our blackboard state
     BB->SetValueAsBool(FName("bIsRaisingAlarm"), true);
 

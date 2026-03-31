@@ -116,16 +116,14 @@ void AProject_StealthGhostCharacter::Move(const FInputActionValue& Value)
 	// Varying sound levels based on movement type
 	if (MovementVector.Length() > 0.0f)
 	{
-		if (bIsCrouched)
+		if (!bIsCrouched)
 		{
-			// Do nothing
-		}
-		else
-		{
-			// Loudness is 1 when speed is above 300 and 0.5 otherwise
-			float CurrentLoudness = (GetCharacterMovement()->MaxWalkSpeed > 500.0f) ? 0.7f : 0.3f;
-			//MakeNoise(CurrentLoudness, this, GetActorLocation());
-			UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), CurrentLoudness, this, 1000.0f, FName("Footstep"));
+			bool bIsSprinting = GetCharacterMovement()->MaxWalkSpeed > 500.0f;
+
+			float Loudness = bIsSprinting ? 0.7f : 0.5f; // Louder if sprinting, quieter if walking
+			float Range = bIsSprinting ? 1200.0f : 500.0f;
+
+			UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), Loudness, this, Range, FName("Footstep"));
 		}
 	}
 	
@@ -184,7 +182,7 @@ void AProject_StealthGhostCharacter::Landed(const FHitResult& Hit)
 	// declaring this first ensures we allow the default landing physics take place
 	Super::Landed(Hit);
 
-	MakeNoise(0.5f, this, GetActorLocation());
+	UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 0.5f, this, 1000.0f, FName("Footstep"));
 }
 
 void AProject_StealthGhostCharacter::DoJumpStart()
