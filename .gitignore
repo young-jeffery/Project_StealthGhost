@@ -392,5 +392,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-Intermediate/ProjectFiles/Project_StealthGhost.vcxproj
-Intermediate/ProjectFiles/UE5.vcxproj
+# Intermediate/ProjectFiles/Project_StealthGhost.vcxproj
+# Intermediate/ProjectFiles/UE5.vcxproj
+Content/FreeAnimationLibrary/
+Content/MC_Sample/
+Content/MPMECH/
+Content/Sci-FI_Troopers_Collection/
