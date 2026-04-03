@@ -182,7 +182,7 @@ void AProject_StealthGhostCharacter::Landed(const FHitResult& Hit)
 	// declaring this first ensures we allow the default landing physics take place
 	Super::Landed(Hit);
 
-	UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 0.5f, this, 1000.0f, FName("Footstep"));
+	UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 0.5f, this, 1000.0f, FName("Landing noise"));
 }
 
 void AProject_StealthGhostCharacter::DoJumpStart()

@@ -9,6 +9,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Project_StealthGhostCharacter.h"
+#include "Perception/AISense_Sight.h"
 #include "Perception/AISense_Hearing.h"
 
 // Constructor - This runs once when the AI is created to set up its components.
@@ -56,123 +57,103 @@ void AGhostAIController::BeginPlay()
     if (AIPerception)
     {
         AIPerception->OnTargetPerceptionUpdated.AddDynamic(this, &AGhostAIController::OnTargetDetected);
+
     }
 }
 
 // What sense was triggered
 void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
 {
-    // If the noise is from me then ignore it
-	if (Actor == GetPawn()) return;
+    // If the noise or sight is from me, ignore it
+    if (Actor == GetPawn()) return;
 
-    // Cast to custom character to access IsDead state
-    if (AProject_StealthGhostCharacter* SensedCharacter = Cast<AProject_StealthGhostCharacter>(Actor))
+    UBlackboardComponent* BlackboardComp = GetBlackboardComponent();
+    if (!BlackboardComp) return;
+
+    
+    // SIGHT LOGIC
+    if (Stimulus.Type == UAISense::GetSenseID<UAISense_Sight>())
     {
-        UBlackboardComponent* BlackboardComp = GetBlackboardComponent();
-        if (!BlackboardComp) return;
-
-        // Sight Logic
-        if (Stimulus.Type == SightConfig->GetSenseID())
+		// Cast to custom character to access IsDead state and player control status. If the cast fails, this means we sensed something that isn't a character, so we skip the sight logic and go straight to the hearing logic below
+        if (AProject_StealthGhostCharacter* SensedCharacter = Cast<AProject_StealthGhostCharacter>(Actor))
         {
             if (Stimulus.WasSuccessfullySensed())
             {
                 if (SensedCharacter->IsPlayerControlled())
                 {
-                        // --- ADVANCED LINE OF SIGHT VERIFICATION (Multi-Bone Trace) ---
-                        FHitResult HitResult;
-                        FCollisionQueryParams TraceParams;
-                        TraceParams.AddIgnoredActor(GetPawn()); // Guard ignores himself 
+                    // --- ADVANCED LINE OF SIGHT VERIFICATION (Multi-Bone Trace) ---
+                    FHitResult HitResult;
+                    FCollisionQueryParams TraceParams;
+                    TraceParams.AddIgnoredActor(GetPawn()); // Guard ignores himself 
 
-                        FVector GuardEyes = GetPawn()->GetActorLocation() + FVector(0, 0, 70.0f);
-                        bool bHasTrueLOS = false;
-						FName VisibleBone = NAME_None; // Variable to store which bone we can see (for debugging purposes)
+                    FVector GuardEyes = GetPawn()->GetActorLocation() + FVector(0, 0, 70.0f);
+                    bool bHasTrueLOS = false;
+                    FName VisibleBone = NAME_None;
 
-                        // Array of bones to check. 
-                        TArray<FName> BonesToCheck = {
-                            FName("head"),
-                            FName("spine_02"), // Main body/Chest
-                            FName("spine_03"), // Main body/Chest
-                            FName("spine_04"), // Main body/Chest
-                            FName("spine_05"), // Main body/Chest
-                            FName("pelvis"),   // Hips
-                            FName("thigh_l"),  // Left Thigh
-                            FName("thigh_r"),  // Right Thigh
-                            FName("hand_r"),    // Right Hand
-                            FName("hand_l"),    // Left Hand
-                            FName("clavicle_l")    // Clavicle
-                        };
+                    TArray<FName> BonesToCheck = {
+                        FName("head"), FName("spine_02"), FName("spine_03"),
+                        FName("spine_04"), FName("spine_05"), FName("pelvis"),
+                        FName("thigh_l"), FName("thigh_r"), FName("hand_r"),
+                        FName("hand_l"), FName("clavicle_l")
+                    };
 
-                        for (FName BoneName : BonesToCheck)
-                        {
-                            // Get the location of the current bone we are checking
-                            FVector TargetLocation = SensedCharacter->GetMesh()->GetSocketLocation(BoneName);
-
-                            bool bHitSomething = GetWorld()->LineTraceSingleByChannel(
-                                HitResult,
-                                GuardEyes,
-                                TargetLocation,
-                                ECC_Visibility,
-                                TraceParams
-                            );
-
-                            // If we hit nothing, or the thing we hit was the player, we can see this bone!
-                            if (!bHitSomething || (HitResult.GetActor() == SensedCharacter))
-                            {
-                                bHasTrueLOS = true;
-								VisibleBone = BoneName; // Store the name of the bone we can see for debugging
-                                // We saw at least one part of them, so we break the loop to save performance
-                                break;
-                            }
-                        }
-
-                        // DEBUG VISUALS
-                            // If your debug bool is checked in the editor, draw the lasers!
-                        if (bShowDebugVisuals)
-                        {
-                            if (bHasTrueLOS)
-                            {
-                                FVector ConfirmedBoneLocation = SensedCharacter->GetMesh()->GetSocketLocation(VisibleBone);
-                                DrawDebugLine(GetWorld(), GuardEyes, ConfirmedBoneLocation, FColor::Green, false, 2.0f, 0, 1.0f);
-                                DrawDebugSphere(GetWorld(), ConfirmedBoneLocation, 10.0f, 8, FColor::Green, false, 2.0f);
-                            }
-                            else
-                            {
-                                // No LOS - draw a single red line to the head as indicator
-                                FVector HeadLocation = SensedCharacter->GetMesh()->GetSocketLocation(FName("head"));
-                                DrawDebugLine(GetWorld(), GuardEyes, HeadLocation, FColor::Red, false, 2.0f, 0, 1.0f);
-                            }
-                        }
-               
-                        if (bHasTrueLOS)
-                        {
-                            CurrentVisibleTarget = Actor; // Start building suspicion!
-                        }
-                }
-                
-				// If the character we see is already dead and we haven't discovered the body yet, investigate it!
-                    else if (SensedCharacter->bIsDead && !SensedCharacter->bHasBeenDiscovered)
+                    for (FName BoneName : BonesToCheck)
                     {
-                        if (!BlackboardComp->GetValueAsObject(FName("TargetActor")))
+                        FVector TargetLocation = SensedCharacter->GetMesh()->GetSocketLocation(BoneName);
+
+                        bool bHitSomething = GetWorld()->LineTraceSingleByChannel(
+                            HitResult, GuardEyes, TargetLocation, ECC_Visibility, TraceParams
+                        );
+
+                        if (!bHitSomething || (HitResult.GetActor() == SensedCharacter))
                         {
-                            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Hmm, What's that? Lemme check."));
-
-                            // Get the direction pointing from the Guard to the Dead Body
-                            FVector DirectionToBody = (SensedCharacter->GetActorLocation() - GetPawn()->GetActorLocation()).GetSafeNormal();
-
-                            // Calculate a point 150 units (1.5 meters) BACKWARDS from the body along that direction line
-                            FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 150.0f);
-
-                            BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), StopLocation);
-                            BlackboardComp->SetValueAsObject(FName("SpottedBody"), SensedCharacter);
-
-							bIsSpooked = true; // Finding a dead body spooks the guard, making them more alert in the future
+                            bHasTrueLOS = true;
+                            VisibleBone = BoneName;
+                            break;
                         }
                     }
+
+                    // DEBUG VISUALS
+                    if (bShowDebugVisuals)
+                    {
+                        if (bHasTrueLOS)
+                        {
+                            FVector ConfirmedBoneLocation = SensedCharacter->GetMesh()->GetSocketLocation(VisibleBone);
+                            DrawDebugLine(GetWorld(), GuardEyes, ConfirmedBoneLocation, FColor::Green, false, 2.0f, 0, 1.0f);
+                            DrawDebugSphere(GetWorld(), ConfirmedBoneLocation, 10.0f, 8, FColor::Green, false, 2.0f);
+                        }
+                        else
+                        {
+                            FVector HeadLocation = SensedCharacter->GetMesh()->GetSocketLocation(FName("head"));
+                            DrawDebugLine(GetWorld(), GuardEyes, HeadLocation, FColor::Red, false, 2.0f, 0, 1.0f);
+                        }
+                    }
+
+                    if (bHasTrueLOS)
+                    {
+                        CurrentVisibleTarget = Actor; // Start building suspicion!
+                    }
+                }
+
+                // If the character we see is already dead and hasn't been discovered yet, investigate it!
+                else if (SensedCharacter->bIsDead && !SensedCharacter->bHasBeenDiscovered)
+                {
+                    if (!BlackboardComp->GetValueAsObject(FName("TargetActor")))
+                    {
+                        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Hmm, What's that? Lemme check."));
+
+                        FVector DirectionToBody = (SensedCharacter->GetActorLocation() - GetPawn()->GetActorLocation()).GetSafeNormal();
+                        FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 150.0f);
+
+                        BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), StopLocation);
+                        BlackboardComp->SetValueAsObject(FName("SpottedBody"), SensedCharacter);
+                        bIsSpooked = true;
+                    }
+                }
             }
             else
             {
                 // Player got out of sight
-                // FIX: Cast Actor to APawn so we can safely check IsPlayerControlled()
                 if (APawn* SensedPawn = Cast<APawn>(Actor))
                 {
                     if (SensedPawn->IsPlayerControlled())
@@ -196,36 +177,212 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                 }
             }
         }
-        // Hearing Logic
-        else if (Stimulus.Type == HearingConfig->GetSenseID())
+    }
+    
+    // HEARING LOGIC
+    else if (Stimulus.Type == UAISense::GetSenseID<UAISense_Hearing>())
+    {
+        if (Stimulus.WasSuccessfullySensed())
         {
-            if (Stimulus.WasSuccessfullySensed())
+            // First confirm that they are not chasing a target
+            UObject* CurrentTarget = BlackboardComp->GetValueAsObject(FName("TargetActor"));
+            if (!CurrentTarget)
             {
-                // First confirm that they are not chasing a target
-                UObject* CurrentTarget = BlackboardComp->GetValueAsObject(FName("TargetActor"));
-                if (!CurrentTarget)
+                // Investigate the noise location
+                BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Stimulus.StimulusLocation);
+
+                // Check the tags we set up earlier
+                if (Stimulus.Tag == "Alarm")
                 {
-					//// Check where we are currentlty investigating
-					//FVector CurrentInvestigateLocation = BlackboardComp->GetValueAsVector(FName("InvestigateLocation"));
-
-     //               //If the noise is at our location or we are already on our way there, then ignore it
-					//if (FVector::Dist(CurrentInvestigateLocation, Stimulus.StimulusLocation) < 50.0f) return
-
-					// Investigate the noise location
-                    BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Stimulus.StimulusLocation);
-
-                    // Debug to confirm the guards communicate with each other
-                    if (Stimulus.Tag == "Alarm")
-                    {
-                        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("Guard: Alarm!? On my way bro."));
-						bIsSpooked = true; // Hearing an alarm spooks the guard, making them more alert in the future
-                    }
-
+                    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("Guard: Alarm!? On my way bro."));
+                    bIsSpooked = true;
+                }
+                else if (Stimulus.Tag == "Distraction")
+                {
+                    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: What was that noise?"));
+                }
+                else if (Stimulus.Tag == "Footstep")
+                {
+                    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, TEXT("Guard: Did I hear footsteps?"));
+                }
+                else
+                {
+                    // Fallback in case a noise without a tag, unspecified tag, or misspelt tag is made
+                    FString Tag = Stimulus.Tag.ToString();
+                    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Guard: Heard noise: %s"), *Tag));
                 }
             }
         }
     }
 }
+
+//// What sense was triggered
+//void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
+//{
+//    // If the noise is from me then ignore it
+//	if (Actor == GetPawn()) return;
+//
+//    // Cast to custom character to access IsDead state
+//    if (AProject_StealthGhostCharacter* SensedCharacter = Cast<AProject_StealthGhostCharacter>(Actor))
+//    {
+//        UBlackboardComponent* BlackboardComp = GetBlackboardComponent();
+//        if (!BlackboardComp) return;
+//
+//        // Sight Logic
+//        if (SightConfig && Stimulus.Type == SightConfig->GetSenseID())
+//        {
+//            if (Stimulus.WasSuccessfullySensed())
+//            {
+//                if (SensedCharacter->IsPlayerControlled())
+//                {
+//                        // --- ADVANCED LINE OF SIGHT VERIFICATION (Multi-Bone Trace) ---
+//                        FHitResult HitResult;
+//                        FCollisionQueryParams TraceParams;
+//                        TraceParams.AddIgnoredActor(GetPawn()); // Guard ignores himself 
+//
+//                        FVector GuardEyes = GetPawn()->GetActorLocation() + FVector(0, 0, 70.0f);
+//                        bool bHasTrueLOS = false;
+//						FName VisibleBone = NAME_None; // Variable to store which bone we can see (for debugging purposes)
+//
+//                        // Array of bones to check. 
+//                        TArray<FName> BonesToCheck = {
+//                            FName("head"),
+//                            FName("spine_02"), // Main body/Chest
+//                            FName("spine_03"), // Main body/Chest
+//                            FName("spine_04"), // Main body/Chest
+//                            FName("spine_05"), // Main body/Chest
+//                            FName("pelvis"),   // Hips
+//                            FName("thigh_l"),  // Left Thigh
+//                            FName("thigh_r"),  // Right Thigh
+//                            FName("hand_r"),    // Right Hand
+//                            FName("hand_l"),    // Left Hand
+//                            FName("clavicle_l")    // Clavicle
+//                        };
+//
+//                        for (FName BoneName : BonesToCheck)
+//                        {
+//                            // Get the location of the current bone we are checking
+//                            FVector TargetLocation = SensedCharacter->GetMesh()->GetSocketLocation(BoneName);
+//
+//                            bool bHitSomething = GetWorld()->LineTraceSingleByChannel(
+//                                HitResult,
+//                                GuardEyes,
+//                                TargetLocation,
+//                                ECC_Visibility,
+//                                TraceParams
+//                            );
+//
+//                            // If we hit nothing, or the thing we hit was the player, we can see this bone!
+//                            if (!bHitSomething || (HitResult.GetActor() == SensedCharacter))
+//                            {
+//                                bHasTrueLOS = true;
+//								VisibleBone = BoneName; // Store the name of the bone we can see for debugging
+//                                // We saw at least one part of them, so we break the loop to save performance
+//                                break;
+//                            }
+//                        }
+//
+//                        // DEBUG VISUALS
+//                            // If your debug bool is checked in the editor, draw the lasers!
+//                        if (bShowDebugVisuals)
+//                        {
+//                            if (bHasTrueLOS)
+//                            {
+//                                FVector ConfirmedBoneLocation = SensedCharacter->GetMesh()->GetSocketLocation(VisibleBone);
+//                                DrawDebugLine(GetWorld(), GuardEyes, ConfirmedBoneLocation, FColor::Green, false, 2.0f, 0, 1.0f);
+//                                DrawDebugSphere(GetWorld(), ConfirmedBoneLocation, 10.0f, 8, FColor::Green, false, 2.0f);
+//                            }
+//                            else
+//                            {
+//                                // No LOS - draw a single red line to the head as indicator
+//                                FVector HeadLocation = SensedCharacter->GetMesh()->GetSocketLocation(FName("head"));
+//                                DrawDebugLine(GetWorld(), GuardEyes, HeadLocation, FColor::Red, false, 2.0f, 0, 1.0f);
+//                            }
+//                        }
+//               
+//                        if (bHasTrueLOS)
+//                        {
+//                            CurrentVisibleTarget = Actor; // Start building suspicion!
+//                        }
+//                }
+//                
+//				// If the character we see is already dead and we haven't discovered the body yet, investigate it!
+//                    else if (SensedCharacter->bIsDead && !SensedCharacter->bHasBeenDiscovered)
+//                    {
+//                        if (!BlackboardComp->GetValueAsObject(FName("TargetActor")))
+//                        {
+//                            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Hmm, What's that? Lemme check."));
+//
+//                            // Get the direction pointing from the Guard to the Dead Body
+//                            FVector DirectionToBody = (SensedCharacter->GetActorLocation() - GetPawn()->GetActorLocation()).GetSafeNormal();
+//
+//                            // Calculate a point 150 units (1.5 meters) BACKWARDS from the body along that direction line
+//                            FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 150.0f);
+//
+//                            BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), StopLocation);
+//                            BlackboardComp->SetValueAsObject(FName("SpottedBody"), SensedCharacter);
+//
+//							bIsSpooked = true; // Finding a dead body spooks the guard, making them more alert in the future
+//                        }
+//                    }
+//            }
+//            else
+//            {
+//                // Player got out of sight
+//                // FIX: Cast Actor to APawn so we can safely check IsPlayerControlled()
+//                if (APawn* SensedPawn = Cast<APawn>(Actor))
+//                {
+//                    if (SensedPawn->IsPlayerControlled())
+//                    {
+//                        CurrentVisibleTarget = nullptr;
+//
+//                        // If they weren't fully detected yet but suspicion is high, investigate!
+//                        if (!BlackboardComp->GetValueAsObject(FName("TargetActor")) && SuspicionLevel > 30.0f)
+//                        {
+//                            BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Actor->GetActorLocation());
+//                            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Did I see something?"));
+//                        }
+//
+//                        // If they WERE fully detected, go to their last known location
+//                        if (BlackboardComp->GetValueAsObject(FName("TargetActor")) == Actor)
+//                        {
+//                            BlackboardComp->ClearValue(FName("TargetActor"));
+//                            BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Actor->GetActorLocation());
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        // Hearing Logic
+//        else if (HearingConfig && Stimulus.Type == HearingConfig->GetSenseID())
+//        {
+//            if (Stimulus.WasSuccessfullySensed())
+//            {
+//                // First confirm that they are not chasing a target
+//                UObject* CurrentTarget = BlackboardComp->GetValueAsObject(FName("TargetActor"));
+//                if (!CurrentTarget)
+//                {
+//					//// Check where we are currentlty investigating
+//					//FVector CurrentInvestigateLocation = BlackboardComp->GetValueAsVector(FName("InvestigateLocation"));
+//
+//     //               //If the noise is at our location or we are already on our way there, then ignore it
+//					//if (FVector::Dist(CurrentInvestigateLocation, Stimulus.StimulusLocation) < 50.0f) return
+//
+//					// Investigate the noise location
+//                    BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Stimulus.StimulusLocation);
+//
+//                    // Debug to confirm the guards communicate with each other
+//                    if (Stimulus.Tag == "Alarm")
+//                    {
+//                        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("Guard: Alarm!? On my way bro."));
+//						bIsSpooked = true; // Hearing an alarm spooks the guard, making them more alert in the future
+//                    }
+//
+//                }
+//            }
+//        }
+//    }
+//}
 
 // Triggers the Behavior Tree
 void AGhostAIController::OnPossess(APawn* InPawn)
@@ -336,29 +493,48 @@ void AGhostAIController::Tick(float DeltaTime)
     }
 
     // --- DEBUG HEARING RANGE (Yellow Sphere) ---
+
+	// Get the active hearing config from the perception component. 
+    // This is necessary because the config can be changed at runtime, so we can't just rely on the default values we set in the constructor.
+    FAISenseID HearingID = UAISense::GetSenseID<UAISense_Hearing>();
+    UAISenseConfig_Hearing* ActiveHearingConfig = Cast<UAISenseConfig_Hearing>(AIPerception->GetSenseConfig(HearingID));
+
     // Draws a yellow wireframe sphere around the guard representing their 20m hearing radius
-    DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), HearingConfig->HearingRange, 64, FColor::Yellow, false, -1.0f, 0, 2.0f);
+    if (ActiveHearingConfig)
+    {
+        DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), ActiveHearingConfig->HearingRange, 64, FColor::Yellow, false, -1.0f, 0, 2.0f);
+    }
+    
 
     // --- DEBUG SIGHT RANGE (Green Cone) ---
-    FVector EyeLocation;
-    FRotator EyeRotation;
-    ControlledPawn->GetActorEyesViewPoint(EyeLocation, EyeRotation);
 
-    // Draws a green cone representing the distance and peripheral angle of their vision
-    DrawDebugCone(
-        GetWorld(),
-        EyeLocation,
-        EyeRotation.Vector(),
-        SightConfig->SightRadius,
-        FMath::DegreesToRadians(SightConfig->PeripheralVisionAngleDegrees),
-        FMath::DegreesToRadians(SightConfig->PeripheralVisionAngleDegrees),
-        64,
-        FColor::Green,
-        false,
-        -1.0f,
-        0,
-        2.0f
-    );
+	// Get the active sight config from the perception component.
+    FAISenseID SightID = UAISense::GetSenseID<UAISense_Sight>();
+    UAISenseConfig_Sight* ActiveSightConfig = Cast<UAISenseConfig_Sight>(AIPerception->GetSenseConfig(SightID));
+
+    if (ActiveSightConfig)
+    {
+        FVector EyeLocation;
+        FRotator EyeRotation;
+        ControlledPawn->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+
+        // Draws a green cone representing the distance and peripheral angle of their vision
+        DrawDebugCone(
+            GetWorld(),
+            EyeLocation,
+            EyeRotation.Vector(),
+            ActiveSightConfig->SightRadius,
+            FMath::DegreesToRadians(ActiveSightConfig->PeripheralVisionAngleDegrees),
+            FMath::DegreesToRadians(ActiveSightConfig->PeripheralVisionAngleDegrees),
+            64,
+            FColor::Green,
+            false,
+            -1.0f,
+            0,
+            2.0f
+        );
+    }
+    
 
     // --- DEBUG INTERACTION STATE (Floating Text) ---
     if (BB)

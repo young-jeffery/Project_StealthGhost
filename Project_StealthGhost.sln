@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.4.11620.152 stable
+VisualStudioVersion = 18.4.11626.88 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Automation", "Automation", "{0BFBE63A-B98A-3411-8EEB-8918FEC737B3}"
 EndProject
@@ -1822,7 +1822,7 @@ Global
 		{DD8E5EE3-78B8-398A-B36A-3B520CC563E3} = {C2F57ECE-B26F-39D8-BDA7-C1D40BD8F180}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {93768124-2D53-4AE5-9E3C-8A9223B1A399}
+		SolutionGuid = {BC95A1C1-324A-491A-A0BB-F19D3B011F68}
 	EndGlobalSection
 	GlobalSection(ddbf523f-7eb6-4887-bd51-85a714ff87eb) = preSolution
 		AvailablePlatforms = Win64

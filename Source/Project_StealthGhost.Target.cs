@@ -11,5 +11,6 @@ public class Project_StealthGhostTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_6;
 		ExtraModuleNames.Add("Project_StealthGhost");
-	}
+        bLegacyPublicIncludePaths = false;
+    }
 }

@@ -143,8 +143,8 @@ protected:
 	// Timer to handle player smooth movement in cover
 	FTimerHandle CoverUpdateTimer;
 
-	UFUNCTION()
-	void UpdateCoverHug();
+	//UFUNCTION()
+	//void UpdateCoverHug();
 
 
 protected:
