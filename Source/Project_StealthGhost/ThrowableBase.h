@@ -49,6 +49,16 @@ protected:
 	// A boolean lock to ensure the item only distracts the AI on the FIRST bounce
 	bool bHasMadeNoise = false;
 
+	// --- PHYSICS SETTINGS FOR BLUEPRINTS ---
+
+	// How bouncy the object is (0.0 = no bounce, 1.0 = rubber ball)
+	UPROPERTY(EditDefaultsOnly, Category = "Throwable Physics")
+	float ObjectBounciness = 0.2f;
+
+	// How much it slides on the floor (0.0 = ice, 1.0 = sandpaper)
+	UPROPERTY(EditDefaultsOnly, Category = "Throwable Physics")
+	float ObjectFriction = 0.6f;
+
 	// --- FUNCTIONS ---
 	// The function bound to the physics collision event
 	UFUNCTION()

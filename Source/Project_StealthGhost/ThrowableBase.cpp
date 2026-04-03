@@ -53,9 +53,13 @@ void AThrowableBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Automatically destroy this actor 5 seconds after it is spawned so that it doesn't use up unnecessary memory.
-	SetLifeSpan(15.0f);
-	
+	// Apply the Blueprint's custom physics settings to the projectile component
+	if (ProjectileMovement)
+	{
+		ProjectileMovement->Bounciness = ObjectBounciness;
+		ProjectileMovement->Friction = ObjectFriction;
+	}
+
 }
 
 // Called every frame
@@ -71,19 +75,37 @@ void AThrowableBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 	// We don't want the AI investigating the 3rd tiny bounce instead of the initial impact.
 	if (!bHasMadeNoise && OtherActor != this)
 	{
+		// Get how fast the object was moving at the moment of impact. We can use this to make louder noises for faster throws, and softer noises for gentle drops
+		float ImpactSpeed = GetVelocity().Size();
+
+		
+		if (ImpactSpeed < 200.0f)
+		{
+			return; // make no sound if the imppact is too soft.
+		}
+
 		bHasMadeNoise = true;
+
+		// Dynamic Loudness Math
+		// We divide the speed by 1500 (a standard hard throw speed) to get a percentage.
+		// Then we clamp it between 0.3 (30%) and 1.0 (100%) so it's never too quiet or absurdly loud.
+		float SpeedMultiplier = FMath::Clamp(ImpactSpeed / 1500.0f, 0.3f, 1.0f);
+
+		float FinalLoudness = DistractionLoudness * SpeedMultiplier;
+		float FinalRange = MaxRange * SpeedMultiplier;
 
 		// Get the player pawn as the instigator of the noise
 		AActor* NoiseInstigator = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 
 		// Broadcast the noise. 
 		// We tag it "Distraction" so the AI can distinguish it from footsteps or alarms later.
-		UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), DistractionLoudness, this, MaxRange, FName("Distraction"));
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), FinalLoudness, NoiseInstigator, FinalRange, FName("Distraction"));
 
 		// Debug visual
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Stone Hit! Distraction Noise Broadcasted."));
+			FString DebugMsg = FString::Printf(TEXT("Stone Hit! Speed: %f | Range: %f"), ImpactSpeed, FinalRange);
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, DebugMsg);
 		}
 	}
 }

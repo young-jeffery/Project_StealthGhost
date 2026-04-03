@@ -17,6 +17,7 @@
     <None Include="..\..\.vsconfig" />
     <None Include="..\..\BP_GhostGuard Node.txt" />
     <None Include="..\..\BT_GhostGuard Investigate Branch Nodes.txt" />
+    <None Include="..\..\BT_GhostGuard.txt" />
     <None Include="..\..\shadertoolsconfig.json" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
@@ -175,6 +176,12 @@
       <Filter>Source\Project_StealthGhost</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\Project_StealthGhost\GhostAIController.h">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\InteractableInterface.cpp">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\InteractableInterface.h">
       <Filter>Source\Project_StealthGhost</Filter>
     </ClInclude>
     <None Include="..\..\Source\Project_StealthGhost\Project_StealthGhost.Build.cs">

@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 #include "Project_StealthGhost.h"
 #include "DrawDebugHelpers.h" // This draws visual lines for testing
+#include "InteractableInterface.h"
 #include <Perception/AISense_Hearing.h>
 
 AProject_StealthGhostCharacter::AProject_StealthGhostCharacter()
@@ -347,6 +348,9 @@ void AProject_StealthGhostCharacter::ToggleCover()
 
 void AProject_StealthGhostCharacter::Tick(float DeltaTime)
 {
+	// Constantly check what the camera is pointing at
+	CheckForInteractables();
+
 	Super::Tick(DeltaTime);
 
 	if (CurrentState == EPlayerMovementState::VE_InCover)
@@ -441,7 +445,16 @@ void AProject_StealthGhostCharacter::ToggleCrouch()
 
 void AProject_StealthGhostCharacter::StartSprint()
 {
-	if (CurrentState == EPlayerMovementState::VE_InCover || bIsCrouched) return;
+	if (CurrentState == EPlayerMovementState::VE_InCover)
+	{
+		return;
+	}
+	else if (bIsCrouched)
+	{
+		UnCrouch();
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+		return;
+	}
 
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 }
@@ -551,5 +564,56 @@ void AProject_StealthGhostCharacter::DieSilently()
 	if (DeathMontage && GetMesh()->GetAnimInstance())
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(DeathMontage);
+	}
+}
+
+// --- INTERACTION SYSTEM ---
+
+void AProject_StealthGhostCharacter::CheckForInteractables()
+{
+	// Set up the laser from the Camera
+	FVector StartLoc = FollowCamera->GetComponentLocation();
+	// Shoot the laser 800 units (8 meters) straight out from the center of the screen
+	FVector EndLoc = StartLoc + (FollowCamera->GetForwardVector() * 800.0f);
+
+	FHitResult HitResult;
+	FCollisionQueryParams TraceParams;
+	TraceParams.AddIgnoredActor(this); // Don't interact with ourselves
+
+	// Create a sphere with a 30cm radius
+	FCollisionShape SphereShape = FCollisionShape::MakeSphere(30.0f);
+
+	bool bHit = GetWorld()->SweepSingleByChannel(HitResult, StartLoc, EndLoc, FQuat::Identity, ECC_Visibility, SphereShape, TraceParams);
+
+	if (bHit && HitResult.GetActor())
+	{
+		AActor* HitActor = HitResult.GetActor();
+
+		// Does the thing we hit have our Interactable Interface?
+		if (HitActor->Implements<UInteractableInterface>())
+		{
+			// If it's a new item, update our memory
+			if (HitActor != CurrentInteractable)
+			{
+				CurrentInteractable = HitActor;
+				// Optional: In the future, this is where you'd tell the UI to show "Press E to Pick Up"
+			}
+			return; // We found something, end the function early
+		}
+	}
+
+	// If we hit nothing, or we hit a wall, clear our memory
+	CurrentInteractable = nullptr;
+}
+
+void AProject_StealthGhostCharacter::Interact()
+{
+	// If we are looking at something that has the interface...
+	if (CurrentInteractable)
+	{
+		// Pass the Execute_Interact command at the object and the object decides what to do with it
+		IInteractableInterface::Execute_Interact(CurrentInteractable, this);
+
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Player: Sent Interaction Command!"));
 	}
 }

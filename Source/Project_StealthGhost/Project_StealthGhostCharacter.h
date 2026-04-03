@@ -59,6 +59,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* MouseLookAction;
 
+
 public:
 
 	/** Constructor */
@@ -140,11 +141,19 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Stealth Action")
 	float StealthKillAngleTolerance = 0.4f;
 
+	// Fires a laser from the camera to find interactables
+	void CheckForInteractables();
+
+	// Called when the player presses the interact button
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	void Interact();
+
+	// Stores the object we are currently looking at so we can pick it up
+	UPROPERTY()
+	AActor* CurrentInteractable = nullptr;
+
 	// Timer to handle player smooth movement in cover
 	FTimerHandle CoverUpdateTimer;
-
-	//UFUNCTION()
-	//void UpdateCoverHug();
 
 
 protected:
