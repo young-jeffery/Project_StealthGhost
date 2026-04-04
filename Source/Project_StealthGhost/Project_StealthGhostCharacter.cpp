@@ -15,6 +15,8 @@
 #include "DrawDebugHelpers.h" // This draws visual lines for testing
 #include "InteractableInterface.h"
 #include <Perception/AISense_Hearing.h>
+#include "EquippableBase.h"
+
 
 AProject_StealthGhostCharacter::AProject_StealthGhostCharacter()
 {
@@ -660,5 +662,86 @@ void AProject_StealthGhostCharacter::Interact()
 		IInteractableInterface::Execute_Interact(CurrentInteractable, this);
 
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Player: Sent Interaction Command!"));
+	}
+}
+
+// --- EQUIPMENT SYSTEM ---
+
+// This is called when the player presses the button to equip a throwable item (e.g., a rock)
+void AProject_StealthGhostCharacter::EquipThrowable()
+{
+	// Only equip if we have stones in our inventory and we assigned the class in the editor!
+	if (ThrowableCount > 0 && ThrowableEquipmentClass)
+	{
+		// If we are already holding something else, destroy it first
+		if (CurrentEquipment)
+		{
+			CurrentEquipment->Unequip();
+		}
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+
+		// Spawn the equipment actor
+		CurrentEquipment = GetWorld()->SpawnActor<AEquippableBase>(ThrowableEquipmentClass, GetActorLocation(), GetActorRotation(), SpawnParams);
+
+		if (CurrentEquipment)
+		{
+			// Attach it to the default UE5 mannequin right hand bone
+			CurrentEquipment->Equip(GetMesh(), CurrentEquipment->AttachmentSocketName);
+
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, TEXT("Equipped Throwable!"));
+		}
+	}
+}
+
+// This is called when the player holds down the button to aim their throwable item
+void AProject_StealthGhostCharacter::StartAiming()
+{
+	if (CurrentEquipment)
+	{
+		CurrentEquipment->StartAiming();
+	}
+}
+
+// This is called when the player releases the button to stop aiming their throwable item
+void AProject_StealthGhostCharacter::StopAiming()
+{
+	if (CurrentEquipment)
+	{
+		CurrentEquipment->StopAiming();
+	}
+}
+
+// This is called when the player releases the button to throw their throwable item
+void AProject_StealthGhostCharacter::ReleaseWeapon()
+{
+	if (CurrentEquipment)
+	{
+		// Tell the item to do its release action
+		CurrentEquipment->ReleaseAction();
+
+		// We threw it, so remove 1 from our inventory count
+		ThrowableCount--;
+
+		// Destroy the equipment out of the player's hand since it is now empty!
+		CurrentEquipment->Unequip();
+		CurrentEquipment = nullptr;
+	}
+}
+
+// This is called when the player presses the button to holster their currently equipped item without using it
+void AProject_StealthGhostCharacter::HolsterEquipment()
+{
+	if (CurrentEquipment)
+	{
+		// Cancel aiming just in case
+		CurrentEquipment->StopAiming();
+
+		// Destroy it without decreasing the inventory count
+		CurrentEquipment->Unequip();
+		CurrentEquipment = nullptr;
+
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Equipment Holstered!"));
 	}
 }

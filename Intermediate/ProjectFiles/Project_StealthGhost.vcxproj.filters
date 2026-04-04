@@ -19,7 +19,6 @@
     <None Include="..\..\BT_GhostGuard Investigate Branch Nodes.txt" />
     <None Include="..\..\BT_GhostGuard.txt" />
     <None Include="..\..\shadertoolsconfig.json" />
-    <None Include="..\..\UpgradeLog.htm" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
     </Filter>
@@ -222,6 +221,12 @@
       <Filter>Source\Project_StealthGhost</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\Project_StealthGhost\ThrowableBase.h">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\ThrowableEquipment.cpp">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\ThrowableEquipment.h">
       <Filter>Source\Project_StealthGhost</Filter>
     </ClInclude>
     <Filter Include="Source\Project_StealthGhost\Variant_Combat">

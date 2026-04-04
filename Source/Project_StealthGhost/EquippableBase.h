@@ -15,14 +15,27 @@ public:
 	// Sets default values for this actor's properties
 	AEquippableBase();
 
-	// The visual mesh of the item (Skeletal so guns can have moving slides/triggers)
+	// Neutral root that takes either of skeletal or static meshes
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USceneComponent* DefaultRoot;
+
+	// For complex items with moving parts
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USkeletalMeshComponent* ItemMesh;
+
+	// For solid, non-moving items
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UStaticMeshComponent* ItemStaticMesh;
+
+
+	// The name of the socket on the player that this item should attach to when equipped
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipment Setup")
+	FName AttachmentSocketName;
 
 	// --- CORE INVENTORY FUNCTIONS ---
 	// Attaches the item to the player's hand
 	UFUNCTION(BlueprintCallable, Category = "Equipment")
-	virtual void Equip(class USceneComponent* ParentComponent, FName SocketName);
+	virtual void Equip(class USceneComponent* TargetParent, FName SocketName);
 
 	// Hides the item or destroys it when put away
 	UFUNCTION(BlueprintCallable, Category = "Equipment")
@@ -51,11 +64,7 @@ public:
 
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };
