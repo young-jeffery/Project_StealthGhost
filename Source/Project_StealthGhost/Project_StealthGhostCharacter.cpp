@@ -2,6 +2,7 @@
 
 #include "Project_StealthGhostCharacter.h"
 #include "Engine/LocalPlayer.h"
+#include "Engine/OverlapResult.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -571,39 +572,83 @@ void AProject_StealthGhostCharacter::DieSilently()
 
 void AProject_StealthGhostCharacter::CheckForInteractables()
 {
-	// Set up the laser from the Camera
-	FVector StartLoc = FollowCamera->GetComponentLocation();
-	// Shoot the laser 800 units (8 meters) straight out from the center of the screen
-	FVector EndLoc = StartLoc + (FollowCamera->GetForwardVector() * 800.0f);
+	// Only run this if we are the actual player.
+	if (!IsLocallyControlled()) return;
 
-	FHitResult HitResult;
-	FCollisionQueryParams TraceParams;
-	TraceParams.AddIgnoredActor(this); // Don't interact with ourselves
+	// Set the Origin to the Character, but the Direction to the Camera
+	FVector PlayerLoc = GetActorLocation();
+	FVector CamForward = FollowCamera->GetForwardVector();
 
-	// Create a sphere with a 30cm radius
-	FCollisionShape SphereShape = FCollisionShape::MakeSphere(30.0f);
+	// How far the player can reach (e.g., 200 cm / 2 meters)
+	float ReachRadius = 200.0f;
+	// The width of our interaction cone. 90 degrees = a full 180 degree half-circle in front of us.
+	float MaxAngleDegrees = 90.0f;
 
-	bool bHit = GetWorld()->SweepSingleByChannel(HitResult, StartLoc, EndLoc, FQuat::Identity, ECC_Visibility, SphereShape, TraceParams);
+	// Draw a faint red sphere to show our maximum physical reach
+	//DrawDebugSphere(GetWorld(), PlayerLoc, ReachRadius, 16, FColor::Red, false, -1.0f, 0, 0.5f);
 
-	if (bHit && HitResult.GetActor())
+	// Grab EVERYTHING within our reach
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	bool bOverlap = GetWorld()->OverlapMultiByChannel(
+		OverlapResults,
+		PlayerLoc,
+		FQuat::Identity,
+		ECC_Visibility,
+		FCollisionShape::MakeSphere(ReachRadius),
+		QueryParams
+	);
+
+	AActor* BestInteractable = nullptr;
+	float BestDotProduct = -1.0f; // Tracks which item is closest to the center of the screen
+
+	if (bOverlap)
 	{
-		AActor* HitActor = HitResult.GetActor();
-
-		// Does the thing we hit have our Interactable Interface?
-		if (HitActor->Implements<UInteractableInterface>())
+		for (const FOverlapResult& Result : OverlapResults)
 		{
-			// If it's a new item, update our memory
-			if (HitActor != CurrentInteractable)
+			AActor* HitActor = Result.GetActor();
+
+			// Does it have the interface and is it alive?
+			if (IsValid(HitActor) && HitActor->Implements<UInteractableInterface>())
 			{
-				CurrentInteractable = HitActor;
-				// Optional: In the future, this is where you'd tell the UI to show "Press E to Pick Up"
+				// Get the direction pointing from the player to the item
+				FVector DirectionToItem = (HitActor->GetActorLocation() - PlayerLoc).GetSafeNormal();
+
+				// Compares the Camera direction to the Item direction
+				// 1.0 = Dead center. 0.0 = 90 degrees to the side. -1.0 = Directly behind the camera.
+				float DotProduct = FVector::DotProduct(CamForward, DirectionToItem);
+
+				// Convert Max Angle into a Dot Product threshold
+				float AngleThreshold = FMath::Cos(FMath::DegreesToRadians(MaxAngleDegrees));
+
+				// If the item is inside our 180-degree cone...
+				if (DotProduct >= AngleThreshold)
+				{
+					// ...and if it is closer to the center of our screen than the last item we checked...
+					if (DotProduct > BestDotProduct)
+					{
+						BestDotProduct = DotProduct;
+						BestInteractable = HitActor; // Make it our new target!
+					}
+				}
 			}
-			return; // We found something, end the function early
 		}
 	}
 
-	// If we hit nothing, or we hit a wall, clear our memory
-	CurrentInteractable = nullptr;
+	// Update our memory
+	if (BestInteractable != CurrentInteractable)
+	{
+		CurrentInteractable = BestInteractable;
+	}
+
+	// --- DEBUG VISUAL: Highlight the item ---
+	if (CurrentInteractable)
+	{
+		// Draws a green line from the player's chest directly to the selected item
+		DrawDebugLine(GetWorld(), PlayerLoc, CurrentInteractable->GetActorLocation(), FColor::Green, false, -1.0f, 0, 2.0f);
+	}
 }
 
 void AProject_StealthGhostCharacter::Interact()

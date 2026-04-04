@@ -152,6 +152,11 @@ protected:
 	UPROPERTY()
 	AActor* CurrentInteractable = nullptr;
 
+	// --- INVENTORY ---
+	// Tracks how many stones/distractions we currently hold
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
+	int32 ThrowableCount = 0;
+
 	// Timer to handle player smooth movement in cover
 	FTimerHandle CoverUpdateTimer;
 
