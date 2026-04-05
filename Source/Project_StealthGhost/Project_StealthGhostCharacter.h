@@ -102,6 +102,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stealth Action")
 	bool bHasBeenDiscovered = false;
 
+	// Tracks if the player is currently holding the aim button
+	UPROPERTY(BlueprintReadOnly, Category = "Equipment")
+	bool bIsAiming = false;
+
 
 protected:
 
@@ -157,21 +161,24 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
 	int32 ThrowableCount = 0;
 
+
 	// --- EQUIPMENT SYSTEM ---
 
-	// The class of the item we want to spawn and hold in our hand when we equip the throwable. This is set to the BP child of AThrowableEquipment.
+	// The Array holding our allowed equipment (e.g., Index 0: Pistol, Index 1: Stone)
 	UPROPERTY(EditDefaultsOnly, Category = "Equipment")
-	TSubclassOf<class AEquippableBase> ThrowableEquipmentClass;
+	TArray<TSubclassOf<class AEquippableBase>> LoadoutClasses;
 
-	// The actual item currently physically attached to the player's hand
+	// The actual item currently in use by the player
 	UPROPERTY(BlueprintReadOnly, Category = "Equipment")
 	class AEquippableBase* CurrentEquipment;
 
-	// Spawns the item and puts it in our hand
+	// Spawns the item from the specified array index and puts it in our hand
 	UFUNCTION(BlueprintCallable, Category = "Equipment")
-	void EquipThrowable();
+	void EquipSlot(int32 SlotIndex);
 
-	// --- EQUIPMENT ACTIONS (Triggered by Editor Inputs) ---
+
+
+	// --- EQUIPMENT ACTIONS ---
 	UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
 	void StartAiming();
 
@@ -180,9 +187,39 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
 	void ReleaseWeapon();
-	
+
+	UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
+	void FireWeapon();
+
 	UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
 	void HolsterEquipment();
+
+	//// --- EQUIPMENT SYSTEM ---
+
+	//// The class of the item we want to spawn and hold in our hand when we equip the throwable. This is set to the BP child of AThrowableEquipment.
+	//UPROPERTY(EditDefaultsOnly, Category = "Equipment")
+	//TSubclassOf<class AEquippableBase> ThrowableEquipmentClass;
+
+	//// The actual item currently physically attached to the player's hand
+	//UPROPERTY(BlueprintReadOnly, Category = "Equipment")
+	//class AEquippableBase* CurrentEquipment;
+
+	//// Spawns the item and puts it in our hand
+	//UFUNCTION(BlueprintCallable, Category = "Equipment")
+	//void EquipThrowable();
+
+	//// --- EQUIPMENT ACTIONS (Triggered by Editor Inputs) ---
+	//UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
+	//void StartAiming();
+
+	//UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
+	//void StopAiming();
+
+	//UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
+	//void ReleaseWeapon();
+	//
+	//UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
+	//void HolsterEquipment();
 
 	// Timer to handle player smooth movement in cover
 	FTimerHandle CoverUpdateTimer;

@@ -229,6 +229,12 @@
     <ClInclude Include="..\..\Source\Project_StealthGhost\ThrowableEquipment.h">
       <Filter>Source\Project_StealthGhost</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\WeaponBase.cpp">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\WeaponBase.h">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClInclude>
     <Filter Include="Source\Project_StealthGhost\Variant_Combat">
       <UniqueIdentifier>{8D02E9CC-F47F-39C6-9BB4-035073E3713F}</UniqueIdentifier>
     </Filter>

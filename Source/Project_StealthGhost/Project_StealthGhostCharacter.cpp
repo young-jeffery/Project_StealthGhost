@@ -16,6 +16,7 @@
 #include "InteractableInterface.h"
 #include <Perception/AISense_Hearing.h>
 #include "EquippableBase.h"
+#include "ThrowableEquipment.h"
 
 
 AProject_StealthGhostCharacter::AProject_StealthGhostCharacter()
@@ -575,7 +576,11 @@ void AProject_StealthGhostCharacter::DieSilently()
 void AProject_StealthGhostCharacter::CheckForInteractables()
 {
 	// Only run this if we are the actual player.
-	if (!IsLocallyControlled()) return;
+	if (!IsPlayerControlled())
+	{
+		CurrentInteractable = nullptr;
+		return;
+	}
 
 	// Set the Origin to the Character, but the Direction to the Camera
 	FVector PlayerLoc = GetActorLocation();
@@ -667,30 +672,45 @@ void AProject_StealthGhostCharacter::Interact()
 
 // --- EQUIPMENT SYSTEM ---
 
-// This is called when the player presses the button to equip a throwable item (e.g., a rock)
-void AProject_StealthGhostCharacter::EquipThrowable()
+// This is called when the player presses the button to equip an item
+void AProject_StealthGhostCharacter::EquipSlot(int32 SlotIndex)
 {
-	// Only equip if we have stones in our inventory and we assigned the class in the editor!
-	if (ThrowableCount > 0 && ThrowableEquipmentClass)
+	// Ensure the index exist as a valid slot
+	if (LoadoutClasses.IsValidIndex(SlotIndex))
 	{
-		// If we are already holding something else, destroy it first
-		if (CurrentEquipment)
+		// Get the class from that slot
+		TSubclassOf<AEquippableBase> SelectedClass = LoadoutClasses[SlotIndex];
+
+		// If the slot is empty (None), or we selected what we are already holding, holster and stop.
+		if (!SelectedClass || (CurrentEquipment && CurrentEquipment->IsA(SelectedClass)))
 		{
-			CurrentEquipment->Unequip();
+			HolsterEquipment();
+			return;
 		}
 
+		// Put away whatever we are currently holding
+		HolsterEquipment();
+
+		// Special check: If it's a throwable, do we actually have ammo for it?
+		if (SelectedClass->IsChildOf(AThrowableEquipment::StaticClass()) && ThrowableCount <= 0)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("No stones left!"));
+			return; // Cancel the equip
+		}
+
+		// Spawn and attach the equipment
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 
 		// Spawn the equipment actor
-		CurrentEquipment = GetWorld()->SpawnActor<AEquippableBase>(ThrowableEquipmentClass, GetActorLocation(), GetActorRotation(), SpawnParams);
+		CurrentEquipment = GetWorld()->SpawnActor<AEquippableBase>(SelectedClass, GetActorLocation(), GetActorRotation(), SpawnParams);
 
 		if (CurrentEquipment)
 		{
-			// Attach it to the default UE5 mannequin right hand bone
+			// Attach it to the set socket
 			CurrentEquipment->Equip(GetMesh(), CurrentEquipment->AttachmentSocketName);
 
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, TEXT("Equipped Throwable!"));
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, TEXT("Equipped Item"));
 		}
 	}
 }
@@ -698,6 +718,8 @@ void AProject_StealthGhostCharacter::EquipThrowable()
 // This is called when the player holds down the button to aim their throwable item
 void AProject_StealthGhostCharacter::StartAiming()
 {
+	bIsAiming = true;
+
 	if (CurrentEquipment)
 	{
 		CurrentEquipment->StartAiming();
@@ -707,6 +729,8 @@ void AProject_StealthGhostCharacter::StartAiming()
 // This is called when the player releases the button to stop aiming their throwable item
 void AProject_StealthGhostCharacter::StopAiming()
 {
+	bIsAiming = false;
+
 	if (CurrentEquipment)
 	{
 		CurrentEquipment->StopAiming();
@@ -721,12 +745,12 @@ void AProject_StealthGhostCharacter::ReleaseWeapon()
 		// Tell the item to do its release action
 		CurrentEquipment->ReleaseAction();
 
-		// We threw it, so remove 1 from our inventory count
-		ThrowableCount--;
+		// Safely check if the thing we just used was a throwable item
+		if (Cast<AThrowableEquipment>(CurrentEquipment))
+		{
+			ThrowableCount--;
 
-		// Destroy the equipment out of the player's hand since it is now empty!
-		CurrentEquipment->Unequip();
-		CurrentEquipment = nullptr;
+		}
 	}
 }
 
@@ -743,5 +767,14 @@ void AProject_StealthGhostCharacter::HolsterEquipment()
 		CurrentEquipment = nullptr;
 
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Equipment Holstered!"));
+	}
+}
+
+void AProject_StealthGhostCharacter::FireWeapon()
+{
+	if (CurrentEquipment)
+	{
+		// This triggers the shot from the gun
+		CurrentEquipment->UseAction();
 	}
 }
