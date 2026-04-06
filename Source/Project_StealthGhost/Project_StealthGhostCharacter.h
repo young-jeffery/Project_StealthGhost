@@ -176,6 +176,14 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Equipment")
 	void EquipSlot(int32 SlotIndex);
 
+	// Tracks if the currently equipped item is a gun/weapon that requires armed animations
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Equipment")
+	bool bIsHoldingWeapon = false;
+
+	// The animation to play when firing the weapon
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Equipment Animation")
+	class UAnimMontage* ShootMontage;
+
 
 
 	// --- EQUIPMENT ACTIONS ---

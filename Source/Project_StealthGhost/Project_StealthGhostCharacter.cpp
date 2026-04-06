@@ -777,4 +777,10 @@ void AProject_StealthGhostCharacter::FireWeapon()
 		// This triggers the shot from the gun
 		CurrentEquipment->UseAction();
 	}
+
+	// Play shooting montage
+	if (ShootMontage && GetMesh()->GetAnimInstance())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(ShootMontage);
+	}
 }
