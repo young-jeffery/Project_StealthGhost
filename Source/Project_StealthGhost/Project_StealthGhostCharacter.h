@@ -184,6 +184,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Equipment Animation")
 	class UAnimMontage* ShootMontage;
 
+	// The animation to play when equipping an item
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Equipment Animation")
+	class UAnimMontage* EquipMontage;
+
 
 
 	// --- EQUIPMENT ACTIONS ---

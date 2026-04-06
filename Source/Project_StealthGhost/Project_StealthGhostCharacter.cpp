@@ -710,7 +710,23 @@ void AProject_StealthGhostCharacter::EquipSlot(int32 SlotIndex)
 			// Attach it to the set socket
 			CurrentEquipment->Equip(GetMesh(), CurrentEquipment->AttachmentSocketName);
 
+			// If the item is NOT a throwable, then it must be a gun, so switch our animation state
+			if (!Cast<AThrowableEquipment>(CurrentEquipment))
+			{
+				bIsHoldingWeapon = true;
+			}
+			else
+			{
+				bIsHoldingWeapon = false;
+			}
+
 			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, TEXT("Equipped Item"));
+
+			// PLAY THE EQUIP MONTAGE
+			if (EquipMontage && GetMesh()->GetAnimInstance())
+			{
+				GetMesh()->GetAnimInstance()->Montage_Play(EquipMontage);
+			}
 		}
 	}
 }
@@ -759,6 +775,9 @@ void AProject_StealthGhostCharacter::HolsterEquipment()
 {
 	if (CurrentEquipment)
 	{
+		// Set the variable to false
+		bIsHoldingWeapon = false;
+
 		// Cancel aiming just in case
 		CurrentEquipment->StopAiming();
 
@@ -776,11 +795,19 @@ void AProject_StealthGhostCharacter::FireWeapon()
 	{
 		// This triggers the shot from the gun
 		CurrentEquipment->UseAction();
+
+		// Cast to check if it is a throwable. 
+		AThrowableEquipment* ThrowableItem = Cast<AThrowableEquipment>(CurrentEquipment);
+
+		if (!ThrowableItem)
+		{
+			// Play shooting montage
+			if (ShootMontage && GetMesh()->GetAnimInstance())
+			{
+				GetMesh()->GetAnimInstance()->Montage_Play(ShootMontage);
+			}
+		}
 	}
 
-	// Play shooting montage
-	if (ShootMontage && GetMesh()->GetAnimInstance())
-	{
-		GetMesh()->GetAnimInstance()->Montage_Play(ShootMontage);
-	}
+	
 }
