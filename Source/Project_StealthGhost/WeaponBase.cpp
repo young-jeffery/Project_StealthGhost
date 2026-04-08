@@ -7,6 +7,7 @@
 #include "DrawDebugHelpers.h"
 #include "Engine/DamageEvents.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Kismet/GameplayStatics.h"
 
 void AWeaponBase::StartAiming()
 {
@@ -23,6 +24,16 @@ void AWeaponBase::StopAiming()
 // Weapon firing logic
 void AWeaponBase::UseAction()
 {
+	// If the gun is empty, stop the fire function immediately
+	if (!CanFire())
+	{
+		return;
+	}
+
+	// Subtract one bullet from the magazine before firing the shot.
+	ConsumeAmmo();
+
+	// Get the player character and camera to setup our traces
 	ACharacter* PlayerChar = Cast<ACharacter>(GetOwner());
 	if (!PlayerChar) return;
 
@@ -90,3 +101,29 @@ void AWeaponBase::UseAction()
 	OnWeaponFired();
 }
 
+
+bool AWeaponBase::CanFire() const
+{
+	return CurrentAmmo > 0; // We can only fire if we have bullets in the magazine
+}
+
+void AWeaponBase::ConsumeAmmo()
+{
+	if (CurrentAmmo > 0)
+	{
+		CurrentAmmo--;
+	}
+}
+
+void AWeaponBase::Reload()
+{
+	if (CurrentAmmo == MagazineSize || TotalReserveAmmo <= 0) return;
+
+	int32 BulletsNeeded = MagazineSize - CurrentAmmo;
+	int32 BulletsToReload = FMath::Min(BulletsNeeded, TotalReserveAmmo);
+
+	CurrentAmmo += BulletsToReload;
+	TotalReserveAmmo -= BulletsToReload;
+
+	// You can trigger a reload sound or notify here later
+}

@@ -106,6 +106,14 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Equipment")
 	bool bIsAiming = false;
 
+	// Call this when the weapon slot is selected / equipped
+	UFUNCTION(BlueprintCallable, Category = "Animation State")
+	void SwitchToArmedAnimState();
+
+	// Call this when the weapon is holstered
+	UFUNCTION(BlueprintCallable, Category = "Animation State")
+	void SwitchToUnarmedAnimState();
+
 
 protected:
 
@@ -188,6 +196,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Equipment Animation")
 	class UAnimMontage* EquipMontage;
 
+	// The Animation Blueprint to use when completely unarmed
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation State")
+	TSubclassOf<UAnimInstance> UnarmedAnimClass;
+
+	// The Animation Blueprint to use when holding a weapon
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation State")
+	TSubclassOf<UAnimInstance> ArmedAnimClass;
+
 
 
 	// --- EQUIPMENT ACTIONS ---
@@ -206,35 +222,18 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
 	void HolsterEquipment();
 
-	//// --- EQUIPMENT SYSTEM ---
-
-	//// The class of the item we want to spawn and hold in our hand when we equip the throwable. This is set to the BP child of AThrowableEquipment.
-	//UPROPERTY(EditDefaultsOnly, Category = "Equipment")
-	//TSubclassOf<class AEquippableBase> ThrowableEquipmentClass;
-
-	//// The actual item currently physically attached to the player's hand
-	//UPROPERTY(BlueprintReadOnly, Category = "Equipment")
-	//class AEquippableBase* CurrentEquipment;
-
-	//// Spawns the item and puts it in our hand
-	//UFUNCTION(BlueprintCallable, Category = "Equipment")
-	//void EquipThrowable();
-
-	//// --- EQUIPMENT ACTIONS (Triggered by Editor Inputs) ---
-	//UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
-	//void StartAiming();
-
-	//UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
-	//void StopAiming();
-
-	//UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
-	//void ReleaseWeapon();
-	//
-	//UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
-	//void HolsterEquipment();
-
 	// Timer to handle player smooth movement in cover
 	FTimerHandle CoverUpdateTimer;
+
+	// HEALTH SYSTEM
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
+	float MaxHealth = 100.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
+	float CurrentHealth = 100.f;
+
+	// Unreal's native damage override
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 
 protected:

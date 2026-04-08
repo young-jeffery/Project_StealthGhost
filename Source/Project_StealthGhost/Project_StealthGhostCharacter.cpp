@@ -17,6 +17,8 @@
 #include <Perception/AISense_Hearing.h>
 #include "EquippableBase.h"
 #include "ThrowableEquipment.h"
+#include "TimerManager.h"
+#include "WeaponBase.h"
 
 
 AProject_StealthGhostCharacter::AProject_StealthGhostCharacter()
@@ -710,22 +712,25 @@ void AProject_StealthGhostCharacter::EquipSlot(int32 SlotIndex)
 			// Attach it to the set socket
 			CurrentEquipment->Equip(GetMesh(), CurrentEquipment->AttachmentSocketName);
 
-			// If the item is NOT a throwable, then it must be a gun, so switch our animation state
-			if (!Cast<AThrowableEquipment>(CurrentEquipment))
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, TEXT("Equipped Item"));
+
+			// If the item is a gun, play the montage
+			if (Cast<AWeaponBase>(CurrentEquipment))
 			{
-				bIsHoldingWeapon = true;
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, TEXT("Equipped Gun"));
+
+				// Switch to the armed anim if holding a gun
+				SwitchToArmedAnimState();
+				// PLAY THE EQUIP MONTAGE
+				//if (EquipMontage && GetMesh()->GetAnimInstance())
+				//{
+				//	GetMesh()->GetAnimInstance()->Montage_Play(EquipMontage);
+				//}
 			}
 			else
 			{
-				bIsHoldingWeapon = false;
-			}
-
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, TEXT("Equipped Item"));
-
-			// PLAY THE EQUIP MONTAGE
-			if (EquipMontage && GetMesh()->GetAnimInstance())
-			{
-				GetMesh()->GetAnimInstance()->Montage_Play(EquipMontage);
+				// Ensure we stay or switch the unarmed state for throwables
+				SwitchToUnarmedAnimState();
 			}
 		}
 	}
@@ -766,6 +771,11 @@ void AProject_StealthGhostCharacter::ReleaseWeapon()
 		{
 			ThrowableCount--;
 
+			if (ThrowableCount <= 0)
+			{
+				HolsterEquipment();
+			}
+
 		}
 	}
 }
@@ -787,6 +797,9 @@ void AProject_StealthGhostCharacter::HolsterEquipment()
 
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Equipment Holstered!"));
 	}
+
+	// Switch to the unarmed animation state when holstering
+	SwitchToUnarmedAnimState();
 }
 
 void AProject_StealthGhostCharacter::FireWeapon()
@@ -799,15 +812,121 @@ void AProject_StealthGhostCharacter::FireWeapon()
 		// Cast to check if it is a throwable. 
 		AThrowableEquipment* ThrowableItem = Cast<AThrowableEquipment>(CurrentEquipment);
 
-		if (!ThrowableItem)
+		//if (!ThrowableItem)
+		//{
+		//	// Play shooting montage
+		//	if (ShootMontage && GetMesh()->GetAnimInstance())
+		//	{
+		//		GetMesh()->GetAnimInstance()->Montage_Play(ShootMontage);
+		//	}
+		//}
+	}
+}
+
+void AProject_StealthGhostCharacter::SwitchToArmedAnimState()
+{
+	// Verify the character is actually holding a WeaponBase
+	AWeaponBase* EquippedGun = Cast<AWeaponBase>(CurrentEquipment);
+
+	// If the cast fails abort!
+	if (!EquippedGun)
+	{
+		return;
+	}
+
+	// Delay the swap until the very next frame to prevent animation evaluation crashes
+	GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
 		{
-			// Play shooting montage
-			if (ShootMontage && GetMesh()->GetAnimInstance())
+			USkeletalMeshComponent* PlayerMesh = GetMesh();
+
+			// Ensure we have a mesh and the Armed class is assigned in the editor
+			if (PlayerMesh && ArmedAnimClass)
 			{
-				GetMesh()->GetAnimInstance()->Montage_Play(ShootMontage);
+				// Only swap if we aren't already using it (prevents unnecessary resets)
+				if (PlayerMesh->GetAnimInstance()->GetClass() != ArmedAnimClass)
+				{
+					PlayerMesh->SetAnimInstanceClass(ArmedAnimClass);
+				}
+			}
+		});
+}
+
+void AProject_StealthGhostCharacter::SwitchToUnarmedAnimState()
+{
+	// Delay the swap until the very next frame to prevent animation evaluation crashes
+	GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
+		{
+			USkeletalMeshComponent* PlayerMesh = GetMesh();
+
+			// Ensure we have a mesh and the Unarmed class is assigned in the editor
+			if (PlayerMesh && UnarmedAnimClass)
+			{
+				// Only swap if we aren't already using it
+				if (PlayerMesh->GetAnimInstance()->GetClass() != UnarmedAnimClass)
+				{
+					PlayerMesh->SetAnimInstanceClass(UnarmedAnimClass);
+				}
+			}
+		});
+}
+
+// Damage Logic
+float AProject_StealthGhostCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	// Call the parent class rule first
+	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	if (ActualDamage > 0.f)
+	{
+		CurrentHealth -= ActualDamage;
+		CurrentHealth = FMath::Clamp(CurrentHealth, 0.f, MaxHealth);
+
+		// TODO: Play Hit Reaction Montage here!
+
+		if (CurrentHealth <= 0.f)
+		{
+			// TODO: Handle Death (Ragdoll, destroy, etc.)
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Character Died!"));
+
+			bIsDead = true;
+
+			// Kill the guards movement
+			GetCharacterMovement()->StopMovementImmediately();
+			GetCharacterMovement()->DisableMovement();
+			GetCharacterMovement()->SetAvoidanceEnabled(false);
+
+			AController* VictimController = Controller;
+
+			// Server AI controller from the guard
+			if (VictimController)
+			{
+				// Stop the AI brain from running any logic on the guard
+				VictimController->UnPossess();
+
+				// Destroy the controller to free up resources.
+				VictimController->Destroy();
+			}
+
+			// Turn off collision capsule 
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+			// Keep mesh collision. (Might use physics ragdoll)
+			GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+
+			// Change the actor's tag if it's used for any 
+			Tags.Add(FName("Dead Body"));
+			Tags.Remove(FName("Guard"));
+
+			// Disable the actor's Tick
+			SetActorTickEnabled(false);
+
+			// Play the death animation
+			if (DeathMontage && GetMesh()->GetAnimInstance())
+			{
+				GetMesh()->GetAnimInstance()->Montage_Play(DeathMontage);
 			}
 		}
 	}
 
-	
+	return ActualDamage;
 }

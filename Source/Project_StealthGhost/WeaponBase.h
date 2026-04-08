@@ -21,6 +21,16 @@ public:
 	virtual void StopAiming() override;
 	virtual void UseAction() override; 
 
+	// Returns true if we have bullets to shoot
+	bool CanFire() const;
+
+	// Call this to reload
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void Reload();
+
+	// Deducts ammo when firing
+	void ConsumeAmmo();
+
 
 protected:
 	// --- WEAPON STATS ---
@@ -36,6 +46,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Stats")
 	float HeadshotMultiplier = 5.0f;
 
+
 	// --- BLUEPRINT VISUAL HOOKS ---
 	// C++ calls these, but the Blueprint Editor decides what they actually do!
 
@@ -44,5 +55,17 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Events")
 	void OnAimStateChanged(bool bIsAiming);
+
+
+	// Ammo variables
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon Ammo")
+	int32 MagazineSize = 30;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon Ammo")
+	int32 CurrentAmmo = 30;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon Ammo")
+	int32 TotalReserveAmmo = 90;
+
 	
 };
