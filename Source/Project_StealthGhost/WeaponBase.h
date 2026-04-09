@@ -26,7 +26,7 @@ public:
 
 	// Call this to reload
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void Reload();
+	bool Reload();
 
 	// Deducts ammo when firing
 	void ConsumeAmmo();
@@ -64,12 +64,15 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Events")
 	void OnAimStateChanged(bool bIsAiming);
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Events")
+	void OnWeaponReloaded();
+
 
 	// Ammo variables
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon Ammo")
 	int32 MagazineSize = 30;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon Ammo")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon Ammo")
 	int32 CurrentAmmo = 30;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon Ammo")

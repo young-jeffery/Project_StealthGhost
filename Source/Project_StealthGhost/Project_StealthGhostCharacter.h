@@ -208,6 +208,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation State")
 	TSubclassOf<UAnimInstance> ArmedAnimClass;
 
+	// The animation to play when reloading
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Equipment Animation")
+	class UAnimMontage* ReloadMontage;
+
 
 
 	// --- EQUIPMENT ACTIONS ---
@@ -225,6 +229,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
 	void HolsterEquipment();
+
+	UFUNCTION(BlueprintCallable, Category = "Equipment Actions")
+	void ReloadWeapon();
 
 	// Timer to handle player smooth movement in cover
 	FTimerHandle CoverUpdateTimer;

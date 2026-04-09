@@ -180,9 +180,12 @@ void AWeaponBase::ConsumeAmmo()
 	}
 }
 
-void AWeaponBase::Reload()
+bool AWeaponBase::Reload()
 {
-	if (CurrentAmmo == MagazineSize || TotalReserveAmmo <= 0) return;
+	if (CurrentAmmo >= MagazineSize || TotalReserveAmmo <= 0) 
+	{
+		return false; // Can't reload if we already have a full magazine or no reserve ammo left
+	}
 
 	int32 BulletsNeeded = MagazineSize - CurrentAmmo;
 	int32 BulletsToReload = FMath::Min(BulletsNeeded, TotalReserveAmmo);
@@ -190,5 +193,9 @@ void AWeaponBase::Reload()
 	CurrentAmmo += BulletsToReload;
 	TotalReserveAmmo -= BulletsToReload;
 
-	// You can trigger a reload sound or notify here later
+	// Play the reload sound!
+	OnWeaponReloaded();
+
+	// Report that the reload was successful
+	return true;
 }

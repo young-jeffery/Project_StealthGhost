@@ -806,6 +806,16 @@ void AProject_StealthGhostCharacter::HolsterEquipment()
 
 void AProject_StealthGhostCharacter::FireWeapon()
 {
+	// If the reload montage is currently playing, abort the fire command immediately!
+	if (ReloadMontage && GetMesh()->GetAnimInstance())
+	{
+		if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ReloadMontage))
+		{
+			return;
+		}
+	}
+
+
 	if (IsPlayerControlled())
 	{
 		// Must be aiming to fire
@@ -825,23 +835,42 @@ void AProject_StealthGhostCharacter::FireWeapon()
 		}
 	}
 
+	// If we survived the checks above, we are allowed to act!
 	if (CurrentEquipment)
 	{
-		// This triggers the shot from the gun
+		// If it is a gun, check the ammo!
+		if (AWeaponBase* Weapon = Cast<AWeaponBase>(CurrentEquipment))
+		{
+			if (!Weapon->CanFire())
+			{
+				// Gun is empty! Trigger the reload reflex instead of shooting.
+				ReloadWeapon();
+				return;
+			}
+		}
+
+		// If it's a throwable or a gun with bullets, use it normally.
 		CurrentEquipment->UseAction();
-
-		// Cast to check if it is a throwable. 
-		//AThrowableEquipment* ThrowableItem = Cast<AThrowableEquipment>(CurrentEquipment);
-
-		//if (!ThrowableItem)
-		//{
-		//	// Play shooting montage
-		//	if (ShootMontage && GetMesh()->GetAnimInstance())
-		//	{
-		//		GetMesh()->GetAnimInstance()->Montage_Play(ShootMontage);
-		//	}
-		//}
 	}
+
+	//if (CurrentEquipment)
+	//{
+	//	// This triggers the shot from the gun
+	//	CurrentEquipment->UseAction();
+
+
+	//	// Cast to check if it is a throwable. 
+	//	//AThrowableEquipment* ThrowableItem = Cast<AThrowableEquipment>(CurrentEquipment);
+
+	//	//if (!ThrowableItem)
+	//	//{
+	//	//	// Play shooting montage
+	//	//	if (ShootMontage && GetMesh()->GetAnimInstance())
+	//	//	{
+	//	//		GetMesh()->GetAnimInstance()->Montage_Play(ShootMontage);
+	//	//	}
+	//	//}
+	//}
 }
 
 void AProject_StealthGhostCharacter::SwitchToArmedAnimState()
@@ -977,4 +1006,31 @@ float AProject_StealthGhostCharacter::TakeDamage(float DamageAmount, FDamageEven
 	}
 
 	return ActualDamage;
+}
+
+void AProject_StealthGhostCharacter::ReloadWeapon()
+{
+	// Ensure we are holding a weapon and not a rock
+	if (AWeaponBase* Weapon = Cast<AWeaponBase>(CurrentEquipment))
+	{
+		// Don't restart the animation if we are already reloading!
+		if (GetMesh()->GetAnimInstance() && GetMesh()->GetAnimInstance()->Montage_IsPlaying(ReloadMontage))
+		{
+			return;
+		}
+
+		// Tell the weapon to reload. If it returns true, play the animation
+		if (Weapon->Reload())
+		{
+			if (ReloadMontage)
+			{
+				GetMesh()->GetAnimInstance()->Montage_Play(ReloadMontage);
+			}
+		}
+		else
+		{
+			// Optional: Print a message or play a "click" sound if you want!
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Cannot Reload: Gun is full or out of ammo!"));
+		}
+	}
 }
