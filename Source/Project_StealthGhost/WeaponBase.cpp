@@ -34,32 +34,68 @@ void AWeaponBase::UseAction()
 	ConsumeAmmo();
 
 	// Get the player character and camera to setup our traces
-	ACharacter* PlayerChar = Cast<ACharacter>(GetOwner());
-	if (!PlayerChar) return;
+	ACharacter* OwnerChar = Cast<ACharacter>(GetOwner());
+	if (!OwnerChar) return;
 
-	UCameraComponent* PlayerCam = PlayerChar->FindComponentByClass<UCameraComponent>();
-	if (!PlayerCam) return;
+	
 
-	// Setup the math from the Camera
-	FVector CameraLoc = PlayerCam->GetComponentLocation();
-	FVector CameraEndLoc = CameraLoc + (PlayerCam->GetForwardVector() * WeaponRange);
-
-	FHitResult CameraHit;
 	FCollisionQueryParams TraceParams;
-	TraceParams.AddIgnoredActor(PlayerChar); // Ignore the player
+	TraceParams.AddIgnoredActor(OwnerChar); // Ignore the owner
 	TraceParams.AddIgnoredActor(this);       // Ignore the gun
 	TraceParams.bReturnPhysicalMaterial = true; // Get the Physical Material hit
 
-	FVector TargetPoint = CameraEndLoc; // Default to max range
-
-	// The Line Trace from the camera
-	if (GetWorld()->LineTraceSingleByChannel(CameraHit, CameraLoc, CameraEndLoc, ECC_Visibility, TraceParams))
-	{
-		TargetPoint = CameraHit.ImpactPoint; 
-	}
-
 	// Get the tip of the gun
 	FVector MuzzleLoc = ItemMesh->GetSocketLocation(FName("MuzzleFlash"));
+	FVector TargetPoint; // Where the bullet will travel to
+
+
+	// Player & AI Fire Logic
+	if (OwnerChar->IsPlayerControlled())
+	{
+		// Player trace from the Camera
+		UCameraComponent* PlayerCam = OwnerChar->FindComponentByClass<UCameraComponent>();
+		if (PlayerCam)
+		{
+			FVector CameraLoc = PlayerCam->GetComponentLocation();
+			FVector CameraEndLoc = CameraLoc + (PlayerCam->GetForwardVector() * WeaponRange);
+			FVector CamForward = PlayerCam->GetForwardVector();
+
+			// Prevent wall clipping
+			// Find out exactly how far the camera is sitting behind the player
+			float DistanceToPlayer = FVector::Dist(CameraLoc, OwnerChar->GetActorLocation());
+
+			// Push the start of the laser forward so it begins at the player's position
+			FVector AdjustedStartLoc = CameraLoc + (CamForward * DistanceToPlayer);
+
+			// Calculate the end point from our new start location
+			FVector CameraEndLoc = AdjustedStartLoc + (CamForward * WeaponRange);
+
+			FHitResult CameraHit;
+
+			if (GetWorld()->LineTraceSingleByChannel(CameraHit, AdjustedStartLoc, CameraEndLoc, ECC_Visibility, TraceParams))
+			{
+				TargetPoint = CameraHit.ImpactPoint;
+			}
+			else
+			{
+				TargetPoint = CameraEndLoc; // Default to max range if we hit the sky
+			}
+		}
+	}
+	else
+	{
+		// AI trace directly from the gun barrel.
+		// We get the exact rotation of the MuzzleFlash socket to know where the gun is pointing!
+		FVector GunForwardDirection = ItemMesh->GetSocketRotation(FName("MuzzleFlash")).Vector();
+		
+		// Convert our spread angle to radians for the math
+		float HalfConeAngle = FMath::DegreesToRadians(AIWeaponSpread);
+
+		// Generate a random direction inside that cone
+		FVector InaccurateDirection = FMath::VRandCone(GunForwardDirection, HalfConeAngle);
+
+		TargetPoint = MuzzleLoc + (InaccurateDirection * WeaponRange);
+	}
 
 	FHitResult BulletHit;
 	FCollisionShape BulletShape = FCollisionShape::MakeSphere(MagnetismRadius); // The Bullet Magnetism (Thick Sphere Trace)
@@ -93,7 +129,7 @@ void AWeaponBase::UseAction()
 			DrawDebugSphere(GetWorld(), BulletHit.ImpactPoint, MagnetismRadius, 12, FColor::Green, false, 2.0f);
 
 			// Apply Damage to the enemy
-			BulletHit.GetActor()->TakeDamage(FinalDamage, FDamageEvent(), PlayerChar->GetController(), this);
+			BulletHit.GetActor()->TakeDamage(FinalDamage, FDamageEvent(), OwnerChar->GetController(), this);
 		}
 	}
 

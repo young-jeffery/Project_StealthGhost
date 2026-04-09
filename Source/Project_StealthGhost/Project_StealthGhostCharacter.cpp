@@ -804,13 +804,29 @@ void AProject_StealthGhostCharacter::HolsterEquipment()
 
 void AProject_StealthGhostCharacter::FireWeapon()
 {
+	// Must be aiming to fire
+	if (!bIsAiming)
+	{
+		return;
+	}
+	// If we are crouching, we must be stationary to shoot
+	if (CurrentState == EPlayerMovementState::VE_Crouching)
+	{
+		// We check if the velocity length is greater than a tiny number (0.1f) 
+		if (GetVelocity().Length() > 0.1f)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, TEXT("Must be stationary to shoot while crouching!"));
+			return;
+		}
+	}
+
 	if (CurrentEquipment)
 	{
 		// This triggers the shot from the gun
 		CurrentEquipment->UseAction();
 
 		// Cast to check if it is a throwable. 
-		AThrowableEquipment* ThrowableItem = Cast<AThrowableEquipment>(CurrentEquipment);
+		//AThrowableEquipment* ThrowableItem = Cast<AThrowableEquipment>(CurrentEquipment);
 
 		//if (!ThrowableItem)
 		//{

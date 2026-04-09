@@ -46,6 +46,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Stats")
 	float HeadshotMultiplier = 5.0f;
 
+	// How inaccurate the AI is (in degrees). Higher number = more missing.
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Stats - AI")
+	float AIWeaponSpread = 3.0f;
+
 
 	// --- BLUEPRINT VISUAL HOOKS ---
 	// C++ calls these, but the Blueprint Editor decides what they actually do!
