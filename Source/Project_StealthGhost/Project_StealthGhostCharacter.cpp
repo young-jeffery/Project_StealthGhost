@@ -924,7 +924,7 @@ void AProject_StealthGhostCharacter::SwitchToUnarmedAnimState()
 float AProject_StealthGhostCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	// If the person who shot this character is NOT a player controller, ignore the damage entirely!
-	if (EventInstigator && !EventInstigator->IsPlayerController())
+	if (!IsPlayerControlled() && EventInstigator && !EventInstigator->IsPlayerController())
 	{
 		return 0.f;
 	}
@@ -936,6 +936,9 @@ float AProject_StealthGhostCharacter::TakeDamage(float DamageAmount, FDamageEven
 	{
 		CurrentHealth -= ActualDamage;
 		CurrentHealth = FMath::Clamp(CurrentHealth, 0.f, MaxHealth);
+
+		// DEBUG: Print the health to the screen!
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("Player Health: %f"), CurrentHealth));
 
 		// If they took damage but are NOT dead yet, play the flinch!
 		if (CurrentHealth > 0.f && GetMesh()->GetAnimInstance())
