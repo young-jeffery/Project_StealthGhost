@@ -57,7 +57,6 @@ void AWeaponBase::UseAction()
 		if (PlayerCam)
 		{
 			FVector CameraLoc = PlayerCam->GetComponentLocation();
-			FVector CameraEndLoc = CameraLoc + (PlayerCam->GetForwardVector() * WeaponRange);
 			FVector CamForward = PlayerCam->GetForwardVector();
 
 			// Prevent wall clipping
