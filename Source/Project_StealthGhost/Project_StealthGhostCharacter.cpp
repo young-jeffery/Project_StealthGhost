@@ -19,6 +19,8 @@
 #include "ThrowableEquipment.h"
 #include "TimerManager.h"
 #include "WeaponBase.h"
+#include "GhostAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 
 AProject_StealthGhostCharacter::AProject_StealthGhostCharacter()
@@ -804,19 +806,22 @@ void AProject_StealthGhostCharacter::HolsterEquipment()
 
 void AProject_StealthGhostCharacter::FireWeapon()
 {
-	// Must be aiming to fire
-	if (!bIsAiming)
+	if (IsPlayerControlled())
 	{
-		return;
-	}
-	// If we are crouching, we must be stationary to shoot
-	if (CurrentState == EPlayerMovementState::VE_Crouching)
-	{
-		// We check if the velocity length is greater than a tiny number (0.1f) 
-		if (GetVelocity().Length() > 0.1f)
+		// Must be aiming to fire
+		if (!bIsAiming)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, TEXT("Must be stationary to shoot while crouching!"));
 			return;
+		}
+		// If we are crouching, we must be stationary to shoot
+		if (CurrentState == EPlayerMovementState::VE_Crouching)
+		{
+			// We check if the velocity length is greater than a tiny number (0.1f) 
+			if (GetVelocity().Length() > 0.1f)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, TEXT("Must be stationary to shoot while crouching!"));
+				return;
+			}
 		}
 	}
 
@@ -889,6 +894,12 @@ void AProject_StealthGhostCharacter::SwitchToUnarmedAnimState()
 // Damage Logic
 float AProject_StealthGhostCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	// If the person who shot this character is NOT a player controller, ignore the damage entirely!
+	if (EventInstigator && !EventInstigator->IsPlayerController())
+	{
+		return 0.f;
+	}
+
 	// Call the parent class rule first
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
@@ -897,11 +908,32 @@ float AProject_StealthGhostCharacter::TakeDamage(float DamageAmount, FDamageEven
 		CurrentHealth -= ActualDamage;
 		CurrentHealth = FMath::Clamp(CurrentHealth, 0.f, MaxHealth);
 
-		// TODO: Play Hit Reaction Montage here!
+		// If they took damage but are NOT dead yet, play the flinch!
+		if (CurrentHealth > 0.f && GetMesh()->GetAnimInstance())
+		{
+			if (HitReactionMontage)
+			{
+				GetMesh()->GetAnimInstance()->Montage_Play(HitReactionMontage);
+
+				// If we are an AI, instantly lock onto whoever shot us!
+				if (AGhostAIController* AICon = Cast<AGhostAIController>(GetController()))
+				{
+					if (EventInstigator && EventInstigator->GetPawn())
+					{
+						AICon->bIsSpooked = true;
+						AICon->SuspicionLevel = AICon->MaxSuspicion; // Max out suspicion
+
+						if (UBlackboardComponent* BB = AICon->GetBlackboardComponent())
+						{
+							BB->SetValueAsObject(FName("TargetActor"), EventInstigator->GetPawn());
+						}
+					}
+				}
+			}
+		}
 
 		if (CurrentHealth <= 0.f)
 		{
-			// TODO: Handle Death (Ragdoll, destroy, etc.)
 			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Character Died!"));
 
 			bIsDead = true;

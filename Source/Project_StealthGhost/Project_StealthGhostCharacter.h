@@ -91,8 +91,12 @@ public:
 	void DieSilently();
 
 	// Death animation to be played
-	UPROPERTY(EditAnywhere, Category = "Stealth Action")
+	UPROPERTY(EditAnywhere, Category = "Stealth Animation")
 	UAnimMontage* DeathMontage;
+
+	// The animation to play when taking non-lethal damage
+	UPROPERTY(EditAnywhere, Category = "Combat Animations")
+	UAnimMontage* HitReactionMontage;
 
 	// Let the AnimBP the target is dead
 	UPROPERTY(BlueprintReadOnly, Category = "Stealth Action")

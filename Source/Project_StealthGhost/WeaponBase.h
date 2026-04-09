@@ -32,6 +32,7 @@ public:
 	void ConsumeAmmo();
 
 
+
 protected:
 	// --- WEAPON STATS ---
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Stats")
@@ -45,6 +46,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Stats")
 	float HeadshotMultiplier = 5.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon Stats")
+	bool bIsSilenced = false;
 
 	// How inaccurate the AI is (in degrees). Higher number = more missing.
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Stats - AI")

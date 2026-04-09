@@ -8,6 +8,8 @@
 #include "Engine/DamageEvents.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Kismet/GameplayStatics.h"
+#include "AIController.h"
+#include "Perception/AISense_Hearing.h"
 
 void AWeaponBase::StartAiming()
 {
@@ -83,15 +85,28 @@ void AWeaponBase::UseAction()
 	}
 	else
 	{
-		// AI trace directly from the gun barrel.
-		// We get the exact rotation of the MuzzleFlash socket to know where the gun is pointing!
-		FVector GunForwardDirection = ItemMesh->GetSocketRotation(FName("MuzzleFlash")).Vector();
+		// Trace directly to the target they are focusing on
+		FVector DirectionToTarget;
+
+		// Who are they currently looking at
+		AAIController* AICon = Cast<AAIController>(OwnerChar->GetController());
+		if (AICon && AICon->GetFocusActor())
+		{
+			// Get the direction from the muzzle directly to the center of the player
+			FVector TargetCenter = AICon->GetFocusActor()->GetActorLocation();
+			DirectionToTarget = (TargetCenter - MuzzleLoc).GetSafeNormal();
+		}
+		else
+		{
+			// Fallback just in case they aren't focusing on anyone
+			DirectionToTarget = ItemMesh->GetSocketRotation(FName("MuzzleFlash")).Vector();
+		}
 		
+
 		// Convert our spread angle to radians for the math
 		float HalfConeAngle = FMath::DegreesToRadians(AIWeaponSpread);
-
 		// Generate a random direction inside that cone
-		FVector InaccurateDirection = FMath::VRandCone(GunForwardDirection, HalfConeAngle);
+		FVector InaccurateDirection = FMath::VRandCone(DirectionToTarget, HalfConeAngle);
 
 		TargetPoint = MuzzleLoc + (InaccurateDirection * WeaponRange);
 	}
@@ -130,6 +145,21 @@ void AWeaponBase::UseAction()
 			// Apply Damage to the enemy
 			BulletHit.GetActor()->TakeDamage(FinalDamage, FDamageEvent(), OwnerChar->GetController(), this);
 		}
+	}
+
+	// --- AUDIO & NEAR MISS SYSTEM ---
+
+	// The boom of the gun (Only if not silenced)
+	if (!bIsSilenced)
+	{
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), MuzzleLoc, 1.0f, OwnerChar, 2000.0f, FName("Alarm"));
+	}
+
+	// The crack of the bullet hitting a surface (Near Miss!)
+	if (bHit)
+	{
+		// If a bullet hits the wall next to a guard's head, they will hear it!
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), BulletHit.ImpactPoint, 1.0f, OwnerChar, 500.0f, FName("Distraction"));
 	}
 
 	// Trigger the blueprint event so the editor can play muzzle flashes and sounds!

@@ -566,6 +566,7 @@ void AGhostAIController::Tick(float DeltaTime)
     }
 }
 
+// Helper function to check if the guard is currently alerted (chasing player, investigating, or raising alarm)
 bool AGhostAIController::IsAlerted() const
 {
     // If we don't have a Blackboard, assume we aren't alerted
