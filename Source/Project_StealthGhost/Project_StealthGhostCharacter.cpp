@@ -460,6 +460,7 @@ void AProject_StealthGhostCharacter::StartSprint()
 	else if (bIsCrouched)
 	{
 		UnCrouch();
+		CurrentState = EPlayerMovementState::VE_Default;
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 		return;
 	}
@@ -852,25 +853,6 @@ void AProject_StealthGhostCharacter::FireWeapon()
 		// If it's a throwable or a gun with bullets, use it normally.
 		CurrentEquipment->UseAction();
 	}
-
-	//if (CurrentEquipment)
-	//{
-	//	// This triggers the shot from the gun
-	//	CurrentEquipment->UseAction();
-
-
-	//	// Cast to check if it is a throwable. 
-	//	//AThrowableEquipment* ThrowableItem = Cast<AThrowableEquipment>(CurrentEquipment);
-
-	//	//if (!ThrowableItem)
-	//	//{
-	//	//	// Play shooting montage
-	//	//	if (ShootMontage && GetMesh()->GetAnimInstance())
-	//	//	{
-	//	//		GetMesh()->GetAnimInstance()->Montage_Play(ShootMontage);
-	//	//	}
-	//	//}
-	//}
 }
 
 void AProject_StealthGhostCharacter::SwitchToArmedAnimState()
@@ -959,6 +941,8 @@ float AProject_StealthGhostCharacter::TakeDamage(float DamageAmount, FDamageEven
 						{
 							BB->SetValueAsObject(FName("TargetActor"), EventInstigator->GetPawn());
 						}
+
+						OnCombatStarted();
 					}
 				}
 			}

@@ -118,6 +118,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Animation State")
 	void SwitchToUnarmedAnimState();
 
+	// Triggered the moment the AI enters full combat mode
+	UFUNCTION(BlueprintImplementableEvent, Category = "AI Combat")
+	void OnCombatStarted();
+
 
 protected:
 
