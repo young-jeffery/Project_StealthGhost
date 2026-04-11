@@ -689,7 +689,12 @@ void AProject_StealthGhostCharacter::EquipSlot(int32 SlotIndex)
 		// If the slot is empty (None), or we selected what we are already holding, holster and stop.
 		if (!SelectedClass || (CurrentEquipment && CurrentEquipment->IsA(SelectedClass)))
 		{
-			HolsterEquipment();
+			// ONly works for the player to prevent AI from accidentally holstering themselves when trying to equip
+			if (IsPlayerControlled())
+			{
+				HolsterEquipment();
+			}
+
 			return;
 		}
 
@@ -712,6 +717,16 @@ void AProject_StealthGhostCharacter::EquipSlot(int32 SlotIndex)
 
 		if (CurrentEquipment)
 		{
+			// If it's a gun, we check if we have saved ammo for it and restore it
+			if (AWeaponBase* Weapon = Cast<AWeaponBase>(CurrentEquipment))
+			{
+				if (SavedAmmoMap.Contains(SelectedClass))
+				{
+					FVector2D SavedAmmo = SavedAmmoMap[SelectedClass];
+					Weapon->SetAmmo(SavedAmmo.X, SavedAmmo.Y);
+				}
+			}
+
 			// Attach it to the set socket
 			CurrentEquipment->Equip(GetMesh(), CurrentEquipment->AttachmentSocketName);
 
@@ -766,6 +781,11 @@ void AProject_StealthGhostCharacter::ReleaseWeapon()
 {
 	if (CurrentEquipment)
 	{
+		if (!bIsAiming)
+		{
+			return; // Must be aiming to release
+		}
+
 		// Tell the item to do its release action
 		CurrentEquipment->ReleaseAction();
 
@@ -773,6 +793,8 @@ void AProject_StealthGhostCharacter::ReleaseWeapon()
 		if (Cast<AThrowableEquipment>(CurrentEquipment))
 		{
 			ThrowableCount--;
+			
+			bIsAiming = false; // Stop aiming after release
 
 			if (ThrowableCount <= 0)
 			{
@@ -788,6 +810,13 @@ void AProject_StealthGhostCharacter::HolsterEquipment()
 {
 	if (CurrentEquipment)
 	{
+		// If it's a gun, we save the ammo count before holstering
+		if (AWeaponBase* Weapon = Cast<AWeaponBase>(CurrentEquipment))
+		{
+			// We store CurrentAmmo in X, and ReserveAmmo in Y
+			SavedAmmoMap.Add(Weapon->GetClass(), FVector2D(Weapon->GetCurrentAmmo(), Weapon->GetReserveAmmo()));
+		}
+
 		// Set the variable to false
 		bIsHoldingWeapon = false;
 
@@ -825,7 +854,7 @@ void AProject_StealthGhostCharacter::FireWeapon()
 			return;
 		}
 		// If we are crouching, we must be stationary to shoot
-		if (CurrentState == EPlayerMovementState::VE_Crouching)
+		if (CurrentState == EPlayerMovementState::VE_Crouching || CurrentState == EPlayerMovementState::VE_InCover)
 		{
 			// We check if the velocity length is greater than a tiny number (0.1f) 
 			if (GetVelocity().Length() > 0.1f)

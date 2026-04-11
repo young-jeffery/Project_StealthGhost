@@ -31,6 +31,15 @@ public:
 	// Deducts ammo when firing
 	void ConsumeAmmo();
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon Ammo")
+	void SetAmmo(int32 NewCurrentAmmo, int32 NewReserveAmmo);
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon Ammo")
+	int32 GetCurrentAmmo() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon Ammo")
+	int32 GetReserveAmmo() const;
+
 
 
 protected:

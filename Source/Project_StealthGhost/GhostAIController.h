@@ -51,6 +51,10 @@ public:
     UFUNCTION(BlueprintCallable, Category = "AI State")
     bool IsAlerted() const;
 
+    // Checks if the guard is currently investigating a location
+    UFUNCTION(BlueprintPure, Category = "AI State")
+    bool IsInvestigating() const;
+
     // --- SUSPICION SYSTEM ---
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI Suspicion")
     float SuspicionLevel = 0.0f;

@@ -199,3 +199,11 @@ bool AWeaponBase::Reload()
 	// Report that the reload was successful
 	return true;
 }
+
+void AWeaponBase::SetAmmo(int32 NewCurrentAmmo, int32 NewReserveAmmo)
+{
+	CurrentAmmo = NewCurrentAmmo;
+	TotalReserveAmmo = NewReserveAmmo;
+}
+int32 AWeaponBase::GetCurrentAmmo() const { return CurrentAmmo; }
+int32 AWeaponBase::GetReserveAmmo() const { return TotalReserveAmmo; }

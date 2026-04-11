@@ -177,6 +177,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
 	int32 ThrowableCount = 0;
 
+	// Caches weapon ammo when unequipped. Key = Weapon Class, Value = X(Current), Y(Reserve)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
+	TMap<TSubclassOf<class AEquippableBase>, FVector2D> SavedAmmoMap;
+
 
 	// --- EQUIPMENT SYSTEM ---
 

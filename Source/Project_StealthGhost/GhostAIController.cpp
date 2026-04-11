@@ -448,3 +448,12 @@ bool AGhostAIController::IsAlerted() const
     // If all checks fail, the guard is calm and patrolling normally
     return false;
 }
+
+bool AGhostAIController::IsInvestigating() const
+{
+    // If we don't have a Blackboard, we aren't investigating
+    if (!CachedBlackboard) return false;
+
+    // Returns TRUE if the vector is set to a real location, and FALSE if it is Invalid
+    return CachedBlackboard->GetValueAsVector(FName("InvestigateLocation")) != FAISystem::InvalidLocation;
+}
