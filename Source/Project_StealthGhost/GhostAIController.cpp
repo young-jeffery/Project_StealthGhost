@@ -81,58 +81,12 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
             {
                 if (SensedCharacter->IsPlayerControlled())
                 {
-                    // --- ADVANCED LINE OF SIGHT VERIFICATION (Multi-Bone Trace) ---
-                    FHitResult HitResult;
-                    FCollisionQueryParams TraceParams;
-                    TraceParams.AddIgnoredActor(GetPawn()); // Guard ignores himself 
+                    // Player entered vision cone!
+                    CurrentVisibleTarget = Actor;
+                    CoverMultiplier = 1.0f; // Assume fully visible initially
 
-                    FVector GuardEyes = GetPawn()->GetActorLocation() + FVector(0, 0, 70.0f);
-                    bool bHasTrueLOS = false;
-                    FName VisibleBone = NAME_None;
-
-                    TArray<FName> BonesToCheck = {
-                        FName("head"), FName("spine_02"), FName("spine_03"),
-                        FName("spine_04"), FName("spine_05"), FName("pelvis"),
-                        FName("thigh_l"), FName("thigh_r"), FName("hand_r"),
-                        FName("hand_l"), FName("clavicle_l")
-                    };
-
-                    for (FName BoneName : BonesToCheck)
-                    {
-                        FVector TargetLocation = SensedCharacter->GetMesh()->GetSocketLocation(BoneName);
-
-                        bool bHitSomething = GetWorld()->LineTraceSingleByChannel(
-                            HitResult, GuardEyes, TargetLocation, ECC_Visibility, TraceParams
-                        );
-
-                        if (!bHitSomething || (HitResult.GetActor() == SensedCharacter))
-                        {
-                            bHasTrueLOS = true;
-                            VisibleBone = BoneName;
-                            break;
-                        }
-                    }
-
-                    // DEBUG VISUALS
-                    if (bShowDebugVisuals)
-                    {
-                        if (bHasTrueLOS)
-                        {
-                            FVector ConfirmedBoneLocation = SensedCharacter->GetMesh()->GetSocketLocation(VisibleBone);
-                            DrawDebugLine(GetWorld(), GuardEyes, ConfirmedBoneLocation, FColor::Green, false, 2.0f, 0, 1.0f);
-                            DrawDebugSphere(GetWorld(), ConfirmedBoneLocation, 10.0f, 8, FColor::Green, false, 2.0f);
-                        }
-                        else
-                        {
-                            FVector HeadLocation = SensedCharacter->GetMesh()->GetSocketLocation(FName("head"));
-                            DrawDebugLine(GetWorld(), GuardEyes, HeadLocation, FColor::Red, false, 2.0f, 0, 1.0f);
-                        }
-                    }
-
-                    if (bHasTrueLOS)
-                    {
-                        CurrentVisibleTarget = Actor; // Start building suspicion!
-                    }
+                    // Start the trace timer (5 times a second)
+                    GetWorld()->GetTimerManager().SetTimer(VisibilityTimerHandle, this, &AGhostAIController::UpdateVisibilityGating, 0.2f, true);
                 }
 
                 // If the character we see is already dead and hasn't been discovered yet, investigate it!
@@ -161,6 +115,7 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                     }
                 }
             }
+
             else
             {
                 // Player got out of sight
@@ -169,6 +124,10 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                     if (SensedPawn->IsPlayerControlled())
                     {
                         CurrentVisibleTarget = nullptr;
+                        CoverMultiplier = 1.0f; // Reset
+
+                        // Stop firing the traces!
+                        GetWorld()->GetTimerManager().ClearTimer(VisibilityTimerHandle);
 
                         // If they weren't fully detected yet but suspicion is high, investigate!
                         if (!BlackboardComp->GetValueAsObject(FName("TargetActor")) && SuspicionLevel > 50.0f)
@@ -267,9 +226,30 @@ void AGhostAIController::Tick(float DeltaTime)
         {
             float CurrentBuildRate = SuspicionBuildRate;
 
-            // Scale detection speed based on player stance and distance
+            // Scale detection speed based on player stance, distance and angle
             if (AProject_StealthGhostCharacter* StealthPlayer = Cast<AProject_StealthGhostCharacter>(CurrentVisibleTarget))
             {
+                // --- ANGLE MODIFIER ---
+                // Get the direction from the guard to the player
+                FVector DirectionToTarget = (StealthPlayer->GetActorLocation() - GetPawn()->GetActorLocation()).GetSafeNormal();
+
+                // Get where the guard is currently looking
+                FVector GuardForward = GetPawn()->GetActorForwardVector();
+
+                // Compare them (1.0 = dead center, 0.5 = edge of 60-degree vision)
+                float ViewDotProduct = FVector::DotProduct(GuardForward, DirectionToTarget);
+
+                // Map the dot product to a speed multiplier (Edge = 0.3x speed, Center = 1.2x speed)
+                FVector2D InputRange(0.5f, 1.0f);
+                FVector2D OutputRange(0.3f, 1.2f);
+                float AngleMultiplier = FMath::GetMappedRangeValueClamped(InputRange, OutputRange, ViewDotProduct);
+
+                // Apply the angle multiplier first
+                CurrentBuildRate *= AngleMultiplier;
+
+                //Apply the Partial Cover multiplier next
+                CurrentBuildRate *= CoverMultiplier;
+
                 // Calculate the 3D distance between the guard (GetPawn) and the player
                 float Distance = FVector::Dist(GetPawn()->GetActorLocation(), StealthPlayer->GetActorLocation());
 
@@ -289,8 +269,6 @@ void AGhostAIController::Tick(float DeltaTime)
                 }
 
                 // --- STANCE MODIFIERS ---
-                // We check the stance AFTER distance. This means if they are crouching 
-                // but only 1 meter away, the 20.0x multiplier still makes them get caught quickly!
                 if (StealthPlayer->CurrentState == EPlayerMovementState::VE_Crouching)
                 {
                     // Crouching reduces visibility build up by 60% (multiplying by 0.4)
@@ -456,4 +434,81 @@ bool AGhostAIController::IsInvestigating() const
 
     // Returns TRUE if the vector is set to a real location, and FALSE if it is Invalid
     return CachedBlackboard->GetValueAsVector(FName("InvestigateLocation")) != FAISystem::InvalidLocation;
+}
+
+void AGhostAIController::UpdateVisibilityGating()
+{
+    if (!CurrentVisibleTarget || !GetPawn()) return;
+
+    AProject_StealthGhostCharacter* StealthPlayer = Cast<AProject_StealthGhostCharacter>(CurrentVisibleTarget);
+    if (!StealthPlayer) return;
+
+    FVector GuardEyes = GetPawn()->GetActorLocation() + FVector(0, 0, 70.0f);
+    FHitResult HitResult;
+    FCollisionQueryParams TraceParams;
+    TraceParams.AddIgnoredActor(GetPawn()); // Ignore the guard
+
+    // Fire a single laser at the center of the player's body
+    bool bHitCenter = GetWorld()->LineTraceSingleByChannel(HitResult, GuardEyes, StealthPlayer->GetActorLocation(), ECC_Visibility, TraceParams);
+
+	// If it hit the player directly, they are fully exposed, end here and set the multiplier to 1.0 (100% detection speed)
+    if (bHitCenter && HitResult.GetActor() == StealthPlayer)
+    {
+        CoverMultiplier = 1.0f;
+
+        // DEBUG: Draw a solid green line to the center of the player
+        if (bShowDebugVisuals)
+        {
+            DrawDebugLine(GetWorld(), GuardEyes, HitResult.ImpactPoint, FColor::Green, false, 0.25f, 0, 2.0f);
+            DrawDebugString(GetWorld(), StealthPlayer->GetActorLocation() + FVector(0, 0, 50.0f), TEXT("Cover: 100% (Center Visible)"), nullptr, FColor::Green, 0.25f, true);
+        }
+
+        return;
+    }
+
+    // If the center is blocked, fire at individual bones to see how much is exposed.
+    TArray<FName> BonesToCheck = {
+        FName("head"), FName("spine_02"), FName("spine_03"),
+        FName("spine_04"), FName("spine_05"), FName("pelvis"),
+        FName("thigh_l"), FName("thigh_r"), FName("hand_r"),
+        FName("hand_l"), FName("clavicle_l")
+    };
+
+    int32 VisibleBones = 0;
+
+    for (FName BoneName : BonesToCheck)
+    {
+        FVector TargetLocation = StealthPlayer->GetMesh()->GetSocketLocation(BoneName);
+        bool bHitBone = GetWorld()->LineTraceSingleByChannel(HitResult, GuardEyes, TargetLocation, ECC_Visibility, TraceParams);
+
+        if (!bHitBone || HitResult.GetActor() == StealthPlayer)
+        {
+            VisibleBones++;
+
+            // DEBUG: Draw green lines/spheres for visible bones
+            if (bShowDebugVisuals)
+            {
+                DrawDebugLine(GetWorld(), GuardEyes, TargetLocation, FColor::Green, false, 0.25f, 0, 1.0f);
+                DrawDebugSphere(GetWorld(), TargetLocation, 8.0f, 8, FColor::Green, false, 0.25f);
+            }
+        }
+        else
+        {
+            // DEBUG: Draw red lines stopping at the cover that blocked the bone
+            if (bShowDebugVisuals)
+            {
+                DrawDebugLine(GetWorld(), GuardEyes, HitResult.ImpactPoint, FColor::Red, false, 0.25f, 0, 0.5f);
+            }
+        }
+    }
+
+    // Calculate the ratio. If 5 out of 11 bones are visible, CoverMultiplier becomes ~0.45 (45% detection speed).
+    CoverMultiplier = (float)VisibleBones / (float)BonesToCheck.Num();
+
+    // DEBUG: Print the ratio text
+    if (bShowDebugVisuals)
+    {
+        FString DebugText = FString::Printf(TEXT("Cover: %d%% (%d/%d Bones)"), FMath::RoundToInt(CoverMultiplier * 100.0f), VisibleBones, BonesToCheck.Num());
+        DrawDebugString(GetWorld(), StealthPlayer->GetActorLocation() + FVector(0, 0, 50.0f), DebugText, nullptr, FColor::Yellow, 0.25f, true);
+    }
 }

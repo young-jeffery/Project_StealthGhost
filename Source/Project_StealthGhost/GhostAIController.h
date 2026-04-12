@@ -94,6 +94,17 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI");
     class UBehaviorTree* GuardBehaviorTree;
 
+    // --- PARTIAL COVER OPTIMIZATION ---
+
+    // Timer handle to gate how often we check for partial cover
+    FTimerHandle VisibilityTimerHandle;
+
+    // The function that runs on the timer (e.g., 5 times a second)
+    void UpdateVisibilityGating();
+
+    // The multiplier applied to detection speed (1.0 = fully exposed, 0.5 = half covered)
+    float CoverMultiplier = 1.0f;
+
 
 
     // This enables us to know which sense was triggered
