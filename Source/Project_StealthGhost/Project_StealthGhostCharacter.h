@@ -122,6 +122,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "AI Combat")
 	void OnCombatStarted();
 
+	// Triggered the moment the player's health hits 0
+	UFUNCTION(BlueprintImplementableEvent, Category = "Game Over")
+	void OnPlayerDied();
+
 
 protected:
 
@@ -169,8 +173,12 @@ protected:
 	void Interact();
 
 	// Stores the object we are currently looking at so we can pick it up
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Interaction")
 	AActor* CurrentInteractable = nullptr;
+
+	// Tracks whether the player has secured the main objective
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Objective")
+	bool bHasObjective = false;
 
 	// --- INVENTORY ---
 	// Tracks how many stones/distractions we currently hold

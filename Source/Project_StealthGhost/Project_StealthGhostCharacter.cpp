@@ -993,11 +993,18 @@ float AProject_StealthGhostCharacter::TakeDamage(float DamageAmount, FDamageEven
 			// Server AI controller from the guard
 			if (VictimController)
 			{
-				// Stop the AI brain from running any logic on the guard
-				VictimController->UnPossess();
-
-				// Destroy the controller to free up resources.
-				VictimController->Destroy();
+				// --- NEW: THE FIX ---
+				if (IsPlayerControlled())
+				{
+					// If it is the player, leave the controller alone so the camera works, and trigger the UI!
+					OnPlayerDied();
+				}
+				else
+				{
+					// If it is an AI guard, stop their brain and destroy it to save memory!
+					VictimController->UnPossess();
+					VictimController->Destroy();
+				}
 			}
 
 			// Turn off collision capsule 
