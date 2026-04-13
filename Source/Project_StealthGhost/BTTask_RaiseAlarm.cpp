@@ -32,7 +32,7 @@ EBTNodeResult::Type UBTTask_RaiseAlarm::ExecuteTask(UBehaviorTreeComponent& Owne
     if (!TargetBody || TargetBody->bHasBeenDiscovered)
     {
         BB->ClearValue(FName("SpottedBody"));
-        return EBTNodeResult::Succeeded; // Exit silently
+        return EBTNodeResult::Failed; // Let's the BT know this wasn't executed successfully
     }
 
     // Claim the body so no other guard tries to yell about it right now

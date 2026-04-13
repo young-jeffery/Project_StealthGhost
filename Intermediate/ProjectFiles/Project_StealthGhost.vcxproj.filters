@@ -15,7 +15,10 @@
     <None Include="..\..\.gitattributes" />
     <None Include="..\..\.gitignore" />
     <None Include="..\..\.vsconfig" />
+    <None Include="..\..\AnimBP_Player - Main States.txt" />
+    <None Include="..\..\AnimBP_Player.txt" />
     <None Include="..\..\BP_GhostGuard Node.txt" />
+    <None Include="..\..\BT_GhostGuard ChaseAttack Node.txt" />
     <None Include="..\..\BT_GhostGuard Investigate Branch Nodes.txt" />
     <None Include="..\..\BT_GhostGuard.txt" />
     <None Include="..\..\shadertoolsconfig.json" />
@@ -170,6 +173,12 @@
       <Filter>Source\Project_StealthGhost</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\Project_StealthGhost\BTTask_RaiseAlarm.h">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\BTTask_TurnToNoise.cpp">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\BTTask_TurnToNoise.h">
       <Filter>Source\Project_StealthGhost</Filter>
     </ClInclude>
     <ClCompile Include="..\..\Source\Project_StealthGhost\EquippableBase.cpp">

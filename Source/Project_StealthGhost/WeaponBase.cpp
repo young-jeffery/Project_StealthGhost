@@ -162,6 +162,48 @@ void AWeaponBase::UseAction()
 		UAISense_Hearing::ReportNoiseEvent(GetWorld(), BulletHit.ImpactPoint, 1.0f, OwnerChar, 500.0f, FName("Distraction"));
 	}
 
+
+	// Did the bullet fly past anyone's head?
+	// Figure out exactly where the bullet stopped
+	FVector ActualEndPoint = bHit ? BulletHit.ImpactPoint : TargetPoint;
+
+	TArray<FHitResult> WhizHits;
+	FCollisionShape WhizShape = FCollisionShape::MakeSphere(WhizByRadius);
+
+	// We create an object query that looks for Pawns (ignoring walls and floors)
+	FCollisionObjectQueryParams ObjectParams(ECC_Pawn);
+
+	// We use SweepMultiByObjectType instead of ByChannel
+	bool bWhizOverlap = GetWorld()->SweepMultiByObjectType(WhizHits, MuzzleLoc, ActualEndPoint, FQuat::Identity, ObjectParams, WhizShape, TraceParams);
+
+	if (bWhizOverlap)
+	{
+		for (const FHitResult& WhizHit : WhizHits)
+		{
+			AActor* OverlappedActor = WhizHit.GetActor();
+
+			// If it is a Character...
+			if (OverlappedActor && OverlappedActor->IsA(ACharacter::StaticClass()))
+			{
+				// ...and it's not the victim who just took the damage...
+				if (OverlappedActor != BulletHit.GetActor() && OverlappedActor != OwnerChar)
+				{
+					// Trigger a noise event exactly at the location where the bullet passed them!
+					UAISense_Hearing::ReportNoiseEvent(GetWorld(), WhizHit.ImpactPoint, 1.0f, OwnerChar, 600.0f, FName("BulletWhiz"));
+
+					// DEBUG VISUAL: Draw a yellow sphere where the bullet buzzed them, and a line to their body
+					if (GEngine)
+					{
+						DrawDebugSphere(GetWorld(), WhizHit.ImpactPoint, 15.0f, 8, FColor::Yellow, false, 2.0f);
+						DrawDebugLine(GetWorld(), WhizHit.ImpactPoint, OverlappedActor->GetActorLocation(), FColor::Yellow, false, 2.0f, 0, 1.0f);
+						GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Yellow, TEXT("WHIZ BY DETECTED!"));
+					}
+				}
+			}
+		}
+	}
+
+
 	// Trigger the blueprint event so the editor can play muzzle flashes and sounds!
 	OnWeaponFired();
 }

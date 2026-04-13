@@ -59,6 +59,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon Stats")
 	bool bIsSilenced = false;
 
+	// How close a bullet needs to pass by an AI to trigger a reaction
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Stats - Audio")
+	float WhizByRadius = 200.0f;
+
 	// How inaccurate the AI is (in degrees). Higher number = more missing.
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Stats - AI")
 	float AIWeaponSpread = 3.0f;

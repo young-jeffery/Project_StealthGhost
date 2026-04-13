@@ -319,92 +319,92 @@ void AGhostAIController::Tick(float DeltaTime)
 
 		if (!bShowDebugVisuals) return;
 
-        // Draw Suspicion Text
-        if (BB)
-        {
-            FVector TextLoc = GetPawn()->GetActorLocation() + FVector(0, 0, 130.0f);
-            FString SpookedTag = bIsSpooked ? TEXT(" (SPOOKED)") : TEXT("");
-            FString SuspicionText = FString::Printf(TEXT("Suspicion: %d%%%s"), FMath::RoundToInt((SuspicionLevel / MaxSuspicion) * 100.0f), *SpookedTag);
+        //// Draw Suspicion Text
+        //if (BB)
+        //{
+        //    FVector TextLoc = GetPawn()->GetActorLocation() + FVector(0, 0, 130.0f);
+        //    FString SpookedTag = bIsSpooked ? TEXT(" (SPOOKED)") : TEXT("");
+        //    FString SuspicionText = FString::Printf(TEXT("Suspicion: %d%%%s"), FMath::RoundToInt((SuspicionLevel / MaxSuspicion) * 100.0f), *SpookedTag);
 
-            // Turn the text Red if spooked, otherwise keep it Cyan
-            FColor TextColor = bIsSpooked ? FColor::Red : FColor::Cyan;
+        //    // Turn the text Red if spooked, otherwise keep it Cyan
+        //    FColor TextColor = bIsSpooked ? FColor::Red : FColor::Cyan;
 
-            DrawDebugString(GetWorld(), TextLoc, SuspicionText, nullptr, TextColor, DeltaTime, true);
-        }
+        //    DrawDebugString(GetWorld(), TextLoc, SuspicionText, nullptr, TextColor, DeltaTime, true);
+        //}
     }
 
-    // --- DEBUG HEARING RANGE (Yellow Sphere) ---
+ //   // --- DEBUG HEARING RANGE (Yellow Sphere) ---
 
-	// Get the active hearing config from the perception component. 
-    // This is necessary because the config can be changed at runtime, so we can't just rely on the default values we set in the constructor.
-    FAISenseID HearingID = UAISense::GetSenseID<UAISense_Hearing>();
-    UAISenseConfig_Hearing* ActiveHearingConfig = Cast<UAISenseConfig_Hearing>(AIPerception->GetSenseConfig(HearingID));
+	//// Get the active hearing config from the perception component. 
+ //   // This is necessary because the config can be changed at runtime, so we can't just rely on the default values we set in the constructor.
+ //   FAISenseID HearingID = UAISense::GetSenseID<UAISense_Hearing>();
+ //   UAISenseConfig_Hearing* ActiveHearingConfig = Cast<UAISenseConfig_Hearing>(AIPerception->GetSenseConfig(HearingID));
 
-    // Draws a yellow wireframe sphere around the guard representing their 20m hearing radius
-    if (ActiveHearingConfig)
-    {
-        DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), ActiveHearingConfig->HearingRange, 64, FColor::Yellow, false, -1.0f, 0, 2.0f);
-    }
+ //   // Draws a yellow wireframe sphere around the guard representing their 20m hearing radius
+ //   if (ActiveHearingConfig)
+ //   {
+ //       DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), ActiveHearingConfig->HearingRange, 64, FColor::Yellow, false, -1.0f, 0, 2.0f);
+ //   }
+ //   
+
+ //   // --- DEBUG SIGHT RANGE (Green Cone) ---
+
+	//// Get the active sight config from the perception component.
+ //   FAISenseID SightID = UAISense::GetSenseID<UAISense_Sight>();
+ //   UAISenseConfig_Sight* ActiveSightConfig = Cast<UAISenseConfig_Sight>(AIPerception->GetSenseConfig(SightID));
+
+ //   if (ActiveSightConfig)
+ //   {
+ //       FVector EyeLocation;
+ //       FRotator EyeRotation;
+ //       ControlledPawn->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+
+ //       // Draws a green cone representing the distance and peripheral angle of their vision
+ //       DrawDebugCone(
+ //           GetWorld(),
+ //           EyeLocation,
+ //           EyeRotation.Vector(),
+ //           ActiveSightConfig->SightRadius,
+ //           FMath::DegreesToRadians(ActiveSightConfig->PeripheralVisionAngleDegrees),
+ //           FMath::DegreesToRadians(ActiveSightConfig->PeripheralVisionAngleDegrees),
+ //           64,
+ //           FColor::Green,
+ //           false,
+ //           -1.0f,
+ //           0,
+ //           2.0f
+ //       );
+ //   }
     
 
-    // --- DEBUG SIGHT RANGE (Green Cone) ---
+    //// --- DEBUG INTERACTION STATE (Floating Text) ---
+    //if (BB)
+    //{
+    //    FString CurrentState = TEXT("Patrolling");
+    //    FColor TextColor = FColor::White;
 
-	// Get the active sight config from the perception component.
-    FAISenseID SightID = UAISense::GetSenseID<UAISense_Sight>();
-    UAISenseConfig_Sight* ActiveSightConfig = Cast<UAISenseConfig_Sight>(AIPerception->GetSenseConfig(SightID));
+    //    // Check the blackboard to see what the AI is currently prioritizing
+    //    if (BB->GetValueAsObject(FName("TargetActor")))
+    //    {
+    //        CurrentState = TEXT("CHASING PLAYER!");
+    //        TextColor = FColor::Red;
+    //    }
+    //    else if (BB->GetValueAsBool(FName("bIsRaisingAlarm")))
+    //    {
+    //        CurrentState = TEXT("RAISING ALARM!");
+    //        TextColor = FColor::Orange;
+    //    }
+    //    // Check if the vector is NOT empty/invalid
+    //    else if (BB->GetValueAsVector(FName("InvestigateLocation")) != FAISystem::InvalidLocation)
+    //    {
+    //        CurrentState = TEXT("INVESTIGATING");
+    //        TextColor = FColor::Yellow;
+    //    }
 
-    if (ActiveSightConfig)
-    {
-        FVector EyeLocation;
-        FRotator EyeRotation;
-        ControlledPawn->GetActorEyesViewPoint(EyeLocation, EyeRotation);
-
-        // Draws a green cone representing the distance and peripheral angle of their vision
-        DrawDebugCone(
-            GetWorld(),
-            EyeLocation,
-            EyeRotation.Vector(),
-            ActiveSightConfig->SightRadius,
-            FMath::DegreesToRadians(ActiveSightConfig->PeripheralVisionAngleDegrees),
-            FMath::DegreesToRadians(ActiveSightConfig->PeripheralVisionAngleDegrees),
-            64,
-            FColor::Green,
-            false,
-            -1.0f,
-            0,
-            2.0f
-        );
-    }
-    
-
-    // --- DEBUG INTERACTION STATE (Floating Text) ---
-    if (BB)
-    {
-        FString CurrentState = TEXT("Patrolling");
-        FColor TextColor = FColor::White;
-
-        // Check the blackboard to see what the AI is currently prioritizing
-        if (BB->GetValueAsObject(FName("TargetActor")))
-        {
-            CurrentState = TEXT("CHASING PLAYER!");
-            TextColor = FColor::Red;
-        }
-        else if (BB->GetValueAsBool(FName("bIsRaisingAlarm")))
-        {
-            CurrentState = TEXT("RAISING ALARM!");
-            TextColor = FColor::Orange;
-        }
-        // Check if the vector is NOT empty/invalid
-        else if (BB->GetValueAsVector(FName("InvestigateLocation")) != FAISystem::InvalidLocation)
-        {
-            CurrentState = TEXT("INVESTIGATING");
-            TextColor = FColor::Yellow;
-        }
-
-        // Draw the text 100 units above the guard's head
-        FVector TextLocation = ControlledPawn->GetActorLocation() + FVector(0, 0, 100.0f);
-        DrawDebugString(GetWorld(), TextLocation, CurrentState, nullptr, TextColor, DeltaTime, true);
-    }
+    //    // Draw the text 100 units above the guard's head
+    //    FVector TextLocation = ControlledPawn->GetActorLocation() + FVector(0, 0, 100.0f);
+    //    DrawDebugString(GetWorld(), TextLocation, CurrentState, nullptr, TextColor, DeltaTime, true);
+    //}
 }
 
 // Helper function to check if the guard is currently alerted (chasing player, investigating, or raising alarm)
