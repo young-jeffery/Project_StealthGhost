@@ -151,6 +151,20 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Stealth Action")
 	void StopSprint();
 
+	// --- AUTOMATED FOOTSTEP SYSTEM ---
+
+	// How much distance we have covered since the last footstep
+	float AccumulatedStepDistance = 0.0f;
+
+	// The distance required to trigger a footstep
+	UPROPERTY(EditDefaultsOnly, Category = "Audio - Footsteps")
+	float BaseStepDistance = 150.0f;
+
+	// The sound to play
+	UPROPERTY(EditDefaultsOnly, Category = "Audio - Footsteps")
+	USoundBase* FootstepSound;
+
+
 	// Memeory variable to prevent player from moving away from cover unwantedly
 	FVector LastValidCoverLocation;
 

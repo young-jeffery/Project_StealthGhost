@@ -84,6 +84,25 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Memory")
     float SpookedBuildMultiplier = 2.0f;
 
+    // The world time when the guard last heard a suspicious noise
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI Memory")
+    float LastTimeSoundHeard = -100.0f; // Initialized to negative so the very first noise doesn't trigger a false positive!
+
+    // If multiple noises happen within this many seconds, the guard instantly escalates
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Memory")
+    float RapidNoiseThreshold = 4.0f;
+
+    // Tracks consecutive rapid noises
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI Memory")
+    int32 RapidNoiseCount = 0;
+
+    // How long to freeze suspicion decay after the 2nd noise
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Memory")
+    float SuspicionDecayPauseDuration = 4.0f;
+
+    // The actual world time when decay is allowed to resume
+    float SuspicionDecayPauseEndTime = 0.0f;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;

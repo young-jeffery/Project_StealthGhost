@@ -153,43 +153,223 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
     {
         if (Stimulus.WasSuccessfullySensed())
         {
+            // Ignore fellow guards footstep
+            if (Actor)
+            {
+                // Ignore self noise
+                if (Actor == GetPawn())
+                {
+                    return;
+                }
+
+                // Is it my teammate?
+                if (Actor->ActorHasTag(FName("Guard")))
+                {
+                    // We completely ignore friendly footsteps or accidental bumps.
+                    if (Stimulus.Tag == FName("Footstep") || Stimulus.Tag == FName("Distraction"))
+                    {
+                        return; // Ignore mundane teammate noises
+                    }
+                }
+            }
+
+			// Sound dampening through walls logic
+            FHitResult HitResult;
+            FCollisionQueryParams TraceParams;
+            TraceParams.AddIgnoredActor(GetPawn()); // Ignore the guard's own body
+
+            // Start the check from the guard's ears
+            FVector GuardEars = GetPawn()->GetActorLocation() + FVector(0, 0, 70.0f);
+            FVector SoundLocation = Stimulus.StimulusLocation;
+
+            // Fire a cheap laser directly at the sound
+            bool bHitWall = GetWorld()->LineTraceSingleByChannel(HitResult, GuardEars, SoundLocation, ECC_Visibility, TraceParams);
+
+            if (bHitWall)
+            {
+                // If sound passes through a wall, then dampen it
+                float WallDampeningMultiplier = 0.3f;
+
+                // Dynamically fetch the guard's max hearing range
+                FAISenseID HearingID = UAISense::GetSenseID<UAISense_Hearing>();
+                UAISenseConfig_Hearing* ActiveHearingConfig = Cast<UAISenseConfig_Hearing>(AIPerception->GetSenseConfig(HearingID));
+
+                float MaxHearingRange = ActiveHearingConfig ? ActiveHearingConfig->HearingRange : 2000.0f;
+                float EffectiveHearingRange = MaxHearingRange * WallDampeningMultiplier;
+
+                // How far away is the actual sound?
+                float DistanceToSound = FVector::Dist(GuardEars, SoundLocation);
+
+				// If the sound is more than effectiive hearing range away after dampening, ignore it
+                if (DistanceToSound > EffectiveHearingRange)
+                {
+                    // The sound is too far away to be heard through the wall. Ignore it completely!
+                    if (bShowDebugVisuals)
+                    {
+                        DrawDebugLine(GetWorld(), GuardEars, HitResult.ImpactPoint, FColor::Red, false, 2.0f, 0, 1.0f);
+                        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Guard: (Sound muffled by wall)"));
+                    }
+                    return; // Abort the hearing logic!
+                }
+
+                // If theyhear it through a wall, draw a yellow line
+                if (bShowDebugVisuals)
+                {
+                    DrawDebugLine(GetWorld(), GuardEars, HitResult.ImpactPoint, FColor::Yellow, false, 2.0f, 0, 1.0f);
+                }
+            }
+            else
+            {
+                // Clear path, heard perfectly! Draw a green line.
+                if (bShowDebugVisuals)
+                {
+                    DrawDebugLine(GetWorld(), GuardEars, SoundLocation, FColor::Green, false, 2.0f, 0, 1.0f);
+                }
+            }
+
             // First confirm that they are not chasing a target
             UObject* CurrentTarget = BlackboardComp->GetValueAsObject(FName("TargetActor"));
             if (!CurrentTarget)
             {
-                // Investigate the noise location
-                BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Stimulus.StimulusLocation);
-
-                // Check the tags we set up earlier
-                if (Stimulus.Tag == "Alarm")
+                // For sounds tagged as distractions
+                if (Stimulus.Tag == FName("Distraction"))
                 {
-                    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("Guard: Alarm!? On my way bro."));
-                    bIsSpooked = true;
+                    // Distraction escalation logic
+                    float CurrentTime = GetWorld()->GetTimeSeconds();
 
-                    // Get the "Body" that this brain is currently controlling
-                    APawn* ControlledBody = GetPawn();
-
-                    // Check if the body exists, and "Cast" it to ensure it is specifically your custom StealthGhost character
-                    if (AProject_StealthGhostCharacter* MyGhostChar = Cast<AProject_StealthGhostCharacter>(ControlledBody))
+                    // Did we hear a noise within the threshold?
+                    if (CurrentTime - LastTimeSoundHeard <= RapidNoiseThreshold)
                     {
-                        // It is our character! Tell them to equip the gun!
-                        MyGhostChar->OnCombatStarted();
+                        RapidNoiseCount++; // Escalate!
+                    }
+                    else
+                    {
+                        RapidNoiseCount = 1; // It's been quiet for a while, reset to Tier 1
+                    }
+
+                    LastTimeSoundHeard = CurrentTime;
+
+                    // Evaluate the levels
+                    if (RapidNoiseCount == 1)
+                    {
+                        // First noise, use distance to determine if they guard just looks or walks to noise source. Closer = More likely to walk.
+                        float Distance = FVector::Dist(GetPawn()->GetActorLocation(), SoundLocation);
+
+                        // Fetch the max hearing range (fallback to 2000 if not found)
+                        FAISenseID HearingID = UAISense::GetSenseID<UAISense_Hearing>();
+                        UAISenseConfig_Hearing* ActiveHearingConfig = Cast<UAISenseConfig_Hearing>(AIPerception->GetSenseConfig(HearingID));
+                        float MaxHearingRange = ActiveHearingConfig ? ActiveHearingConfig->HearingRange : 2000.0f;
+
+                        // Base chance is 20%. They gain up to +80% more depending on how close the sound is.
+                        float WalkChance = 0.2f + (1.0f - (Distance / MaxHearingRange)) * 0.8f;
+
+                        // Roll the dice!
+                        bool bWillWalk = FMath::FRand() <= WalkChance;
+
+                        BlackboardComp->SetValueAsBool(FName("bWillWalkToNoise"), bWillWalk);
+                        BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SoundLocation);
+
+                        if (bShowDebugVisuals)
+                        {
+                            FString Action = bWillWalk ? TEXT("Look & Walk") : TEXT("Look Only");
+                            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::Printf(TEXT("Guard: Tier 1 Distraction (%s)"), *Action));
+                        }
+                    }
+                    else if (RapidNoiseCount == 2)
+                    {
+                        // Second noise, increase suspicion to 50% and pause decay.
+                        // We use FMath::Max so we don't accidentally lower their suspicion if they were already at 80%
+                        SuspicionLevel = FMath::Max(SuspicionLevel, MaxSuspicion * 0.5f);
+                        SuspicionDecayPauseEndTime = CurrentTime + SuspicionDecayPauseDuration;
+
+                        // They walk to investigate
+                        BlackboardComp->SetValueAsBool(FName("bWillWalkToNoise"), true);
+                        BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SoundLocation);
+
+                        if (bShowDebugVisuals)
+                        {
+                            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("Guard: Tier 2 Distraction (Escalating, Decay Paused)"));
+                        }
+                    }
+                    else if (RapidNoiseCount >= 3)
+                    {
+                        // Third noise, full alert and yell to nearby guards.
+                        bIsSpooked = true;
+                        SuspicionLevel = MaxSuspicion;
+
+                        UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetPawn()->GetActorLocation(), 1.0f, GetPawn(), 2500.0f, FName("Alarm"));
+
+                        if (bShowDebugVisuals)
+                        {
+                            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: Tier 3 Distraction (Calling for backup!)"));
+                        }
                     }
                 }
-                else if (Stimulus.Tag == "Distraction")
+              
+				// For sounds tagged as bullet whizzes
+                else if (Stimulus.Tag == FName("BulletWhiz"))
                 {
-                    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: What was that noise?"));
+                    // A bullet flew past their head! Instant spook, no Tier 1 waiting.
+                    bIsSpooked = true;
+                    SuspicionLevel = FMath::Max(SuspicionLevel, MaxSuspicion * 0.8f); // Instant 80% suspicion
+                    BlackboardComp->SetValueAsBool(FName("bWillWalkToNoise"), true);
+
+                    // They will investigate where the bullet hit or passed them by
+                    BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SoundLocation);
+
+                    if (bShowDebugVisuals) GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: I'm under fire!"));
                 }
-                else if (Stimulus.Tag == "Footstep")
+
+                // For footstep sounds
+                else if (Stimulus.Tag == FName("Footstep"))
                 {
-                    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, TEXT("Guard: Did I hear footsteps?"));
+                    // Normal investigation sequence
+                    BlackboardComp->SetValueAsBool(FName("bWillWalkToNoise"), true);
+                    BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SoundLocation);
+
+                    if (bShowDebugVisuals) GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Heard a footstep..."));
                 }
-                else
+
+                // For alarms and gunshots
+                else if (Stimulus.Tag == FName("Alarm"))
                 {
-                    // Fallback in case a noise without a tag, unspecified tag, or misspelt tag is made
-                    FString Tag = Stimulus.Tag.ToString();
-                    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Guard: Heard noise: %s"), *Tag));
+                    bIsSpooked = true;
+                    SuspicionLevel = MaxSuspicion; // Max out instantly
+                    BlackboardComp->SetValueAsBool(FName("bWillWalkToNoise"), true);
+                    BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SoundLocation);
                 }
+
+
+                //// Check the tags we set up earlier 
+                //if (Stimulus.Tag == "Alarm")
+                //{
+                //    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("Guard: Alarm!? On my way bro."));
+                //    bIsSpooked = true;
+
+                //    // Get the "Body" that this brain is currently controlling
+                //    APawn* ControlledBody = GetPawn();
+
+                //    // Check if the body exists, and "Cast" it to ensure it is specifically your custom StealthGhost character
+                //    if (AProject_StealthGhostCharacter* MyGhostChar = Cast<AProject_StealthGhostCharacter>(ControlledBody))
+                //    {
+                //        // It is our character! Tell them to equip the gun!
+                //        MyGhostChar->OnCombatStarted();
+                //    }
+                //}
+                //else if (Stimulus.Tag == "Distraction")
+                //{
+                //    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: What was that noise?"));
+                //}
+                //else if (Stimulus.Tag == "Footstep")
+                //{
+                //    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, TEXT("Guard: Did I hear footsteps?"));
+                //}
+                //else
+                //{
+                //    // Fallback in case a noise without a tag, unspecified tag, or misspelt tag is made
+                //    FString Tag = Stimulus.Tag.ToString();
+                //    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Guard: Heard noise: %s"), *Tag));
+                //}
             }
         }
     }
@@ -310,7 +490,7 @@ void AGhostAIController::Tick(float DeltaTime)
         else
         {
             // Decay suspicion when target is out of sight
-            if (SuspicionLevel > 0.0f)
+            if (SuspicionLevel > 0.0f && GetWorld()->GetTimeSeconds() > SuspicionDecayPauseEndTime)
             {
                 SuspicionLevel -= SuspicionDecayRate * DeltaTime;
                 SuspicionLevel = FMath::Clamp(SuspicionLevel, 0.0f, MaxSuspicion);

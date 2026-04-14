@@ -21,6 +21,7 @@
 #include "WeaponBase.h"
 #include "GhostAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include <Kismet/GameplayStatics.h>
 
 
 AProject_StealthGhostCharacter::AProject_StealthGhostCharacter()
@@ -122,19 +123,19 @@ void AProject_StealthGhostCharacter::Move(const FInputActionValue& Value)
 		}
 	}
 
-	// Varying sound levels based on movement type
-	if (MovementVector.Length() > 0.0f)
-	{
-		if (!bIsCrouched)
-		{
-			bool bIsSprinting = GetCharacterMovement()->MaxWalkSpeed > 500.0f;
+	//// Varying sound levels based on movement type
+	//if (MovementVector.Length() > 0.0f)
+	//{
+	//	if (!bIsCrouched)
+	//	{
+	//		bool bIsSprinting = GetCharacterMovement()->MaxWalkSpeed > 500.0f;
 
-			float Loudness = bIsSprinting ? 0.7f : 0.5f; // Louder if sprinting, quieter if walking
-			float Range = bIsSprinting ? 1200.0f : 500.0f;
+	//		float Loudness = bIsSprinting ? 0.7f : 0.5f; // Louder if sprinting, quieter if walking
+	//		float Range = bIsSprinting ? 1200.0f : 500.0f;
 
-			UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), Loudness, this, Range, FName("Footstep"));
-		}
-	}
+	//		UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), Loudness, this, Range, FName("Footstep"));
+	//	}
+	//}
 	
 }
 
@@ -429,6 +430,53 @@ void AProject_StealthGhostCharacter::Tick(float DeltaTime)
 			SetActorLocation(LastValidCoverLocation);
 			GetCharacterMovement()->Velocity = FVector::ZeroVector;
 		}
+	}
+
+	// --- AUTOMATED FOOTSTEP ALGORITHM ---
+
+	// Are we moving on the ground?
+	if (GetVelocity().SizeSquared() > 0.0f && GetCharacterMovement()->IsMovingOnGround())
+	{
+		// No sound when crouching or in cover
+		if (CurrentState == EPlayerMovementState::VE_Crouching || CurrentState == EPlayerMovementState::VE_InCover)
+		{
+			AccumulatedStepDistance = 0.0f;
+		}
+		else
+		{
+			// We are walking or sprinting. Add the distance moved.
+			AccumulatedStepDistance += GetVelocity().Size() * DeltaTime;
+
+			// Check if we are sprinting
+			bool bIsSprinting = GetCharacterMovement()->MaxWalkSpeed > 500.0f;
+
+			// Sprinting means longer strides, so we increase the required distance before a step triggers
+			float CurrentRequiredDistance = bIsSprinting ? (BaseStepDistance * 1.3f) : BaseStepDistance;
+
+			// Have we moved far enough to trigger a step?
+			if (AccumulatedStepDistance >= CurrentRequiredDistance)
+			{
+				if (FootstepSound)
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepSound, GetActorLocation());
+				}
+
+				// Set exact volumes and ranges based on movement state
+				float Loudness = bIsSprinting ? 0.7f : 0.5f;
+				float Range = bIsSprinting ? 1200.0f : 500.0f;
+
+				// Send the isolated "Footstep" tag to the AI
+				UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), Loudness, this, Range, FName("Footstep"));
+
+				// Reset distance
+				AccumulatedStepDistance -= CurrentRequiredDistance;
+			}
+		}
+	}
+	else
+	{
+		// We stopped moving or jumped. Reset the counter.
+		AccumulatedStepDistance = 0.0f;
 	}
 }
 

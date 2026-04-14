@@ -18,10 +18,12 @@
     <None Include="..\..\AnimBP_Player - Main States.txt" />
     <None Include="..\..\AnimBP_Player.txt" />
     <None Include="..\..\BP_GhostGuard Node.txt" />
+    <None Include="..\..\BTTask_FireWeapon.txt" />
     <None Include="..\..\BT_GhostGuard ChaseAttack Node.txt" />
     <None Include="..\..\BT_GhostGuard Investigate Branch Nodes.txt" />
     <None Include="..\..\BT_GhostGuard.txt" />
     <None Include="..\..\shadertoolsconfig.json" />
+    <None Include="..\..\UpgradeLog.htm" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
     </Filter>
@@ -139,6 +141,12 @@
     <Filter Include="Source\Project_StealthGhost">
       <UniqueIdentifier>{64D5A768-0BF1-3901-9D3E-5059CDF95B47}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\Project_StealthGhost\AnimNotify_PlayFootstep.cpp">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project_StealthGhost\AnimNotify_PlayFootstep.h">
+      <Filter>Source\Project_StealthGhost</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\Project_StealthGhost\BTService_CheckAttackRange.cpp">
       <Filter>Source\Project_StealthGhost</Filter>
     </ClCompile>
