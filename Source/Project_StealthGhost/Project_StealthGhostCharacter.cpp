@@ -12,7 +12,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Project_StealthGhost.h"
-#include "DrawDebugHelpers.h" // This draws visual lines for testing
+#include "DrawDebugHelpers.h"
 #include "InteractableInterface.h"
 #include <Perception/AISense_Hearing.h>
 #include "EquippableBase.h"
@@ -21,15 +21,15 @@
 #include "WeaponBase.h"
 #include "GhostAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include <Kismet/GameplayStatics.h>
+#include "Kismet/GameplayStatics.h"
+#include "Engine/DamageEvents.h"
+
+// Forward declaration — NotifyNearbyGuardsOfDeath is defined later in this file, but TakeDamage needs to call it
+static void NotifyNearbyGuardsOfDeath(AProject_StealthGhostCharacter* DeadChar);
 
 
 AProject_StealthGhostCharacter::AProject_StealthGhostCharacter()
 {
-	//Default Speeds
-	//GetCharacterMovement()->MaxWalkSpeed = 200.0f;
-	//GetCharacterMovement()->MaxWalkSpeedCrouched = 150.0f;
-
 	// this enables tick function
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -107,36 +107,78 @@ void AProject_StealthGhostCharacter::Move(const FInputActionValue& Value)
 		// Are we in cover?
 		if (CurrentState == EPlayerMovementState::VE_InCover)
 		{
-			// Get the Dot Product of the camera's right and the character's right
-			float DirectionCheck = FVector::DotProduct(GetActorRightVector(), GetFollowCamera()->GetRightVector());
+			// Get the right vector of the wall we are currently touching
+			FVector WallRight = FVector::CrossProduct(FVector::UpVector, CurrentWallNormal).GetSafeNormal();
 
-			// FMathe::Sign returns 1if they match and -1 if they are opposite
-			float MoveSign = FMath::Sign(DirectionCheck);
+			// Check the raw Y-Axis 
+			// -1.0 means they are pulling perfectly straight back
+			if (MovementVector.Y < -0.5f)
+			{
+				// They are pulling back, start the stopwatch
+				CurrentBreakawayTime += GetWorld()->GetDeltaSeconds();
 
-			// Y Vector movement (foward/backward) is ignored. GetActorRightVector() is used to allow the player slide along the wall
-			AddMovementInput(GetActorRightVector(), MovementVector.X * MoveSign);
+				if (CurrentBreakawayTime >= BreakawayHoldTime)
+				{
+					CurrentBreakawayTime = 0.0f;
+					ToggleCover();
+					return;
+				}
+			}
+			else
+			{
+				// They stopped pulling back, reset the stopwatch
+				CurrentBreakawayTime = 0.0f;
+			}
+
+			// 
+			float IntendedMovement = MovementVector.X * -1.0f;
+
+			// If the player is trying to move, check if we are about to hit a corner or reach the end of the wall
+			if (FMath::Abs(IntendedMovement) > 0.05f)
+			{
+				FVector StartLoc = GetActorLocation();
+				// Calculate a point slightly ahead of where we want to move
+				FVector FeelerOffset = GetActorRightVector() * FMath::Sign(IntendedMovement) * CoverFeelerDistance;
+				FVector FeelerStart = StartLoc + FeelerOffset;
+				FVector FeelerEnd = FeelerStart - (GetActorForwardVector() * 100.0f);
+
+				FHitResult FeelerHit;
+				FCollisionQueryParams Params;
+				Params.AddIgnoredActor(this);
+
+				bool bFeelerHit = GetWorld()->LineTraceSingleByChannel(FeelerHit, FeelerStart, FeelerEnd, ECC_Visibility, Params);
+
+				if (bFeelerHit)
+				{
+					// We hit wall ahead of us. Check if it's a smooth curve or a sharp corner
+					FVector NextWallNormal = FeelerHit.Normal;
+					NextWallNormal.Z = 0.0f;
+
+					// Compare the upcoming wall to the wall we are currently touching
+					float CornerDotProduct = FVector::DotProduct(NextWallNormal, CurrentWallNormal);
+
+					// If the dot product is lower than our threshold, it's a sharp corner so don't move
+					if (CornerDotProduct < CoverCornerThreshold)
+					{
+						IntendedMovement = 0.0f;
+					}
+				}
+				else
+				{
+					// The feeler hit nothing. We reached the end of the mesh. Don't move
+					IntendedMovement = 0.0f;
+				}
+			}
+
+			// Apply whatever movement survived the checks
+			AddMovementInput(GetActorRightVector(), IntendedMovement);
 		}
 		else {
 			
 			// route the input
 			DoMove(MovementVector.X, MovementVector.Y);
 		}
-	}
-
-	//// Varying sound levels based on movement type
-	//if (MovementVector.Length() > 0.0f)
-	//{
-	//	if (!bIsCrouched)
-	//	{
-	//		bool bIsSprinting = GetCharacterMovement()->MaxWalkSpeed > 500.0f;
-
-	//		float Loudness = bIsSprinting ? 0.7f : 0.5f; // Louder if sprinting, quieter if walking
-	//		float Range = bIsSprinting ? 1200.0f : 500.0f;
-
-	//		UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), Loudness, this, Range, FName("Footstep"));
-	//	}
-	//}
-	
+	}	
 }
 
 void AProject_StealthGhostCharacter::Look(const FInputActionValue& Value)
@@ -192,7 +234,7 @@ void AProject_StealthGhostCharacter::Landed(const FHitResult& Hit)
 	// declaring this first ensures we allow the default landing physics take place
 	Super::Landed(Hit);
 
-	UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 0.5f, this, 1000.0f, FName("Landing noise"));
+	UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 0.5f, this, 1200.0f, FName("Landing noise"));
 }
 
 void AProject_StealthGhostCharacter::DoJumpStart()
@@ -267,42 +309,6 @@ bool AProject_StealthGhostCharacter::CanTakeCover(FHitResult& OutHit)
 	DrawDebugSphere(GetWorld(), StartLocation, SphereRadius, 12, FColor::Red, false, 2.0f);
 	return false;
 }
-//bool AProject_StealthGhostCharacter::CanTakeCover()
-//{
-//	//Laser starts at the center of the player 
-//	FVector StartLocation = GetActorLocation();
-//
-//	//Points towards where the character is facing
-//	FVector ForwardVector = GetActorForwardVector();
-//
-//	//The laser extends 100 units foward, which is equivalent to 1 meter
-//	FVector EndLocation = StartLocation + (ForwardVector * 200.0f);
-//
-//	FHitResult HitResult; // Stores data on what was hit
-//	FCollisionQueryParams CollisionParams;
-//	CollisionParams.AddIgnoredActor(this); // This tells the laser not to hit the player's own body
-//
-//	// This fires the laser
-//	// ECC_Visibility means it will hit anything that blocks the camera/sight
-//	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, CollisionParams);
-//
-//	// This is just visual debugging to ensure the math works properly
-//	if (bHit)
-//	{
-//		// If we hit a wall, draw a GREEN line for 2 seconds
-//		DrawDebugLine(GetWorld(), StartLocation, HitResult.ImpactPoint, FColor::Green, false, 2.0f, 0, 2.0f);
-//	}
-//	else
-//	{
-//		// If we hit nothing, draw a RED line for 2 seconds
-//		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 2.0f, 0, 2.0f);
-//	}
-//
-//	return bHit;
-//}
-
-
-
 
 // Toggle Cover logic
 void AProject_StealthGhostCharacter::ToggleCover()
@@ -327,6 +333,9 @@ void AProject_StealthGhostCharacter::ToggleCover()
 			// This just set the character to the InCover state
 			CurrentState = EPlayerMovementState::VE_InCover;
 
+			// Memorize the exact wall angle the moment we touch it
+			CurrentWallNormal = HitResult.Normal;
+
 			GetCharacterMovement()->bOrientRotationToMovement = false;
 
 			// Auto crouch when getting into cover
@@ -346,9 +355,6 @@ void AProject_StealthGhostCharacter::ToggleCover()
 			LastValidCoverLocation = CoverLocation;
 
 			SmoothSnapToCover(CoverLocation, WallRotation);
-
-
-			//GetWorldTimerManager().SetTimer(CoverUpdateTimer, this, &AProject_StealthGhostCharacter::UpdateCoverHug, 0.05f, true);
 		}
 	}
 }
@@ -365,74 +371,128 @@ void AProject_StealthGhostCharacter::Tick(float DeltaTime)
 	if (CurrentState == EPlayerMovementState::VE_InCover)
 	{
 		FVector StartLocation = GetActorLocation();
-		// Trace backwards from the player using a negative forward vector
-		FVector EndLocation = StartLocation - (GetActorForwardVector() * 80.0f);
 
-		// Sphere size
-		float SphereRadius = 35.0f;
+		// We need to find the right vector of the wall so we can shoot traces from the shoulders
+		FVector WallRight = FVector::CrossProduct(FVector::UpVector, CurrentWallNormal).GetSafeNormal();
+
+		// We shoot the traces backward against the wall's normal
+		FVector TraceDirection = CurrentWallNormal * -80.0f;
+
+		// Setup our 3 points: Center, Left Shoulder, Right Shoulder
+		FVector RightShoulder = StartLocation + (WallRight * 35.0f);
+		FVector LeftShoulder = StartLocation - (WallRight * 35.0f);
 
 		FCollisionQueryParams CollisionParams;
 		CollisionParams.AddIgnoredActor(this);
-		FCollisionShape SphereShape = FCollisionShape::MakeSphere(SphereRadius);
 
-		TArray<FHitResult> HitResults;
+		FHitResult CenterHit, RightHit, LeftHit;
+		bool bHitCenter = GetWorld()->LineTraceSingleByChannel(CenterHit, StartLocation, StartLocation + TraceDirection, ECC_Visibility, CollisionParams);
+		bool bHitRight = GetWorld()->LineTraceSingleByChannel(RightHit, RightShoulder, RightShoulder + TraceDirection, ECC_Visibility, CollisionParams);
+		bool bHitLeft = GetWorld()->LineTraceSingleByChannel(LeftHit, LeftShoulder, LeftShoulder + TraceDirection, ECC_Visibility, CollisionParams);
 
-		bool bHit = GetWorld()->SweepMultiByChannel(HitResults, StartLocation, EndLocation, FQuat::Identity, ECC_Visibility, SphereShape, CollisionParams);
-
-		bool bFoundWall = false;
-
-		if (bHit)
+		if (bHitCenter || bHitRight || bHitLeft)
 		{
-			for (const FHitResult& Hit : HitResults)
+			LastValidCoverLocation = GetActorLocation();
+
+			// Use the shoulders to average out bumps
+			FVector TargetNormal = CurrentWallNormal; // Default to what we had last frame
+
+			if (bHitRight && bHitLeft) { TargetNormal = (RightHit.Normal + LeftHit.Normal).GetSafeNormal(); }
+			else if (bHitRight) { TargetNormal = RightHit.Normal; }
+			else if (bHitLeft) { TargetNormal = LeftHit.Normal; }
+			else if (bHitCenter) { TargetNormal = CenterHit.Normal; } // Fallback
+
+			TargetNormal.Z = 0.0f; // Keep it flat
+			CurrentWallNormal = TargetNormal; // Save it
+
+			// Smoothly apply the rotation
+			FRotator TargetRotation = CurrentWallNormal.Rotation();
+			SetActorRotation(FMath::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.0f));
+
+			// Use the Center Hit for our distance to the wall
+			if (bHitCenter)
 			{
-				// checks if this is a vertical wall
-				if (FMath::Abs(Hit.Normal.Z) < 0.2f)
-				{
-					bFoundWall = true;
-					// Save the current location
-					LastValidCoverLocation = GetActorLocation();
+				FVector TargetLocation = CenterHit.ImpactPoint + (CurrentWallNormal * 40.0f);
+				FVector CurrentLocation = GetActorLocation();
 
-					// smoothly roatate the character to match the wall's new curve
-					FRotator TargetRotation = Hit.Normal.Rotation();
-					FRotator SmoothRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.0f);
-					SetActorRotation(SmoothRotation);
-
-					// calculate a constant distance between the player and the wall
-					FVector HugWallLocation = Hit.ImpactPoint + (Hit.Normal * 40.0f);
-					// Get our current location
-					FVector CurrentLocation = GetActorLocation();
-
-					// Isolate X and Y axis from Z to avoid falling bug
-					FVector2D CurrentXY(CurrentLocation.X, CurrentLocation.Y);
-					FVector2D TargetXY(HugWallLocation.X, HugWallLocation.Y);
-
-					// This interpolates only the 2D plane
-					FVector2D SmoothXY = FMath::Vector2DInterpTo(CurrentXY, TargetXY, DeltaTime, 10.0f);
-
-					// Combine the new X and Y with the Z we didn't touch
-					FVector SmoothLocation(SmoothXY.X, SmoothXY.Y, CurrentLocation.Z);
-
-					// This keeps the height stable
-					//HugWallLocation.Z = GetActorLocation().Z;
-
-					//// VInterpTo is used to pull the character to that distance
-					//FVector2D SmoothLocation = FMath::VInterpTo(GetActorLocation(), HugWallLocation, DeltaTime, 10.0f);
-
-					SetActorLocation(SmoothLocation);
-
-					break; // stop loop once a wall is found
-				}
+				// Interpolate X and Y. Because we used the center chest hit, this adjusts 
+				// depth and will not pull the character laterally
+				FVector2D SmoothXY = FMath::Vector2DInterpTo(FVector2D(CurrentLocation.X, CurrentLocation.Y), FVector2D(TargetLocation.X, TargetLocation.Y), DeltaTime, 10.0f);
+				SetActorLocation(FVector(SmoothXY.X, SmoothXY.Y, CurrentLocation.Z));
 			}
 		}
-		// if no wall is found after looping
-		if (!bFoundWall)
+		else
 		{
+			// We fell off the wall completely
 			SetActorLocation(LastValidCoverLocation);
 			GetCharacterMovement()->Velocity = FVector::ZeroVector;
 		}
 	}
 
-	// --- AUTOMATED FOOTSTEP ALGORITHM ---
+	//if (CurrentState == EPlayerMovementState::VE_InCover)
+	//{
+	//	FVector StartLocation = GetActorLocation();
+	//	FVector ForwardOffset = GetActorForwardVector() * 80.0f;
+
+	//	// Sphere size
+	//	float SphereRadius = 35.0f;
+
+	//	FCollisionQueryParams CollisionParams;
+	//	CollisionParams.AddIgnoredActor(this);
+	//	FCollisionShape SphereShape = FCollisionShape::MakeSphere(SphereRadius);
+
+	//	TArray<FHitResult> HitResults;
+
+	//	bool bHit = GetWorld()->SweepMultiByChannel(HitResults, StartLocation, EndLocation, FQuat::Identity, ECC_Visibility, SphereShape, CollisionParams);
+
+	//	bool bFoundWall = false;
+
+	//	if (bHit)
+	//	{
+	//		for (const FHitResult& Hit : HitResults)
+	//		{
+	//			// checks if this is a vertical wall
+	//			if (FMath::Abs(Hit.Normal.Z) < 0.2f)
+	//			{
+	//				bFoundWall = true;
+	//				// Save the current location
+	//				LastValidCoverLocation = GetActorLocation();
+
+	//				// smoothly roatate the character to match the wall's new curve
+	//				FRotator TargetRotation = Hit.Normal.Rotation();
+	//				FRotator SmoothRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.0f);
+	//				SetActorRotation(SmoothRotation);
+
+	//				// calculate a constant distance between the player and the wall
+	//				FVector HugWallLocation = Hit.ImpactPoint + (Hit.Normal * 40.0f);
+	//				// Get our current location
+	//				FVector CurrentLocation = GetActorLocation();
+
+	//				// Isolate X and Y axis from Z to avoid falling bug
+	//				FVector2D CurrentXY(CurrentLocation.X, CurrentLocation.Y);
+	//				FVector2D TargetXY(HugWallLocation.X, HugWallLocation.Y);
+
+	//				// This interpolates only the 2D plane
+	//				FVector2D SmoothXY = FMath::Vector2DInterpTo(CurrentXY, TargetXY, DeltaTime, 10.0f);
+
+	//				// Combine the new X and Y with the Z we didn't touch
+	//				FVector SmoothLocation(SmoothXY.X, SmoothXY.Y, CurrentLocation.Z);
+
+	//				SetActorLocation(SmoothLocation);
+
+	//				break; // stop loop once a wall is found
+	//			}
+	//		}
+	//	}
+	//	// if no wall is found after looping
+	//	if (!bFoundWall)
+	//	{
+	//		SetActorLocation(LastValidCoverLocation);
+	//		GetCharacterMovement()->Velocity = FVector::ZeroVector;
+	//	}
+	//}
+
+	// Footstep Logic
 
 	// Are we moving on the ground?
 	if (GetVelocity().SizeSquared() > 0.0f && GetCharacterMovement()->IsMovingOnGround())
@@ -463,7 +523,7 @@ void AProject_StealthGhostCharacter::Tick(float DeltaTime)
 
 				// Set exact volumes and ranges based on movement state
 				float Loudness = bIsSprinting ? 0.7f : 0.5f;
-				float Range = bIsSprinting ? 1200.0f : 500.0f;
+				float Range = bIsSprinting ? 1800.0f : 500.0f;
 
 				// Send the isolated "Footstep" tag to the AI
 				UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), Loudness, this, Range, FName("Footstep"));
@@ -524,6 +584,30 @@ void AProject_StealthGhostCharacter::StopSprint()
 // Attempt Kill Logic
 void AProject_StealthGhostCharacter::TryStealthKill()
 {
+	// 1. Ask our new scanner if there is a valid target in front of us
+	if (AProject_StealthGhostCharacter* TargetGuard = CheckForStealthKillTarget())
+	{
+		// 2. We got a green light! Execute the kill.
+		TargetGuard->DieSilently();
+		PlayStealthKillAnimation(TargetGuard);
+
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Kill Successful"));
+
+		// Roll for stealth kill health restore
+		if (FMath::FRand() <= StealthKillHealChance)
+		{
+			RestoreHealth(StealthKillHealAmount, TEXT("Stealth Kill"));
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Kill Failed. No valid target."));
+	}
+}
+
+// Checks if we can stealth kill
+AProject_StealthGhostCharacter* AProject_StealthGhostCharacter::CheckForStealthKillTarget()
+{
 	// Send a small sphere in front of the player
 	FVector StartLoc = GetActorLocation();
 	FVector EndLoc = StartLoc + (GetActorForwardVector() * StealthKillRange);
@@ -554,38 +638,35 @@ void AProject_StealthGhostCharacter::TryStealthKill()
 		{
 			if (Guard->bIsDead)
 			{
-				return; // end function if the guard is dead
+				return nullptr; // Guard is dead, return nothing
 			}
 
 			// check if alignment is greater than tolerance angle
 			if (FacingAlignment > StealthKillAngleTolerance)
 			{
-				// Player can kill 
-				//GetCharacterMovement()->DisableMovement();
-
-				// Function call to kill
-				Guard->DieSilently();
-
-				PlayStealthKillAnimation(TargetGuard);
-
-				//GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-
-				// Debug text
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Kill Successful"));
+				return Guard; // SUCCESS! We are perfectly behind a living guard.
 			}
-			else
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Kill Failed. Not properly behind guard"));
-			}
-
 		}
 	}
+	return nullptr; // No valid guard found
 }
 
 // Enemy Death Logic
 void AProject_StealthGhostCharacter::DieSilently()
 {
+	// Roll chance for stealth kill loot
+	if (FMath::FRand() <= AmmoDropChance)
+	{
+		SpawnDroppedAmmo(1); // Normal kill yields 1 ammo
+	}
+
 	bIsDead = true; // tell the state machine that this character is dead
+
+	// Notify nearby guards that another guard has died
+	if (!IsPlayerControlled())
+	{
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1.0f, this, 700.0f, FName("GuardDown"));
+	}
 
 	// Kill the guards movement
 	GetCharacterMovement()->StopMovementImmediately();
@@ -644,9 +725,6 @@ void AProject_StealthGhostCharacter::CheckForInteractables()
 	// The width of our interaction cone. 90 degrees = a full 180 degree half-circle in front of us.
 	float MaxAngleDegrees = 90.0f;
 
-	// Draw a faint red sphere to show our maximum physical reach
-	//DrawDebugSphere(GetWorld(), PlayerLoc, ReachRadius, 16, FColor::Red, false, -1.0f, 0, 0.5f);
-
 	// Grab EVERYTHING within our reach
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams QueryParams;
@@ -700,14 +778,20 @@ void AProject_StealthGhostCharacter::CheckForInteractables()
 	// Update our memory
 	if (BestInteractable != CurrentInteractable)
 	{
-		CurrentInteractable = BestInteractable;
-	}
+		// 1. We looked away! Tell the OLD item to hide its UI.
+		if (CurrentInteractable)
+		{
+			IInteractableInterface::Execute_HidePrompt(CurrentInteractable);
+		}
 
-	// --- DEBUG VISUAL: Highlight the item ---
-	if (CurrentInteractable)
-	{
-		// Draws a green line from the player's chest directly to the selected item
-		DrawDebugLine(GetWorld(), PlayerLoc, CurrentInteractable->GetActorLocation(), FColor::Green, false, -1.0f, 0, 2.0f);
+		// 2. Update our memory to the new item (this might be an item, or it might be nullptr if we looked at nothing)
+		CurrentInteractable = BestInteractable;
+
+		// 3. We looked at something new! Tell the NEW item to show its UI.
+		if (CurrentInteractable)
+		{
+			IInteractableInterface::Execute_ShowPrompt(CurrentInteractable);
+		}
 	}
 }
 
@@ -787,11 +871,6 @@ void AProject_StealthGhostCharacter::EquipSlot(int32 SlotIndex)
 
 				// Switch to the armed anim if holding a gun
 				SwitchToArmedAnimState();
-				// PLAY THE EQUIP MONTAGE
-				//if (EquipMontage && GetMesh()->GetAnimInstance())
-				//{
-				//	GetMesh()->GetAnimInstance()->Montage_Play(EquipMontage);
-				//}
 			}
 			else
 			{
@@ -979,6 +1058,67 @@ void AProject_StealthGhostCharacter::SwitchToUnarmedAnimState()
 		});
 }
 
+// Scans nearby guards and directly notifies any that have LOS to this character.
+// Used on death because the UE5 sight system doesn't re-fire for bIsDead state changes
+// on actors already within an active vision cone.
+static void NotifyNearbyGuardsOfDeath(AProject_StealthGhostCharacter* DeadChar)
+{
+	if (!DeadChar || !DeadChar->GetWorld()) return;
+
+	// Gather all pawns within a generous radius around the dead guard
+	TArray<AActor*> NearbyActors;
+	UGameplayStatics::GetAllActorsOfClass(DeadChar->GetWorld(), AProject_StealthGhostCharacter::StaticClass(), NearbyActors);
+
+	FVector DeadLocation = DeadChar->GetActorLocation();
+	const float CheckRadius = 3000.0f; // 30 meters
+
+	for (AActor* Actor : NearbyActors)
+	{
+		AProject_StealthGhostCharacter* NearbyChar = Cast<AProject_StealthGhostCharacter>(Actor);
+		if (!NearbyChar || NearbyChar == DeadChar) continue;
+		if (NearbyChar->bIsDead) continue; // Dead guards don't react
+		if (!NearbyChar->IsPlayerControlled() == false) continue; // Only AI guards
+
+		AGhostAIController* AICon = Cast<AGhostAIController>(NearbyChar->GetController());
+		if (!AICon || !AICon->GetPawn()) continue;
+
+		// Range check
+		float Dist = FVector::Dist(NearbyChar->GetActorLocation(), DeadLocation);
+		if (Dist > CheckRadius) continue;
+
+		// did this guard actually have a clear view of the dying guard?
+		FVector GuardEyes = NearbyChar->GetActorLocation() + FVector(0, 0, 70.0f);
+		FHitResult LOSHit;
+		FCollisionQueryParams LOSParams;
+		LOSParams.AddIgnoredActor(NearbyChar);
+		LOSParams.AddIgnoredActor(DeadChar);
+
+		bool bHit = DeadChar->GetWorld()->LineTraceSingleByChannel(LOSHit, GuardEyes, DeadLocation, ECC_Visibility, LOSParams);
+
+		if (!bHit)
+		{
+			// Clear LOS to the dead guard — they witnessed it, notify directly
+			AICon->OnWitnessedGuardDeath(DeadChar);
+		}
+	}
+}
+
+// Restores health to the character
+void AProject_StealthGhostCharacter::RestoreHealth(float Amount, const FString& Source)
+{
+	if (bIsDead || Amount <= 0.f) return;
+
+	float OldHealth = CurrentHealth;
+	CurrentHealth = FMath::Clamp(CurrentHealth + Amount, 0.f, MaxHealth);
+	float ActualGain = CurrentHealth - OldHealth;
+
+	if (GEngine && ActualGain > 0.f)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green,
+			FString::Printf(TEXT("+%.0f HP (%s)"), ActualGain, *Source));
+	}
+}
+
 // Damage Logic
 float AProject_StealthGhostCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
@@ -999,24 +1139,56 @@ float AProject_StealthGhostCharacter::TakeDamage(float DamageAmount, FDamageEven
 		// DEBUG: Print the health to the screen!
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("Player Health: %f"), CurrentHealth));
 
-		// If they took damage but are NOT dead yet, play the flinch!
-		if (CurrentHealth > 0.f && GetMesh()->GetAnimInstance())
+		// If they took damage but are not dead yet, play the flinch!
+		if (CurrentHealth > 0.f)
 		{
-			if (HitReactionMontage)
+			// Play the hit reaction montage if it exists and the mesh has an animation instance
+			if (HitReactionMontage && GetMesh()->GetAnimInstance())
 			{
 				GetMesh()->GetAnimInstance()->Montage_Play(HitReactionMontage);
-
-				// If we are an AI, instantly lock onto whoever shot us!
-				if (AGhostAIController* AICon = Cast<AGhostAIController>(GetController()))
+			}
+			// If we are an AI, instantly lock onto whoever shot us!
+			if (AGhostAIController* AICon = Cast<AGhostAIController>(GetController()))
+			{
+				if (EventInstigator && EventInstigator->GetPawn())
 				{
-					if (EventInstigator && EventInstigator->GetPawn())
-					{
-						AICon->bIsSpooked = true;
-						AICon->SuspicionLevel = AICon->MaxSuspicion; // Max out suspicion
+					APawn* ShooterPawn = EventInstigator->GetPawn(); // Get shooter
+					FVector ShooterLocation = ShooterPawn->GetActorLocation(); // Get shooter location
 
-						if (UBlackboardComponent* BB = AICon->GetBlackboardComponent())
+					AICon->bIsSpooked = true;
+					AICon->SuspicionLevel = AICon->MaxSuspicion; // Max out suspicion
+					// Lock their suspicion at 100%
+					AICon->SuspicionDecayPauseEndTime = GetWorld()->GetTimeSeconds() + 20.0f;
+
+					if (UBlackboardComponent* BB = AICon->GetBlackboardComponent())
+					{
+						// Check if the guard has a clear line of sight to the shooter right now.
+						FHitResult LOSHit;
+						FCollisionQueryParams LOSParams;
+						LOSParams.AddIgnoredActor(this);          // Ignore the guard's own body
+						LOSParams.AddIgnoredActor(ShooterPawn);   // We want to know if the path is clear
+
+						FVector GuardEyes = GetActorLocation() + FVector(0, 0, 70.0f);
+						bool bHit = GetWorld()->LineTraceSingleByChannel(
+							LOSHit, GuardEyes, ShooterLocation, ECC_Visibility, LOSParams);
+
+						// bHit == false means nothing blocked the path so clear LOS to shooter
+						bool bHasLOS = !bHit;
+
+						if (bHasLOS)
 						{
-							BB->SetValueAsObject(FName("TargetActor"), EventInstigator->GetPawn());
+							// Guard can see the shooter — lock on directly, activate Chase branch
+							BB->SetValueAsObject(FName("TargetActor"), ShooterPawn);
+							BB->ClearValue(FName("InvestigateLocation"));
+							BB->ClearValue(FName("bWillWalkToNoise"));
+							BB->ClearValue(FName("bIsCombatSearch"));
+						}
+						else
+						{
+							// Guard can't see the shooter — send them to the shot origin
+							BB->SetValueAsVector(FName("InvestigateLocation"), ShooterLocation);
+							BB->SetValueAsBool(FName("bIsCombatSearch"), true);
+							BB->SetValueAsBool(FName("bWillWalkToNoise"), true);
 						}
 
 						OnCombatStarted();
@@ -1029,7 +1201,41 @@ float AProject_StealthGhostCharacter::TakeDamage(float DamageAmount, FDamageEven
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Character Died!"));
 
+			// Only run this if the character dying is NOT the player
+			if (!IsPlayerControlled())
+			{
+				// Probability chack
+				if (FMath::FRand() <= AmmoDropChance)
+				{
+					bool bIsHeadshot = false;
+
+					// Check if the damage was a body or head shot
+					if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
+					{
+						const FPointDamageEvent* PointDamageEvent = (FPointDamageEvent*)&DamageEvent;
+
+						if (PointDamageEvent->HitInfo.BoneName == FName("head"))
+						{
+							bIsHeadshot = true;
+						}
+					}
+
+					// 2 for headshot, 1 for normal body shot
+					int32 AmmoAmount = bIsHeadshot ? 2 : 1;
+
+					// Sapwn the ammo
+					SpawnDroppedAmmo(AmmoAmount);
+				}
+			}
+
 			bIsDead = true;
+			NotifyNearbyGuardsOfDeath(this);
+
+			// Notify nearby guards that another guard has died
+			if (!IsPlayerControlled())
+			{
+				UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1.0f, this, 500.0f, FName("GuardDown"));
+			}
 
 			// Kill the guards movement
 			GetCharacterMovement()->StopMovementImmediately();
@@ -1104,4 +1310,41 @@ void AProject_StealthGhostCharacter::ReloadWeapon()
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Cannot Reload: Gun is full or out of ammo!"));
 		}
 	}
+}
+
+bool AProject_StealthGhostCharacter::AddAmmoToInventory(TSubclassOf<AEquippableBase> WeaponClass, float AmmoAmount, float MaxCapacity)
+{
+	if (!WeaponClass) return false;
+
+	// If we are actively holding the weapon, update it directly
+	if (CurrentEquipment && CurrentEquipment->IsA(WeaponClass))
+	{
+		if (AWeaponBase* Weapon = Cast<AWeaponBase>(CurrentEquipment))
+		{
+			float CurrentReserve = Weapon->GetReserveAmmo();
+
+			if (CurrentReserve >= MaxCapacity) return false; // Ammo is full!
+
+			// Clamp ensures we don't accidentally go over the max capacity
+			float NewReserve = FMath::Clamp(CurrentReserve + AmmoAmount, 0.0f, MaxCapacity);
+			Weapon->SetAmmo(Weapon->GetCurrentAmmo(), NewReserve);
+			return true;
+		}
+	}
+
+	// 2. If the weapon is holstered in our pocket (SavedAmmoMap)
+	if (SavedAmmoMap.Contains(WeaponClass))
+	{
+		FVector2D AmmoData = SavedAmmoMap[WeaponClass];
+
+		if (AmmoData.Y >= MaxCapacity) return false; // Ammo is full!
+
+		AmmoData.Y = FMath::Clamp(AmmoData.Y + AmmoAmount, 0.0f, MaxCapacity);
+		SavedAmmoMap.Add(WeaponClass, AmmoData); // Overwrites the old value with the new math
+		return true;
+	}
+
+	// 3. We don't have the gun yet, but let's save the ammo for when we find it!
+	SavedAmmoMap.Add(WeaponClass, FVector2D(0.0f, FMath::Clamp(AmmoAmount, 0.0f, MaxCapacity)));
+	return true;
 }

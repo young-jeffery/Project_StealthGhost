@@ -26,6 +26,6 @@ public:
     float ObservationDuration = 1.0f;
 
 protected:
-    float TimeSpentWaiting;
+    float TaskStartTime = 0.0f;
 	
 };

@@ -11,7 +11,7 @@
 
 AThrowableEquipment::AThrowableEquipment()
 {
-	// Turn Tick ON so we can draw the arc every frame
+	// Turn Tick on so we can draw the arc every frame
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -23,6 +23,7 @@ void AThrowableEquipment::StartAiming()
 void AThrowableEquipment::StopAiming()
 {
 	bIsAiming = false;
+	UpdateAimMarker(FVector::ZeroVector, false);
 }
 
 void AThrowableEquipment::ReleaseAction()
@@ -31,6 +32,7 @@ void AThrowableEquipment::ReleaseAction()
 	if (!bIsAiming || !ThrowableClass) return;
 
 	bIsAiming = false;
+	UpdateAimMarker(FVector::ZeroVector, false);
 
 	ACharacter* PlayerChar = Cast<ACharacter>(GetOwner());
 	if (PlayerChar)
@@ -99,7 +101,8 @@ void AThrowableEquipment::Tick(float DeltaTime)
 				PredictParams.bTraceWithCollision = true; // Stop the arc when it hits a wall/floor
 				PredictParams.ProjectileRadius = 5.0f;
 				PredictParams.MaxSimTime = 5.0f;
-				PredictParams.DrawDebugType = EDrawDebugTrace::ForOneFrame; // Draw it just for this frame
+
+				PredictParams.DrawDebugType = EDrawDebugTrace::None; // Draw it just for this frame
 				PredictParams.TraceChannel = ECC_Visibility;
 				PredictParams.ActorsToIgnore.Add(this);
 				PredictParams.ActorsToIgnore.Add(PlayerChar); // Don't hit ourselves
@@ -107,7 +110,16 @@ void AThrowableEquipment::Tick(float DeltaTime)
 				FPredictProjectilePathResult PredictResult;
 
 				// Fire the fake physics simulation!
-				UGameplayStatics::PredictProjectilePath(GetWorld(), PredictParams, PredictResult);
+				if (UGameplayStatics::PredictProjectilePath(GetWorld(), PredictParams, PredictResult))
+				{
+					// Tell the Blueprint where it hit
+					UpdateAimMarker(PredictResult.HitResult.ImpactPoint, true);
+				}
+				else
+				{
+					// If aiming into the sky where it doesn't hit anything, hide the marker
+					UpdateAimMarker(FVector::ZeroVector, false);
+				}
 			}
 		}
 	}

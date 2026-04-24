@@ -74,6 +74,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stealth")
 	EPlayerMovementState CurrentState;
 
+	// Checks for a valid stealth kill target
+	UFUNCTION(BlueprintCallable, Category = "Stealth")
+	AProject_StealthGhostCharacter* CheckForStealthKillTarget();
+
 	// Exposes this array to the editor for easy configuration of patrol routes.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Guard Patrol")
 	TArray<AActor*> PatrolRoute;
@@ -126,6 +130,26 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Game Over")
 	void OnPlayerDied();
 
+	// -- Health System --
+	// Percentage chance (0.0 - 1.0) that a headshot restores health
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
+	float HeadshotHealChance = 0.4f;   // 40% chance by default
+
+	// How much health a successful headshot heal restores
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
+	float HeadshotHealAmount = 15.0f;
+
+	// Percentage chance (0.0 - 1.0) that a stealth kill restores health
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
+	float StealthKillHealChance = 0.65f;   // 65% — stealth kills are harder to get
+
+	// How much health a successful stealth kill heal restores
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
+	float StealthKillHealAmount = 25.0f;
+
+	// Restores health up to MaxHealth
+	void RestoreHealth(float Amount, const FString& Source);
+
 
 protected:
 
@@ -144,6 +168,25 @@ protected:
 	// Blueprint for cover transition
 	UFUNCTION(BlueprintImplementableEvent, Category = "Stealth Action")
 	void SmoothSnapToCover(FVector TargetLocation, FRotator TargetRotation);
+
+	// The normal of the wall we are currently touching. 
+	FVector CurrentWallNormal;
+
+	// How sharp of a corner will cause the player to stop? 
+	// 1.0 = Perfectly flat wall. 0.7 = Approx 45-degree curve. 0.0 = 90-degree corner.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stealth Action - Cover")
+	float CoverCornerThreshold = 0.6f;
+
+	// How far ahead the character checks for edges
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stealth Action - Cover")
+	float CoverFeelerDistance = 50.0f;
+
+	// How long (in seconds) the player must pull away from the wall to break cover
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stealth Action - Cover")
+	float BreakawayHoldTime = 0.3f;
+
+	// Internal stopwatch for the breakaway
+	float CurrentBreakawayTime = 0.0f;
 
 	// Blueprints for sprint
 	UFUNCTION(BlueprintCallable, Category = "Stealth Action")
@@ -202,6 +245,20 @@ protected:
 	// Caches weapon ammo when unequipped. Key = Weapon Class, Value = X(Current), Y(Reserve)
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
 	TMap<TSubclassOf<class AEquippableBase>, FVector2D> SavedAmmoMap;
+
+	// Attempts to add ammo. Returns true if successful, false if already at max capacity.
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	bool AddAmmoToInventory(TSubclassOf<class AEquippableBase> WeaponClass, float AmmoAmount, float MaxCapacity);
+
+	// --- LOOT SYSTEM ---
+
+	// The chance that this guard drops ammo when killed
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Loot")
+	float AmmoDropChance = 0.20f;
+
+	// Spawn the ammo
+	UFUNCTION(BlueprintImplementableEvent, Category = "Loot")
+	void SpawnDroppedAmmo(int32 AmmoToDrop);
 
 
 	// --- EQUIPMENT SYSTEM ---

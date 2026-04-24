@@ -65,6 +65,4 @@ public:
 
 protected:
 
-public:	
-
 };

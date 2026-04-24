@@ -11,9 +11,8 @@ UBTTask_RaiseAlarm::UBTTask_RaiseAlarm()
 {
     NodeName = TEXT("Raise Alarm (Delayed)");
 
-    // IMPORTANT: Because we are using Timers and Variables inside the task, 
-    // we MUST tell the engine to create a separate instance of this node for every guard. 
-    // Otherwise, multiple guards raising an alarm at the same time will overwrite each other's memory!
+    // Because we are using Timers and Variables inside the task, create a separate instance of this node for every guard
+    // Otherwise, multiple guards raising an alarm at the same time will overwrite each other's memory
     bCreateNodeInstance = true;
 }
 
@@ -60,7 +59,7 @@ void UBTTask_RaiseAlarm::FinishAlarm()
     if (AIController && AIController->GetPawn())
     {
         // The delay is over, broadcast the Yell!
-        UAISense_Hearing::ReportNoiseEvent(GetWorld(), AIController->GetPawn()->GetActorLocation(), 1.0f, AIController->GetPawn(), 2000.0f, FName("Alarm"));
+        UAISense_Hearing::ReportNoiseEvent(GetWorld(), AIController->GetPawn()->GetActorLocation(), 1.0f, AIController->GetPawn(), 5000.0f, FName("Alarm"));
 
         if (GEngine)
         {
@@ -82,8 +81,6 @@ void UBTTask_RaiseAlarm::FinishAlarm()
 
 EBTNodeResult::Type UBTTask_RaiseAlarm::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	// The Guard got killed or spotted the player during the alarm delay! We need to clean up our mess so another guard can find the body and call for backup.
-
     // Cancel the timer so the alarm never goes off
     GetWorld()->GetTimerManager().ClearTimer(AlarmTimerHandle);
 
@@ -103,71 +100,3 @@ EBTNodeResult::Type UBTTask_RaiseAlarm::AbortTask(UBehaviorTreeComponent& OwnerC
     // Acknowledge the abort
     return EBTNodeResult::Aborted;
 }
-
-
-
-
-
-
-
-//
-//
-//#include "BTTask_RaiseAlarm.h"
-//#include "AIController.h"
-//#include "Perception/AISense_Hearing.h" // Access Unreal's sound broadcast system
-//#include "Engine/Engine.h"				//  Enable debug messages
-//#include "BehaviorTree/BlackboardComponent.h"
-//#include "Project_StealthGhostCharacter.h"
-//
-//
-//UBTTask_RaiseAlarm::UBTTask_RaiseAlarm()
-//{
-//	NodeName = TEXT("Raise Alarm");
-//}
-//
-//
-//EBTNodeResult::Type UBTTask_RaiseAlarm::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
-//{
-//	// Get the AI controller that owns this behavior tree
-//	AAIController* AIController = OwnerComp.GetAIOwner();
-//	if (!AIController) return EBTNodeResult::Failed;
-//
-//	// Get the characater the sound will originate from
-//	APawn* AIPawn = AIController->GetPawn();
-//	if (!AIPawn) return EBTNodeResult::Failed;
-//
-//	// Get the blackboard to access our memory
-//	UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
-//	if (!BB) return EBTNodeResult::Failed;
-//
-//	// Look in our memory to see if we walked over here because of a body
-//	UObject* BodyObject = BB->GetValueAsObject(FName("SpottedBody"));
-//	AProject_StealthGhostCharacter* DeadBody = Cast<AProject_StealthGhostCharacter>(BodyObject);
-//
-//	// Are we just investigating a noise? Or did another guard get here first and already report it?
-//	if (!DeadBody || DeadBody->bHasBeenDiscovered)
-//	{
-//		// Stay silent. Wipe our memory of the body just in case, and successfully move to the search phase.
-//		BB->ClearValue(FName("SpottedBody"));
-//		return EBTNodeResult::Succeeded;
-//	}
-//
-//	// We are the first guard to reach the undiscovered body!
-//	DeadBody->bHasBeenDiscovered = true; // Lock the body NOW so no one else yells
-//
-//	// Broadcast the Yell
-//	UAISense_Hearing::ReportNoiseEvent(GetWorld(), AIPawn->GetActorLocation(), 1.0f, AIPawn, 2000.0f, FName("Alarm"));
-//
-//	if (GEngine)
-//	{
-//		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: WE HAVE A MAN DOWN!"));
-//	}
-//
-//	// Wipe our memory of the body so we can cleanly transition to searching
-//	BB->ClearValue(FName("SpottedBody"));
-//
-//	// Set alarming state so we can see the debug text
-//	BB->SetValueAsBool(FName("bIsRaisingAlarm"), true);
-//
-//	return EBTNodeResult::Succeeded;
-//}

@@ -21,9 +21,9 @@ AGhostAIController::AGhostAIController()
 
     // Create and Configure the Eyes
     SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
-    SightConfig->SightRadius = 1500.0f; // 15 meters
-    SightConfig->LoseSightRadius = 1700.0f; // 17 meters
-    SightConfig->PeripheralVisionAngleDegrees = 60.0f; // 120 degree cone
+    SightConfig->SightRadius = 3000; // 30 meters
+    SightConfig->LoseSightRadius = 3500.0f; // 35 meters
+    SightConfig->PeripheralVisionAngleDegrees = 70.0f; // 140 degree cone
     SightConfig->SetMaxAge(5.0f); // Memory lasts 5 seconds
 
     // We check all affiliation boxes so the AI doesn't ignore us by default
@@ -33,7 +33,7 @@ AGhostAIController::AGhostAIController()
 
     // Create and Configure the Ears
     HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("HearingConfig"));
-    HearingConfig->HearingRange = 2000.0f; // 20 meters
+    HearingConfig->HearingRange = 3500.0f; // 35 meters
     HearingConfig->SetMaxAge(5.0f);
     HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
     HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
@@ -59,6 +59,9 @@ void AGhostAIController::BeginPlay()
         AIPerception->OnTargetPerceptionUpdated.AddDynamic(this, &AGhostAIController::OnTargetDetected);
 
     }
+
+    // Start proximity detection at 4x per second so it doesn't run every frame
+    GetWorld()->GetTimerManager().SetTimer(ProximityCheckTimerHandle, this, &AGhostAIController::CheckProximity, 0.25f, true);
 }
 
 // What sense was triggered
@@ -87,6 +90,22 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
 
                     // Start the trace timer (5 times a second)
                     GetWorld()->GetTimerManager().SetTimer(VisibilityTimerHandle, this, &AGhostAIController::UpdateVisibilityGating, 0.2f, true);
+
+                    if (bIsSpooked || BlackboardComp->GetValueAsBool(FName("bIsCombatSearch")))
+                    {
+                        SuspicionLevel = MaxSuspicion;
+
+                        // Lock onto the player
+                        BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
+
+                        // Broadcast the alarm immediately from this guard's position
+                        UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetPawn()->GetActorLocation(), 1.0f, GetPawn(), 5000.0f, FName("Alarm"));
+
+                        // Wipe the search memory so they don't try to go back to investigating
+                        BlackboardComp->ClearValue(FName("bIsCombatSearch"));
+                        BlackboardComp->ClearValue(FName("InvestigateLocation"));
+                        BlackboardComp->ClearValue(FName("bWillWalkToNoise"));
+                    }
                 }
 
                 // If the character we see is already dead and hasn't been discovered yet, investigate it!
@@ -94,28 +113,57 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                 {
                     if (!BlackboardComp->GetValueAsObject(FName("TargetActor")))
                     {
-                        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Hmm, What's that? Lemme check."));
+                        float CurrentTime = GetWorld()->GetTimeSeconds();
+                        bool bIsSuccessiveBody = (CurrentTime - LastBodyDiscoveredTime) < SuccessiveBodyWindow;
 
-                        FVector DirectionToBody = (SensedCharacter->GetActorLocation() - GetPawn()->GetActorLocation()).GetSafeNormal();
-                        FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 150.0f);
-
-                        BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), StopLocation);
-                        BlackboardComp->SetValueAsObject(FName("SpottedBody"), SensedCharacter);
-                        bIsSpooked = true;
-
-                        // Get the "Body" that this brain is currently controlling
-                        APawn* ControlledBody = GetPawn();
-
-                        // Check if the body exists, and "Cast" it to ensure it is specifically your custom StealthGhost character
-                        if (AProject_StealthGhostCharacter* MyGhostChar = Cast<AProject_StealthGhostCharacter>(ControlledBody))
+                        if (bIsSuccessiveBody)
                         {
-                            // It is our character! Tell them to equip the gun!
-                            MyGhostChar->OnCombatStarted();
+                            // Second dead body found within the window, forget investigation and raise alarm
+                            SensedCharacter->bHasBeenDiscovered = true;
+                            bIsSpooked = true;
+                            SuspicionLevel = MaxSuspicion;
+                            SuspicionDecayPauseEndTime = CurrentTime + 20.0f;
+
+                            // Broadcast the alarm immediately from this guard's position
+                            UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetPawn()->GetActorLocation(), 1.0f, GetPawn(), 5000.0f, FName("Alarm"));
+
+                            // Combat search from the body's location
+                            BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SensedCharacter->GetActorLocation());
+                            BlackboardComp->SetValueAsBool(FName("bIsCombatSearch"), true);
+                            BlackboardComp->SetValueAsBool(FName("bWillWalkToNoise"), true);
+
+                            if (AProject_StealthGhostCharacter* MyGhostChar = Cast<AProject_StealthGhostCharacter>(GetPawn()))
+                            {
+                                MyGhostChar->OnCombatStarted();
+                            }
+
+                            if (bShowDebugVisuals)
+                            {
+                                GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: Another one! Raising alarm immediately!"));
+                            }
+                        }
+                        else
+                        {
+                            // First body — investigate normally, record the time
+                            LastBodyDiscoveredTime = CurrentTime;
+
+                            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: Hmm, What's that? Lemme check."));
+
+                            FVector DirectionToBody = (SensedCharacter->GetActorLocation() - GetPawn()->GetActorLocation()).GetSafeNormal();
+                            FVector StopLocation = SensedCharacter->GetActorLocation() - (DirectionToBody * 150.0f);
+
+                            BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), StopLocation);
+                            BlackboardComp->SetValueAsObject(FName("SpottedBody"), SensedCharacter);
+                            bIsSpooked = true;
+
+                            if (AProject_StealthGhostCharacter* MyGhostChar = Cast<AProject_StealthGhostCharacter>(GetPawn()))
+                            {
+                                MyGhostChar->OnCombatStarted();
+                            }
                         }
                     }
                 }
             }
-
             else
             {
                 // Player got out of sight
@@ -141,6 +189,8 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                         {
                             BlackboardComp->ClearValue(FName("TargetActor"));
                             BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), Actor->GetActorLocation());
+                            BlackboardComp->SetValueAsBool(FName("bIsCombatSearch"), true);
+                            BlackboardComp->SetValueAsBool(FName("bWillWalkToNoise"), true);
                         }
                     }
                 }
@@ -182,10 +232,27 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
             FVector GuardEars = GetPawn()->GetActorLocation() + FVector(0, 0, 70.0f);
             FVector SoundLocation = Stimulus.StimulusLocation;
 
-            // Fire a cheap laser directly at the sound
-            bool bHitWall = GetWorld()->LineTraceSingleByChannel(HitResult, GuardEars, SoundLocation, ECC_Visibility, TraceParams);
+            // This prevents their destination from being overwritten by their own pain.
+            if (FVector::Dist(GetPawn()->GetActorLocation(), SoundLocation) < 50.0f)
+            {
+                return; // Abort hearing logic completely!
+            }
 
-            if (bHitWall)
+            // Fire a laser directly at the sound
+            bool bHitSomething = GetWorld()->LineTraceSingleByChannel(HitResult, GuardEars, SoundLocation, ECC_WorldStatic, TraceParams);
+
+            bool bIsOccluded = false;
+
+            if (bHitSomething)
+            {
+                // If the object we hit is more than 50cm away from the sound source, it is a genuine obstructing wall, not just the floor!
+                if (FVector::Dist(HitResult.ImpactPoint, SoundLocation) > 50.0f)
+                {
+                    bIsOccluded = true;
+                }
+            }
+
+            if (bIsOccluded)
             {
                 // If sound passes through a wall, then dampen it
                 float WallDampeningMultiplier = 0.3f;
@@ -234,17 +301,29 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                 // For sounds tagged as distractions
                 if (Stimulus.Tag == FName("Distraction"))
                 {
+                    // If the guard is already at Max Suspicion skip dice roll, instantly update the location and sprint to the new stone
+                    if (SuspicionLevel >= 70.0f || BlackboardComp->GetValueAsBool(FName("bIsCombatSearch")))
+                    {
+                        BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SoundLocation);
+                        BlackboardComp->SetValueAsBool(FName("bWillWalkToNoise"), true);
+                        BlackboardComp->SetValueAsBool(FName("bIsCombatSearch"), true); // Ensures they keep sprinting!
+
+                        if (bShowDebugVisuals) GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("Guard: Rushing the distraction!"));
+                        return; // Skip the rest of the Tier logic!
+                    }
+
+
                     // Distraction escalation logic
                     float CurrentTime = GetWorld()->GetTimeSeconds();
 
                     // Did we hear a noise within the threshold?
                     if (CurrentTime - LastTimeSoundHeard <= RapidNoiseThreshold)
                     {
-                        RapidNoiseCount++; // Escalate!
+                        RapidNoiseCount++; // Escalate
                     }
                     else
                     {
-                        RapidNoiseCount = 1; // It's been quiet for a while, reset to Tier 1
+                        RapidNoiseCount = 1;
                     }
 
                     LastTimeSoundHeard = CurrentTime;
@@ -296,6 +375,10 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                         // Third noise, full alert and yell to nearby guards.
                         bIsSpooked = true;
                         SuspicionLevel = MaxSuspicion;
+						SuspicionDecayPauseDuration += 10.0f; // Pause for 10 extra seconds
+                        SuspicionDecayPauseEndTime = CurrentTime + SuspicionDecayPauseDuration;
+
+                        BlackboardComp->SetValueAsBool(FName("WillWalkToNoise"), true);
 
                         UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetPawn()->GetActorLocation(), 1.0f, GetPawn(), 2500.0f, FName("Alarm"));
 
@@ -309,10 +392,28 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
 				// For sounds tagged as bullet whizzes
                 else if (Stimulus.Tag == FName("BulletWhiz"))
                 {
-                    // A bullet flew past their head! Instant spook, no Tier 1 waiting.
+                    // Ignore repeat whizzes from the same shot burst.
+                    float CurrentTime = GetWorld()->GetTimeSeconds();
+                    if (CurrentTime - LastBulletWhizTime < BulletWhizCooldown)
+                    {
+						return; // Ignore extra whizzes from the same shot
+                    }
+                    LastBulletWhizTime = CurrentTime;
+
+                    // A bullet passes them instantly spooks them 
                     bIsSpooked = true;
                     SuspicionLevel = FMath::Max(SuspicionLevel, MaxSuspicion * 0.8f); // Instant 80% suspicion
+					SuspicionDecayPauseEndTime = CurrentTime + 10.0f;   // Pause decay
+
                     BlackboardComp->SetValueAsBool(FName("bWillWalkToNoise"), true);
+                    BlackboardComp->SetValueAsBool(FName("bIsCombatSearch"), true);
+
+                    // Get the "Body" that this brain is currently controlling
+                    APawn* ControlledBody = GetPawn();
+                    if (AProject_StealthGhostCharacter* MyGhostChar = Cast<AProject_StealthGhostCharacter>(ControlledBody))
+                    {
+                        MyGhostChar->OnCombatStarted();
+                    }
 
                     // They will investigate where the bullet hit or passed them by
                     BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SoundLocation);
@@ -337,39 +438,126 @@ void AGhostAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
                     SuspicionLevel = MaxSuspicion; // Max out instantly
                     BlackboardComp->SetValueAsBool(FName("bWillWalkToNoise"), true);
                     BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SoundLocation);
+                    
+                    // Add a random offset so the backup guards form a firing line instead of trying to stand on the exact same spot
+                    FVector FlankingOffset = FVector(FMath::RandRange(-250.0f, 250.0f), FMath::RandRange(-250.0f, 250.0f), 0.0f);
+                    BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SoundLocation + FlankingOffset);
+
+                    BlackboardComp->SetValueAsBool(FName("bIsCombatSearch"), true);
+
+                    // Get the "Body" that this brain is currently controlling
+                    APawn* ControlledBody = GetPawn();
+                    if (AProject_StealthGhostCharacter* MyGhostChar = Cast<AProject_StealthGhostCharacter>(ControlledBody))
+                    {
+                        // It is our character! Tell them to equip the gun!
+                        MyGhostChar->OnCombatStarted();
+                    }
                 }
 
+				// For sounds tagged as SpottedPlayer
+                else if (Stimulus.Tag == FName("SpottedPlayer"))
+                {
+                    // The shouting guard is Actor. Look up their TargetActor to find where the
+                    // player actually is, rather than just moving to the shouting guard's position.
+                    FVector PlayerLoc = SoundLocation; // fallback — shouting guard's position
 
-                //// Check the tags we set up earlier 
-                //if (Stimulus.Tag == "Alarm")
-                //{
-                //    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("Guard: Alarm!? On my way bro."));
-                //    bIsSpooked = true;
+                    if (ACharacter* ShoutingGuard = Cast<ACharacter>(Actor))
+                    {
+                        if (AGhostAIController* ShoutingAI = Cast<AGhostAIController>(ShoutingGuard->GetController()))
+                        {
+                            if (UBlackboardComponent* ShoutBB = ShoutingAI->GetBlackboardComponent())
+                            {
+                                if (APawn* SpottedPlayer = Cast<APawn>(ShoutBB->GetValueAsObject(FName("TargetActor"))))
+                                {
+                                    PlayerLoc = SpottedPlayer->GetActorLocation();
+                                }
+                            }
+                        }
+                    }
 
-                //    // Get the "Body" that this brain is currently controlling
-                //    APawn* ControlledBody = GetPawn();
+                    bIsSpooked = true;
+                    SuspicionLevel = MaxSuspicion;
+                    SuspicionDecayPauseEndTime = GetWorld()->GetTimeSeconds() + 20.0f;
 
-                //    // Check if the body exists, and "Cast" it to ensure it is specifically your custom StealthGhost character
-                //    if (AProject_StealthGhostCharacter* MyGhostChar = Cast<AProject_StealthGhostCharacter>(ControlledBody))
-                //    {
-                //        // It is our character! Tell them to equip the gun!
-                //        MyGhostChar->OnCombatStarted();
-                //    }
-                //}
-                //else if (Stimulus.Tag == "Distraction")
-                //{
-                //    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Guard: What was that noise?"));
-                //}
-                //else if (Stimulus.Tag == "Footstep")
-                //{
-                //    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, TEXT("Guard: Did I hear footsteps?"));
-                //}
-                //else
-                //{
-                //    // Fallback in case a noise without a tag, unspecified tag, or misspelt tag is made
-                //    FString Tag = Stimulus.Tag.ToString();
-                //    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Guard: Heard noise: %s"), *Tag));
-                //}
+                    // Spread guards out so they don't stack on the same tile
+                    FVector FlankingOffset = FVector(FMath::RandRange(-250.0f, 250.0f), FMath::RandRange(-250.0f, 250.0f), 0.0f);
+
+                    BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), PlayerLoc + FlankingOffset);
+                    BlackboardComp->SetValueAsBool(FName("bIsCombatSearch"), true);
+                    BlackboardComp->SetValueAsBool(FName("bWillWalkToNoise"), true);
+
+                    if (AProject_StealthGhostCharacter* MyGhostChar = Cast<AProject_StealthGhostCharacter>(GetPawn()))
+                    {
+                        MyGhostChar->OnCombatStarted();
+                    }
+
+                    if (bShowDebugVisuals)
+                    {
+                        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: Player spotted — moving in!"));
+                    }
+                }
+
+				// For sounds tagged as GuardDown (a guard has been killed)
+                else if (Stimulus.Tag == FName("GuardDown"))
+                {
+					// If the dead guard has already been discovered, ignore this event
+                    if (AProject_StealthGhostCharacter* DeadGuard = Cast<AProject_StealthGhostCharacter>(Actor))
+                    {
+                        if (DeadGuard->bHasBeenDiscovered) return;
+                    }
+
+
+                    bIsSpooked = true;
+                    SuspicionLevel = MaxSuspicion;
+                    SuspicionDecayPauseEndTime = GetWorld()->GetTimeSeconds() + 20.0f;
+
+                    // Run a LOS check to the player. If clear, they witnessed the kill — chase directly.
+                    // If blocked, treat it as a combat search toward the dead guard's position.
+                    bool bCanSeeShooter = false;
+
+                    APlayerController* PC = GetWorld()->GetFirstPlayerController();
+                    if (PC && PC->GetPawn())
+                    {
+                        APawn* PlayerPawn = PC->GetPawn();
+                        FVector GuardEyes = GetPawn()->GetActorLocation() + FVector(0, 0, 70.0f);
+
+                        FHitResult LOSHit;
+                        FCollisionQueryParams LOSParams;
+                        LOSParams.AddIgnoredActor(GetPawn());
+                        LOSParams.AddIgnoredActor(PlayerPawn);
+
+                        bool bHit = GetWorld()->LineTraceSingleByChannel(
+                            LOSHit, GuardEyes, PlayerPawn->GetActorLocation(), ECC_Visibility, LOSParams);
+                        bCanSeeShooter = !bHit;
+
+                        if (bCanSeeShooter)
+                        {
+                            // Witnessed the kill — lock on directly, activates Chase branch
+                            BlackboardComp->SetValueAsObject(FName("TargetActor"), PlayerPawn);
+                            BlackboardComp->ClearValue(FName("InvestigateLocation"));
+                            BlackboardComp->ClearValue(FName("bWillWalkToNoise"));
+                            BlackboardComp->ClearValue(FName("bIsCombatSearch"));
+                        }
+                    }
+
+                    if (!bCanSeeShooter)
+                    {
+                        // Couldn't see the shooter — investigate where the guard fell
+                        BlackboardComp->SetValueAsVector(FName("InvestigateLocation"), SoundLocation);
+                        BlackboardComp->SetValueAsBool(FName("bIsCombatSearch"), true);
+                        BlackboardComp->SetValueAsBool(FName("bWillWalkToNoise"), true);
+                    }
+
+                    if (AProject_StealthGhostCharacter* MyGhostChar = Cast<AProject_StealthGhostCharacter>(GetPawn()))
+                    {
+                        MyGhostChar->OnCombatStarted();
+                    }
+
+                    if (bShowDebugVisuals)
+                    {
+                        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: Man down!"));
+                    }
+                }
             }
         }
     }
@@ -437,13 +625,13 @@ void AGhostAIController::Tick(float DeltaTime)
                 // 1 Unreal Unit = 1 cm. So 200.0f is 2 meters.
                 if (Distance < 500.0f)
                 {
-                    CurrentBuildRate *= 20.0f;
+                    CurrentBuildRate *= 10.0f;
                 }
-                else if (Distance < 700.0f)
+                else if (Distance < 1500.0f)
                 {
-                    CurrentBuildRate *= 12.0f;
+                    CurrentBuildRate *= 3.0f;
                 }
-                else if (Distance > 1000.0f)
+                else
                 {
                     CurrentBuildRate *= 1.0f;
                 }
@@ -484,7 +672,9 @@ void AGhostAIController::Tick(float DeltaTime)
                     MyGhostChar->OnCombatStarted();
                 }
 
-                UAISense_Hearing::ReportNoiseEvent(GetWorld(), CurrentVisibleTarget->GetActorLocation(), 1.0f, GetPawn(), 2000.0f, FName("Alarm"));
+                // Broadcast from this guard's position using the SpottedPlayer tag.
+                // Backup guards receiving this will look up this guard's TargetActor to get the player's exact location
+                UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetPawn()->GetActorLocation(), 1.0f, GetPawn(), 5000.0f, FName("SpottedPlayer"));
             }
         }
         else
@@ -498,93 +688,7 @@ void AGhostAIController::Tick(float DeltaTime)
         }
 
 		if (!bShowDebugVisuals) return;
-
-        //// Draw Suspicion Text
-        //if (BB)
-        //{
-        //    FVector TextLoc = GetPawn()->GetActorLocation() + FVector(0, 0, 130.0f);
-        //    FString SpookedTag = bIsSpooked ? TEXT(" (SPOOKED)") : TEXT("");
-        //    FString SuspicionText = FString::Printf(TEXT("Suspicion: %d%%%s"), FMath::RoundToInt((SuspicionLevel / MaxSuspicion) * 100.0f), *SpookedTag);
-
-        //    // Turn the text Red if spooked, otherwise keep it Cyan
-        //    FColor TextColor = bIsSpooked ? FColor::Red : FColor::Cyan;
-
-        //    DrawDebugString(GetWorld(), TextLoc, SuspicionText, nullptr, TextColor, DeltaTime, true);
-        //}
     }
-
- //   // --- DEBUG HEARING RANGE (Yellow Sphere) ---
-
-	//// Get the active hearing config from the perception component. 
- //   // This is necessary because the config can be changed at runtime, so we can't just rely on the default values we set in the constructor.
- //   FAISenseID HearingID = UAISense::GetSenseID<UAISense_Hearing>();
- //   UAISenseConfig_Hearing* ActiveHearingConfig = Cast<UAISenseConfig_Hearing>(AIPerception->GetSenseConfig(HearingID));
-
- //   // Draws a yellow wireframe sphere around the guard representing their 20m hearing radius
- //   if (ActiveHearingConfig)
- //   {
- //       DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), ActiveHearingConfig->HearingRange, 64, FColor::Yellow, false, -1.0f, 0, 2.0f);
- //   }
- //   
-
- //   // --- DEBUG SIGHT RANGE (Green Cone) ---
-
-	//// Get the active sight config from the perception component.
- //   FAISenseID SightID = UAISense::GetSenseID<UAISense_Sight>();
- //   UAISenseConfig_Sight* ActiveSightConfig = Cast<UAISenseConfig_Sight>(AIPerception->GetSenseConfig(SightID));
-
- //   if (ActiveSightConfig)
- //   {
- //       FVector EyeLocation;
- //       FRotator EyeRotation;
- //       ControlledPawn->GetActorEyesViewPoint(EyeLocation, EyeRotation);
-
- //       // Draws a green cone representing the distance and peripheral angle of their vision
- //       DrawDebugCone(
- //           GetWorld(),
- //           EyeLocation,
- //           EyeRotation.Vector(),
- //           ActiveSightConfig->SightRadius,
- //           FMath::DegreesToRadians(ActiveSightConfig->PeripheralVisionAngleDegrees),
- //           FMath::DegreesToRadians(ActiveSightConfig->PeripheralVisionAngleDegrees),
- //           64,
- //           FColor::Green,
- //           false,
- //           -1.0f,
- //           0,
- //           2.0f
- //       );
- //   }
-    
-
-    //// --- DEBUG INTERACTION STATE (Floating Text) ---
-    //if (BB)
-    //{
-    //    FString CurrentState = TEXT("Patrolling");
-    //    FColor TextColor = FColor::White;
-
-    //    // Check the blackboard to see what the AI is currently prioritizing
-    //    if (BB->GetValueAsObject(FName("TargetActor")))
-    //    {
-    //        CurrentState = TEXT("CHASING PLAYER!");
-    //        TextColor = FColor::Red;
-    //    }
-    //    else if (BB->GetValueAsBool(FName("bIsRaisingAlarm")))
-    //    {
-    //        CurrentState = TEXT("RAISING ALARM!");
-    //        TextColor = FColor::Orange;
-    //    }
-    //    // Check if the vector is NOT empty/invalid
-    //    else if (BB->GetValueAsVector(FName("InvestigateLocation")) != FAISystem::InvalidLocation)
-    //    {
-    //        CurrentState = TEXT("INVESTIGATING");
-    //        TextColor = FColor::Yellow;
-    //    }
-
-    //    // Draw the text 100 units above the guard's head
-    //    FVector TextLocation = ControlledPawn->GetActorLocation() + FVector(0, 0, 100.0f);
-    //    DrawDebugString(GetWorld(), TextLocation, CurrentState, nullptr, TextColor, DeltaTime, true);
-    //}
 }
 
 // Helper function to check if the guard is currently alerted (chasing player, investigating, or raising alarm)
@@ -690,5 +794,119 @@ void AGhostAIController::UpdateVisibilityGating()
     {
         FString DebugText = FString::Printf(TEXT("Cover: %d%% (%d/%d Bones)"), FMath::RoundToInt(CoverMultiplier * 100.0f), VisibleBones, BonesToCheck.Num());
         DrawDebugString(GetWorld(), StealthPlayer->GetActorLocation() + FVector(0, 0, 50.0f), DebugText, nullptr, FColor::Yellow, 0.25f, true);
+    }
+}
+
+void AGhostAIController::CheckProximity()
+{
+    if (!GetPawn()) return;
+
+    UBlackboardComponent* BB = GetBlackboardComponent();
+    if (!BB) return;
+
+    // Already chasing, no need for proximity detection
+    if (BB->GetValueAsObject(FName("TargetActor"))) return;
+
+	// Get the player controller and pawn
+    APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (!PC || !PC->GetPawn()) return; // If the player controller or pawn is null, exit early
+
+    APawn* PlayerPawn = PC->GetPawn();
+    AProject_StealthGhostCharacter* PlayerChar = Cast<AProject_StealthGhostCharacter>(PlayerPawn);
+
+    // Don't trigger on a dead player
+    if (!PlayerChar || PlayerChar->bIsDead) return;
+
+    float DistToPlayer = FVector::Dist(GetPawn()->GetActorLocation(), PlayerPawn->GetActorLocation());
+
+    if (DistToPlayer <= ProximityAlertRadius)
+    {
+        // Player is too close, instant full alert
+        bIsSpooked = true;
+        SuspicionLevel = MaxSuspicion;
+        SuspicionDecayPauseEndTime = GetWorld()->GetTimeSeconds() + 20.0f;
+
+        BB->SetValueAsObject(FName("TargetActor"), PlayerPawn);
+        BB->ClearValue(FName("InvestigateLocation"));
+        BB->ClearValue(FName("bWillWalkToNoise"));
+        BB->ClearValue(FName("bIsCombatSearch"));
+
+        // Update visible target so the suspicion meter tick doesn't fight with the alert
+        CurrentVisibleTarget = PlayerPawn;
+
+        if (AProject_StealthGhostCharacter* MyGhostChar = Cast<AProject_StealthGhostCharacter>(GetPawn()))
+        {
+            MyGhostChar->OnCombatStarted();
+        }
+
+        if (bShowDebugVisuals)
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: TOO CLOSE!"));
+        }
+    }
+}
+
+void AGhostAIController::OnWitnessedGuardDeath(AProject_StealthGhostCharacter* DeadGuard)
+{
+    if (!GetPawn() || !DeadGuard) return;
+
+    UBlackboardComponent* BB = GetBlackboardComponent();
+    if (!BB) return;
+
+    // Mark the body as discovered
+    DeadGuard->bHasBeenDiscovered = true;
+
+    // Already chasing the player, spook and keep the existing TargetActor, don't overwrite
+    bIsSpooked = true;
+    SuspicionLevel = MaxSuspicion;
+    SuspicionDecayPauseEndTime = GetWorld()->GetTimeSeconds() + 20.0f;
+
+    if (!BB->GetValueAsObject(FName("TargetActor")))
+    {
+        // We saw the guard drop but can't confirm the shooter yet.
+        // Do a LOS check to the player right now.
+        bool bCanSeeShooter = false;
+
+        APlayerController* PC = GetWorld()->GetFirstPlayerController();
+        if (PC && PC->GetPawn())
+        {
+            APawn* PlayerPawn = PC->GetPawn();
+            FVector GuardEyes = GetPawn()->GetActorLocation() + FVector(0, 0, 70.0f);
+
+            FHitResult LOSHit;
+            FCollisionQueryParams LOSParams;
+            LOSParams.AddIgnoredActor(GetPawn());
+            LOSParams.AddIgnoredActor(PlayerPawn);
+
+            bool bHit = GetWorld()->LineTraceSingleByChannel(LOSHit, GuardEyes, PlayerPawn->GetActorLocation(), ECC_Visibility, LOSParams);
+            bCanSeeShooter = !bHit;
+
+            if (bCanSeeShooter)
+            {
+                // Saw the kill happen and can see the shooter
+                BB->SetValueAsObject(FName("TargetActor"), PlayerPawn);
+                BB->ClearValue(FName("InvestigateLocation"));
+                BB->ClearValue(FName("bWillWalkToNoise"));
+                BB->ClearValue(FName("bIsCombatSearch"));
+            }
+        }
+
+        if (!bCanSeeShooter)
+        {
+            // Saw the guard drop but shooter is behind cover — investigate the body's position
+            BB->SetValueAsVector(FName("InvestigateLocation"), DeadGuard->GetActorLocation());
+            BB->SetValueAsBool(FName("bIsCombatSearch"), true);
+            BB->SetValueAsBool(FName("bWillWalkToNoise"), true);
+        }
+    }
+
+    if (AProject_StealthGhostCharacter* MyGhostChar = Cast<AProject_StealthGhostCharacter>(GetPawn()))
+    {
+        MyGhostChar->OnCombatStarted();
+    }
+
+    if (bShowDebugVisuals)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Guard: I saw that! My teammate is down!"));
     }
 }

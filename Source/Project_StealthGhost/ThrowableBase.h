@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "InteractableInterface.h"
 #include "ThrowableBase.generated.h"
 
 // Forward declarations to improve compilation speed
@@ -12,13 +13,16 @@ class USphereComponent;
 class UProjectileMovementComponent;
 
 UCLASS()
-class PROJECT_STEALTHGHOST_API AThrowableBase : public AActor
+class PROJECT_STEALTHGHOST_API AThrowableBase : public AActor, public IInteractableInterface
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
 	AThrowableBase();
+
+	// How the stone answers the interface for text
+	virtual FString GetInteractText_Implementation() override;
 
 protected:
 	// Called when the game starts or when spawned

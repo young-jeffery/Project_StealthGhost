@@ -25,6 +25,10 @@ public:
 	virtual void StopAiming() override;
 	virtual void ReleaseAction() override; // Release for throwing, not Use!
 
+	// Tells the Blueprint where to draw the aiming reticle/sphere
+	UFUNCTION(BlueprintImplementableEvent, Category = "Stealth Action")
+	void UpdateAimMarker(FVector ImpactLocation, bool bShowAim);
+
 
 protected:
 	// What actual item are we throwing?

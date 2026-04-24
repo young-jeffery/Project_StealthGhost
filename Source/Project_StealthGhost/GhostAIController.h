@@ -9,6 +9,7 @@
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AIPerceptionTypes.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Project_StealthGhostCharacter.h"
 #include "GhostAIController.generated.h"
 
 /**
@@ -102,6 +103,37 @@ public:
 
     // The actual world time when decay is allowed to resume
     float SuspicionDecayPauseEndTime = 0.0f;
+
+    // Bulletwhiz cooldown tracker
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI Memory")
+    float LastBulletWhizTime = -100.0f;
+
+    // Minimum seconds between BulletWhiz reactions (covers multi-whiz from one shot)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Memory")
+    float BulletWhizCooldown = 0.6f;
+
+    // Called directly when a guard dies within LOS of this guard
+    void OnWitnessedGuardDeath(AProject_StealthGhostCharacter* DeadGuard);
+
+    // --- PROXIMITY DETECTION ---
+    // Guards sense the player within this radius regardless of vision cone direction
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Detection")
+    float ProximityAlertRadius = 200.0f; // 2 meters
+
+    // Throttled timer handle — runs 4x per second instead of every frame
+    FTimerHandle ProximityCheckTimerHandle;
+
+    // The function that runs the proximity check
+    void CheckProximity();
+
+    // --- SUCCESSIVE BODY TRACKING ---
+    // World time of the last dead body this guard discovered
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI Memory")
+    float LastBodyDiscoveredTime = -100.0f;
+
+    // If a second body is spotted within this many seconds, skip investigation and alarm immediately
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Memory")
+    float SuccessiveBodyWindow = 20.0f;
 
 protected:
     // Called when the game starts or when spawned

@@ -394,6 +394,8 @@ MigrationBackup/
 FodyWeavers.xsd
 # Intermediate/ProjectFiles/Project_StealthGhost.vcxproj
 # Intermediate/ProjectFiles/UE5.vcxproj
+
+# My additions
 Content/FreeAnimationLibrary/
 Content/MC_Sample/
 Content/MPMECH/
@@ -403,4 +405,7 @@ Content/Realistic_Starter_VFX_Pack_Vol2/
 Content/Fab/
 Content/Assets/
 Content/ModularSciFiColony/
+Content/MOUT_Fabrication/
+Content/QuantumCharacter/
+Content/Survival_Character/
 Assets/

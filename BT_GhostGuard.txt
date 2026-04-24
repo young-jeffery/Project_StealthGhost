@@ -1,5 +1,7 @@
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Root Name="BehaviorTreeGraphNode_Root_0" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Root'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Root_0'"
    BlackboardAsset="/Script/AIModule.BlackboardData'/Game/AI/BB_GhostGuard.BB_GhostGuard'"
+   NodePosX=1040
+   NodePosY=-928
    NodeGuid=0A56314A4D5848B0F94595A8F2C83757
    CustomProperties Pin (PinId=896D7D2F437E53C6D54DE0A217F32B94,PinName="In",Direction="EGPD_Output",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_1 38CA2A13482BA86AC3746FA798731BE3,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
@@ -7,23 +9,23 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Na
    Begin Object Class=/Script/AIModule.BTComposite_Sequence Name="BTComposite_Sequence_2" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_2.BTComposite_Sequence_2'"
    End Object
    Begin Object Name="BTComposite_Sequence_2" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_2.BTComposite_Sequence_2'"
-      Children(0)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_3.BTTask_Wait_1'")
-      Children(1)=(ChildTask="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'BehaviorTreeGraphNode_Task_4.BTTask_SetSpeed_C_0'")
-      Children(2)=(ChildTask="/Script/Project_StealthGhost.BTTask_GetNextPatrolPoint'BehaviorTreeGraphNode_Task_1.BTTask_GetNextPatrolPoint_0'")
-      Children(3)=(ChildTask="/Script/AIModule.BTTask_MoveTo'BehaviorTreeGraphNode_Task_13.BTTask_MoveTo_0'")
+      Children(0)=(ChildTask="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'BehaviorTreeGraphNode_Task_4.BTTask_SetSpeed_C_0'")
+      Children(1)=(ChildTask="/Script/Project_StealthGhost.BTTask_GetNextPatrolPoint'BehaviorTreeGraphNode_Task_1.BTTask_GetNextPatrolPoint_0'")
+      Children(2)=(ChildTask="/Script/AIModule.BTTask_MoveTo'BehaviorTreeGraphNode_Task_13.BTTask_MoveTo_0'")
+      Children(3)=(ChildTask="/Game/AI/BTTask_AlignWithTargetPoint.BTTask_AlignWithTargetPoint_C'BehaviorTreeGraphNode_Task_2.BTTask_AlignWithTargetPoint_C_0'")
       Children(4)=(ChildTask="/Game/AI/BTTask_IncrementPatrolIndex.BTTask_IncrementPatrolIndex_C'BehaviorTreeGraphNode_Task_11.BTTask_IncrementPatrolIndex_C_0'")
-      Children(5)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_2.BTTask_Wait_0'")
+      Children(5)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_22.BTTask_Wait_8'")
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
       ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_1.BTComposite_Selector_0'"
    End Object
    ClassData=(ClassName="BTComposite_Sequence")
    NodeInstance="/Script/AIModule.BTComposite_Sequence'BTComposite_Sequence_2'"
    CopySubNodeIndex=1
-   NodePosX=1568
-   NodePosY=224
+   NodePosX=4000
+   NodePosY=288
    NodeGuid=FBAB08614449DF2FB1258A9A830B4406
    CustomProperties Pin (PinId=11AE8D8F4276A166B71060AD89F218D0,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_1 2832922A4189687ADE696CACA22E18AB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-   CustomProperties Pin (PinId=F1BBECFE420802D811A64DB54AEB65BB,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_3 F13C09184A67BB13A0C5C8A37997E11C,BehaviorTreeGraphNode_Task_4 7AE3C03B4039F5542303C1BDA714D260,BehaviorTreeGraphNode_Task_1 B98B09EB4DE060B2749C17A471FE25D7,BehaviorTreeGraphNode_Task_13 E9C82EB34598BDF53B2A90AE848902BB,BehaviorTreeGraphNode_Task_11 576F6F0D48D9DBDD1E4FE7B41A74E2D7,BehaviorTreeGraphNode_Task_2 216739D94843DA26E5CECF930C1C87CB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=F1BBECFE420802D811A64DB54AEB65BB,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_4 7AE3C03B4039F5542303C1BDA714D260,BehaviorTreeGraphNode_Task_1 B98B09EB4DE060B2749C17A471FE25D7,BehaviorTreeGraphNode_Task_13 E9C82EB34598BDF53B2A90AE848902BB,BehaviorTreeGraphNode_Task_2 EB3724CD47BAA4AF21A119B4C0CB619D,BehaviorTreeGraphNode_Task_11 576F6F0D48D9DBDD1E4FE7B41A74E2D7,BehaviorTreeGraphNode_Task_22 D63580394E3E30D22E166A80B7C2F075,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_13" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_13'"
    Begin Object Class=/Script/AIModule.BTTask_MoveTo Name="BTTask_MoveTo_0" ExportPath="/Script/AIModule.BTTask_MoveTo'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_13.BTTask_MoveTo_0'"
@@ -44,43 +46,26 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="B
    ClassData=(ClassName="BTTask_MoveTo")
    NodeInstance="/Script/AIModule.BTTask_MoveTo'BTTask_MoveTo_0'"
    CopySubNodeIndex=2
-   NodePosX=2032
-   NodePosY=288
+   NodePosX=3808
+   NodePosY=752
    NodeGuid=C5EB3595409589A31F62DEA95DB22DA5
    CustomProperties Pin (PinId=E9C82EB34598BDF53B2A90AE848902BB,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_2 F1BBECFE420802D811A64DB54AEB65BB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_2" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_2'"
-   Begin Object Class=/Script/AIModule.BTTask_Wait Name="BTTask_Wait_0" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_2.BTTask_Wait_0'"
-   End Object
-   Begin Object Name="BTTask_Wait_0" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_2.BTTask_Wait_0'"
-      WaitTime=(DefaultValue=3.000000)
-      RandomDeviation=(DefaultValue=1.000000)
-      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_2.BTComposite_Sequence_2'"
-   End Object
-   ClassData=(ClassName="BTTask_Wait")
-   NodeInstance="/Script/AIModule.BTTask_Wait'BTTask_Wait_0'"
-   CopySubNodeIndex=3
-   NodePosX=2240
-   NodePosY=64
-   NodeGuid=9062C92643D773ED2A3A4B9A4825A0D7
-   CustomProperties Pin (PinId=216739D94843DA26E5CECF930C1C87CB,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_2 F1BBECFE420802D811A64DB54AEB65BB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Name="BehaviorTreeGraphNode_Composite_1" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_1'"
    Begin Object Class=/Script/AIModule.BTComposite_Selector Name="BTComposite_Selector_0" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_1.BTComposite_Selector_0'"
    End Object
    Begin Object Name="BTComposite_Selector_0" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_1.BTComposite_Selector_0'"
-      Children(0)=(ChildComposite="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_0.BTComposite_Sequence_4'",Decorators=("/Script/AIModule.BTDecorator_Blackboard'BehaviorTreeGraphNode_Decorator_32.BTDecorator_Blackboard_1'"))
-      Children(1)=(ChildComposite="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_4.BTComposite_Sequence_0'",Decorators=("/Script/AIModule.BTDecorator_Blackboard'BehaviorTreeGraphNode_Decorator_34.BTDecorator_Blackboard_0'"))
-      Children(2)=(ChildComposite="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_6'",Decorators=("/Script/AIModule.BTDecorator_Blackboard'BehaviorTreeGraphNode_Decorator_33.BTDecorator_Blackboard_3'"))
+      Children(0)=(ChildComposite="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_0.BTComposite_Sequence_4'",Decorators=("/Script/AIModule.BTDecorator_Blackboard'BehaviorTreeGraphNode_Decorator_32.BTDecorator_Blackboard_0'"))
+      Children(1)=(ChildComposite="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_4.BTComposite_Sequence_0'",Decorators=("/Script/AIModule.BTDecorator_Blackboard'BehaviorTreeGraphNode_Decorator_34.BTDecorator_Blackboard_3'"))
+      Children(2)=(ChildComposite="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_3'",Decorators=("/Script/AIModule.BTDecorator_Blackboard'BehaviorTreeGraphNode_Decorator_17.BTDecorator_Blackboard_1'","/Script/AIModule.BTDecorator_Blackboard'BehaviorTreeGraphNode_Decorator_33.BTDecorator_Blackboard_2'"))
       Children(3)=(ChildComposite="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_2.BTComposite_Sequence_2'")
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
    End Object
    ClassData=(ClassName="BTComposite_Selector")
    NodeInstance="/Script/AIModule.BTComposite_Selector'BTComposite_Selector_0'"
-   CopySubNodeIndex=4
-   NodePosX=-16
-   NodePosY=160
+   CopySubNodeIndex=3
+   NodePosX=1024
+   NodePosY=-768
    NodeGuid=9EA572C94F975FD47D5666A773A48859
    CustomProperties Pin (PinId=38CA2A13482BA86AC3746FA798731BE3,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Root_0 896D7D2F437E53C6D54DE0A217F32B94,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
    CustomProperties Pin (PinId=2832922A4189687ADE696CACA22E18AB,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_0 C98DDA2F4DD529340B1A8F8ADA1B4EDB,BehaviorTreeGraphNode_Composite_4 83DC2A084D479E07FD8C0C86D1E4F902,BehaviorTreeGraphNode_Composite_3 6A42925349EF7C24D2C609AC89F3B3D9,BehaviorTreeGraphNode_Composite_2 11AE8D8F4276A166B71060AD89F218D0,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
@@ -97,34 +82,20 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="B
       End Object
       Begin Object Name="BlackboardKey_Vector" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_0.BTTask_MoveTo_1.BlackboardKey_Vector'"
       End Object
+      AcceptableRadius=(DefaultValue=100.000000)
+      bAllowStrafe=(DefaultValue=True)
       BlackboardKey=(SelectedKeyName="TargetActor")
       NodeName="Chase Player"
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_5.BTComposite_Selector_1'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_11.BTComposite_Selector_5'"
    End Object
    ClassData=(ClassName="BTTask_MoveTo")
    NodeInstance="/Script/AIModule.BTTask_MoveTo'BTTask_MoveTo_1'"
-   CopySubNodeIndex=5
-   NodePosX=-768
-   NodePosY=528
+   CopySubNodeIndex=4
+   NodePosX=-784
+   NodePosY=736
    NodeGuid=E765EBBA403CA98853073EA59867AA2F
-   CustomProperties Pin (PinId=E258A837449345DF9D6FF6A72789267E,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_5 183FD9204AE5DAD53DBFFE9EDFBD94CC,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_3" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_3'"
-   Begin Object Class=/Script/AIModule.BTTask_Wait Name="BTTask_Wait_1" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_3.BTTask_Wait_1'"
-   End Object
-   Begin Object Name="BTTask_Wait_1" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_3.BTTask_Wait_1'"
-      WaitTime=(DefaultValue=1.000000)
-      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_2.BTComposite_Sequence_2'"
-   End Object
-   ClassData=(ClassName="BTTask_Wait")
-   NodeInstance="/Script/AIModule.BTTask_Wait'BTTask_Wait_1'"
-   CopySubNodeIndex=6
-   NodePosX=1456
-   NodePosY=400
-   NodeGuid=E3BDD7524210BA2FC890AEA283092E08
-   CustomProperties Pin (PinId=F13C09184A67BB13A0C5C8A37997E11C,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_2 F1BBECFE420802D811A64DB54AEB65BB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=E258A837449345DF9D6FF6A72789267E,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_11 9201C5404FD910C9B8447CB7C377667C,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_4" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_4'"
    Begin Object Class=/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C Name="BTTask_SetSpeed_C_0" ExportPath="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_4.BTTask_SetSpeed_C_0'"
@@ -136,9 +107,9 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="B
    End Object
    ClassData=(AssetName="BTTask_SetSpeed",GeneratedClassPackage="/Game/AI/BTTask_SetSpeed",ClassName="BTTask_SetSpeed_C")
    NodeInstance="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'BTTask_SetSpeed_C_0'"
-   CopySubNodeIndex=7
-   NodePosX=1600
-   NodePosY=400
+   CopySubNodeIndex=5
+   NodePosX=3360
+   NodePosY=720
    NodeGuid=5440A9E642489CE8E830449C82B02592
    CustomProperties Pin (PinId=7AE3C03B4039F5542303C1BDA714D260,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_2 F1BBECFE420802D811A64DB54AEB65BB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
@@ -147,8 +118,8 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Na
    End Object
    Begin Object Name="BTComposite_Sequence_4" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_0.BTComposite_Sequence_4'"
       Children(0)=(ChildTask="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'BehaviorTreeGraphNode_Task_5.BTTask_SetSpeed_C_1'")
-      Children(1)=(ChildComposite="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_5.BTComposite_Selector_1'")
-      Services(0)="/Script/Project_StealthGhost.BTService_CheckAttackRange'BehaviorTreeGraphNode_Service_25.BTService_CheckAttackRange_0'"
+      Children(1)=(ChildComposite="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_11.BTComposite_Selector_5'")
+      Services(0)="/Script/Project_StealthGhost.BTService_CheckAttackRange'BehaviorTreeGraphNode_Service_25.BTService_CheckAttackRange_1'"
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
       ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_1.BTComposite_Selector_0'"
    End Object
@@ -158,12 +129,12 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Na
    NodeInstance="/Script/AIModule.BTComposite_Sequence'BTComposite_Sequence_4'"
    SubNodes(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_32'"
    SubNodes(1)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service'BehaviorTreeGraphNode_Service_25'"
-   CopySubNodeIndex=8
+   CopySubNodeIndex=6
    NodePosX=-1040
    NodePosY=192
    NodeGuid=2670EBD646D177D3830D109DA980796B
    CustomProperties Pin (PinId=C98DDA2F4DD529340B1A8F8ADA1B4EDB,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_1 2832922A4189687ADE696CACA22E18AB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-   CustomProperties Pin (PinId=9F7A53C8439D486C612A3BAC2CBB321D,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_5 F8D443E94101BFEA44E906B22118E1CD,BehaviorTreeGraphNode_Composite_5 589C0B43433EFEAADAAA0794CE955F2D,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=9F7A53C8439D486C612A3BAC2CBB321D,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_5 F8D443E94101BFEA44E906B22118E1CD,BehaviorTreeGraphNode_Composite_11 D183CD6349C684C45F953299A96CCD24,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_5" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_5'"
    Begin Object Class=/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C Name="BTTask_SetSpeed_C_1" ExportPath="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_5.BTTask_SetSpeed_C_1'"
@@ -175,102 +146,44 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="B
    End Object
    ClassData=(AssetName="BTTask_SetSpeed",GeneratedClassPackage="/Game/AI/BTTask_SetSpeed",ClassName="BTTask_SetSpeed_C")
    NodeInstance="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'BTTask_SetSpeed_C_1'"
-   CopySubNodeIndex=9
-   NodePosX=-1728
-   NodePosY=304
+   CopySubNodeIndex=7
+   NodePosX=-1712
+   NodePosY=464
    NodeGuid=B0E8F96F44056FAE88A5E192D38222C5
    CustomProperties Pin (PinId=F8D443E94101BFEA44E906B22118E1CD,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_0 9F7A53C8439D486C612A3BAC2CBB321D,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Name="BehaviorTreeGraphNode_Composite_3" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_3'"
-   Begin Object Class=/Script/AIModule.BTComposite_Sequence Name="BTComposite_Sequence_6" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_6'"
+   Begin Object Class=/Script/AIModule.BTComposite_Sequence Name="BTComposite_Sequence_3" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_3'"
    End Object
-   Begin Object Name="BTComposite_Sequence_6" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_6'"
-      Children(0)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_9.BTTask_Wait_3'")
-      Children(1)=(ChildTask="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'BehaviorTreeGraphNode_Task_6.BTTask_SetSpeed_C_3'")
-      Children(2)=(ChildTask="/Script/AIModule.BTTask_MoveTo'BehaviorTreeGraphNode_Task_16.BTTask_MoveTo_2'")
-      Children(3)=(ChildComposite="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_7.BTComposite_Selector_3'")
-      Children(4)=(ChildTask="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'BehaviorTreeGraphNode_Task_8.BTTask_ClearBlackboardKey_1'")
-      Children(5)=(ChildComposite="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_8.BTComposite_Sequence_5'",Decorators=("/Script/AIModule.BTDecorator_Loop'BehaviorTreeGraphNode_Decorator_16.BTDecorator_Loop_1'"))
-      Children(6)=(ChildTask="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'BehaviorTreeGraphNode_Task_25.BTTask_ClearBlackboardKey_2'")
+   Begin Object Name="BTComposite_Sequence_3" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_3'"
+      Children(0)=(ChildComposite="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_5.BTComposite_Selector_1'")
+      Children(1)=(ChildComposite="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_10.BTComposite_Selector_4'")
+      Children(2)=(ChildComposite="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_9.BTComposite_Selector_2'")
+      Children(3)=(ChildTask="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'BehaviorTreeGraphNode_Task_31.BTTask_ClearBlackboardKey_3'")
+      Children(4)=(ChildTask="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'BehaviorTreeGraphNode_Task_21.BTTask_ClearBlackboardKey_1'")
+      Children(5)=(ChildTask="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'BehaviorTreeGraphNode_Task_25.BTTask_ClearBlackboardKey_2'")
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
       ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_1.BTComposite_Selector_0'"
    End Object
-   Decorators(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_33'"
+   Decorators(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_17'"
+   Decorators(1)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_33'"
    ClassData=(ClassName="BTComposite_Sequence")
-   NodeInstance="/Script/AIModule.BTComposite_Sequence'BTComposite_Sequence_6'"
-   SubNodes(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_33'"
-   CopySubNodeIndex=10
-   NodePosX=832
-   NodePosY=768
+   NodeInstance="/Script/AIModule.BTComposite_Sequence'BTComposite_Sequence_3'"
+   SubNodes(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_17'"
+   SubNodes(1)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_33'"
+   CopySubNodeIndex=8
+   NodePosX=1456
+   NodePosY=288
    NodeGuid=A0B9845E4A1AF714E301549515B2FF40
    CustomProperties Pin (PinId=6A42925349EF7C24D2C609AC89F3B3D9,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_1 2832922A4189687ADE696CACA22E18AB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-   CustomProperties Pin (PinId=C0AA6D8E49010A2615E4F8AE6D6371C4,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_9 76500E4C4F4E2664D5FAAF8B9AA9AA94,BehaviorTreeGraphNode_Task_6 96D57A6D4FD50C94F90A8EB02A8004ED,BehaviorTreeGraphNode_Task_16 5B7E21EF4EA9F54B660F24B73D0B54AD,BehaviorTreeGraphNode_Composite_7 D167B3B34F9B9446B51095A57ACD28AC,BehaviorTreeGraphNode_Task_8 132393874F221E38E9D497B53CE9ADB6,BehaviorTreeGraphNode_Composite_8 DC57DF0749CEC1DEC0429F81A50A76AD,BehaviorTreeGraphNode_Task_25 37D8E8BD48D8C91BC9F2929B46389155,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_6" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_6'"
-   Begin Object Class=/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C Name="BTTask_SetSpeed_C_3" ExportPath="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_6.BTTask_SetSpeed_C_3'"
-   End Object
-   Begin Object Name="BTTask_SetSpeed_C_3" ExportPath="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_6.BTTask_SetSpeed_C_3'"
-      NewSpeed=250.000000
-      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_6'"
-   End Object
-   ClassData=(AssetName="BTTask_SetSpeed",GeneratedClassPackage="/Game/AI/BTTask_SetSpeed",ClassName="BTTask_SetSpeed_C")
-   NodeInstance="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'BTTask_SetSpeed_C_3'"
-   CopySubNodeIndex=11
-   NodePosX=384
-   NodePosY=1152
-   NodeGuid=10DEE2CD441E1EC0F9D4B7A128A93373
-   CustomProperties Pin (PinId=96D57A6D4FD50C94F90A8EB02A8004ED,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_3 C0AA6D8E49010A2615E4F8AE6D6371C4,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_16" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_16'"
-   Begin Object Class=/Script/AIModule.BTTask_MoveTo Name="BTTask_MoveTo_2" ExportPath="/Script/AIModule.BTTask_MoveTo'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_16.BTTask_MoveTo_2'"
-      Begin Object Class=/Script/AIModule.BlackboardKeyType_Object Name="BlackboardKey_Object_0" Archetype="/Script/AIModule.BlackboardKeyType_Object'/Script/AIModule.Default__BTTask_MoveTo:BlackboardKey_Object_0'" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_16.BTTask_MoveTo_2.BlackboardKey_Object_0'"
-      End Object
-      Begin Object Class=/Script/AIModule.BlackboardKeyType_Vector Name="BlackboardKey_Vector" Archetype="/Script/AIModule.BlackboardKeyType_Vector'/Script/AIModule.Default__BTTask_MoveTo:BlackboardKey_Vector'" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_16.BTTask_MoveTo_2.BlackboardKey_Vector'"
-      End Object
-   End Object
-   Begin Object Name="BTTask_MoveTo_2" ExportPath="/Script/AIModule.BTTask_MoveTo'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_16.BTTask_MoveTo_2'"
-      Begin Object Name="BlackboardKey_Object_0" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_16.BTTask_MoveTo_2.BlackboardKey_Object_0'"
-      End Object
-      Begin Object Name="BlackboardKey_Vector" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_16.BTTask_MoveTo_2.BlackboardKey_Vector'"
-      End Object
-      BlackboardKey=(SelectedKeyName="InvestigateLocation")
-      NodeName="Investigate"
-      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_6'"
-   End Object
-   ClassData=(ClassName="BTTask_MoveTo")
-   NodeInstance="/Script/AIModule.BTTask_MoveTo'BTTask_MoveTo_2'"
-   CopySubNodeIndex=12
-   NodePosX=544
-   NodePosY=1296
-   NodeGuid=572952E04D0D4A72E766EE8BB1AC5062
-   CustomProperties Pin (PinId=5B7E21EF4EA9F54B660F24B73D0B54AD,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_3 C0AA6D8E49010A2615E4F8AE6D6371C4,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_9" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_9'"
-   Begin Object Class=/Script/AIModule.BTTask_Wait Name="BTTask_Wait_3" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_9.BTTask_Wait_3'"
-   End Object
-   Begin Object Name="BTTask_Wait_3" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_9.BTTask_Wait_3'"
-      WaitTime=(DefaultValue=1.000000)
-      NodeName="Small pause"
-      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_6'"
-   End Object
-   ClassData=(ClassName="BTTask_Wait")
-   NodeInstance="/Script/AIModule.BTTask_Wait'BTTask_Wait_3'"
-   CopySubNodeIndex=13
-   NodePosX=304
-   NodePosY=992
-   NodeGuid=B29027EB4CFABCE024D8A5B71286E4AE
-   CustomProperties Pin (PinId=76500E4C4F4E2664D5FAAF8B9AA9AA94,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_3 C0AA6D8E49010A2615E4F8AE6D6371C4,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=C0AA6D8E49010A2615E4F8AE6D6371C4,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_5 888F4C584321F5F876EE98A7B030FDD2,BehaviorTreeGraphNode_Composite_10 1D734B874DEE2EA3B8DB0FB1D159C4B2,BehaviorTreeGraphNode_Composite_9 AA99E8E546F729EE822F6FB1D61CD532,BehaviorTreeGraphNode_Task_31 ADD8B89D4BD2E45A281D6D9EE7187B6A,BehaviorTreeGraphNode_Task_21 D68ED4144F1C97F59B0B49B03D6BFEEC,BehaviorTreeGraphNode_Task_25 37D8E8BD48D8C91BC9F2929B46389155,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Name="BehaviorTreeGraphNode_Composite_4" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_4'"
    Begin Object Class=/Script/AIModule.BTComposite_Sequence Name="BTComposite_Sequence_0" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_4.BTComposite_Sequence_0'"
    End Object
    Begin Object Name="BTComposite_Sequence_0" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_4.BTComposite_Sequence_0'"
-      Children(0)=(ChildTask="/Script/AIModule.BTTask_RotateToFaceBBEntry'BehaviorTreeGraphNode_Task_15.BTTask_RotateToFaceBBEntry_0'")
-      Children(1)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_10.BTTask_Wait_4'")
-      Services(0)="/Script/AIModule.BTService_DefaultFocus'BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_1'"
+      Children(0)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_10.BTTask_Wait_4'")
+      Services(0)="/Script/AIModule.BTService_DefaultFocus'BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_2'"
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
       ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_1.BTComposite_Selector_0'"
    End Object
@@ -280,40 +193,12 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Na
    NodeInstance="/Script/AIModule.BTComposite_Sequence'BTComposite_Sequence_0'"
    SubNodes(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_34'"
    SubNodes(1)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service'BehaviorTreeGraphNode_Service_4'"
-   CopySubNodeIndex=14
-   NodePosX=-240
-   NodePosY=528
+   CopySubNodeIndex=9
+   NodePosX=-64
+   NodePosY=272
    NodeGuid=87A80E9D42B59E83CC27A1AAD318568D
    CustomProperties Pin (PinId=83DC2A084D479E07FD8C0C86D1E4F902,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_1 2832922A4189687ADE696CACA22E18AB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-   CustomProperties Pin (PinId=50D27C53494E61F55F65E69CC8CA5480,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_15 667B0FF94D756205A697B3988C942258,BehaviorTreeGraphNode_Task_10 B5CB881E49A6EBD9968DFDA080B61451,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_15" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_15'"
-   Begin Object Class=/Script/AIModule.BTTask_RotateToFaceBBEntry Name="BTTask_RotateToFaceBBEntry_0" ExportPath="/Script/AIModule.BTTask_RotateToFaceBBEntry'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_15.BTTask_RotateToFaceBBEntry_0'"
-      Begin Object Class=/Script/AIModule.BlackboardKeyType_Object Name="BlackboardKey_Object_0" Archetype="/Script/AIModule.BlackboardKeyType_Object'/Script/AIModule.Default__BTTask_RotateToFaceBBEntry:BlackboardKey_Object_0'" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_15.BTTask_RotateToFaceBBEntry_0.BlackboardKey_Object_0'"
-      End Object
-      Begin Object Class=/Script/AIModule.BlackboardKeyType_Vector Name="BlackboardKey_Vector" Archetype="/Script/AIModule.BlackboardKeyType_Vector'/Script/AIModule.Default__BTTask_RotateToFaceBBEntry:BlackboardKey_Vector'" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_15.BTTask_RotateToFaceBBEntry_0.BlackboardKey_Vector'"
-      End Object
-      Begin Object Class=/Script/AIModule.BlackboardKeyType_Rotator Name="BlackboardKey_Rotator" Archetype="/Script/AIModule.BlackboardKeyType_Rotator'/Script/AIModule.Default__BTTask_RotateToFaceBBEntry:BlackboardKey_Rotator'" ExportPath="/Script/AIModule.BlackboardKeyType_Rotator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_15.BTTask_RotateToFaceBBEntry_0.BlackboardKey_Rotator'"
-      End Object
-   End Object
-   Begin Object Name="BTTask_RotateToFaceBBEntry_0" ExportPath="/Script/AIModule.BTTask_RotateToFaceBBEntry'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_15.BTTask_RotateToFaceBBEntry_0'"
-      Begin Object Name="BlackboardKey_Object_0" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_15.BTTask_RotateToFaceBBEntry_0.BlackboardKey_Object_0'"
-      End Object
-      Begin Object Name="BlackboardKey_Vector" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_15.BTTask_RotateToFaceBBEntry_0.BlackboardKey_Vector'"
-      End Object
-      Begin Object Name="BlackboardKey_Rotator" ExportPath="/Script/AIModule.BlackboardKeyType_Rotator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_15.BTTask_RotateToFaceBBEntry_0.BlackboardKey_Rotator'"
-      End Object
-      BlackboardKey=(SelectedKeyName="InteractTarget")
-      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_4.BTComposite_Sequence_0'"
-   End Object
-   ClassData=(ClassName="BTTask_RotateToFaceBBEntry")
-   NodeInstance="/Script/AIModule.BTTask_RotateToFaceBBEntry'BTTask_RotateToFaceBBEntry_0'"
-   CopySubNodeIndex=15
-   NodePosX=-416
-   NodePosY=736
-   NodeGuid=C8946A404AAFB0EE75DEC6AA000E13EF
-   CustomProperties Pin (PinId=667B0FF94D756205A697B3988C942258,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_4 50D27C53494E61F55F65E69CC8CA5480,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=50D27C53494E61F55F65E69CC8CA5480,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_10 B5CB881E49A6EBD9968DFDA080B61451,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_10" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_10'"
    Begin Object Class=/Script/AIModule.BTTask_Wait Name="BTTask_Wait_4" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_10.BTTask_Wait_4'"
@@ -326,9 +211,9 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="B
    End Object
    ClassData=(ClassName="BTTask_Wait")
    NodeInstance="/Script/AIModule.BTTask_Wait'BTTask_Wait_4'"
-   CopySubNodeIndex=16
-   NodePosX=-64
-   NodePosY=736
+   CopySubNodeIndex=10
+   NodePosX=16
+   NodePosY=592
    NodeGuid=F5D5A7C04D6125CFC32B47906DE99BA6
    CustomProperties Pin (PinId=B5CB881E49A6EBD9968DFDA080B61451,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_4 50D27C53494E61F55F65E69CC8CA5480,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
@@ -341,9 +226,9 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="B
    End Object
    ClassData=(AssetName="BTTask_IncrementPatrolIndex",GeneratedClassPackage="/Game/AI/BTTask_IncrementPatrolIndex",ClassName="BTTask_IncrementPatrolIndex_C")
    NodeInstance="/Game/AI/BTTask_IncrementPatrolIndex.BTTask_IncrementPatrolIndex_C'BTTask_IncrementPatrolIndex_C_0'"
-   CopySubNodeIndex=17
-   NodePosX=2128
-   NodePosY=192
+   CopySubNodeIndex=11
+   NodePosX=4352
+   NodePosY=736
    NodeGuid=21C961F3446FF2DE5244BDA07DFCAD9D
    CustomProperties Pin (PinId=576F6F0D48D9DBDD1E4FE7B41A74E2D7,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_2 F1BBECFE420802D811A64DB54AEB65BB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
@@ -358,9 +243,9 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="B
    End Object
    ClassData=(ClassName="BTTask_GetNextPatrolPoint")
    NodeInstance="/Script/Project_StealthGhost.BTTask_GetNextPatrolPoint'BTTask_GetNextPatrolPoint_0'"
-   CopySubNodeIndex=18
-   NodePosX=1856
-   NodePosY=384
+   CopySubNodeIndex=12
+   NodePosX=3568
+   NodePosY=752
    NodeGuid=282FA3EF41E06B9390223899857DC657
    CustomProperties Pin (PinId=B98B09EB4DE060B2749C17A471FE25D7,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_2 F1BBECFE420802D811A64DB54AEB65BB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
@@ -368,95 +253,64 @@ Begin Object Class=/Script/UnrealEd.EdGraphNode_Comment Name="EdGraphNode_Commen
    CommentColor=(R=1.000000,G=0.633723,B=0.005251,A=0.500000)
    NodePosX=-1776
    NodePosY=144
-   NodeWidth=1200
-   NodeHeight=816
+   NodeWidth=1264
+   NodeHeight=1104
    NodeComment="Chase The Player"
    NodeGuid=9B30E9474C49409E34B04896886B0CBA
 End Object
 Begin Object Class=/Script/UnrealEd.EdGraphNode_Comment Name="EdGraphNode_Comment_1" ExportPath="/Script/UnrealEd.EdGraphNode_Comment'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.EdGraphNode_Comment_1'"
    CommentColor=(R=1.000000,G=0.633723,B=0.005251,A=0.500000)
-   NodePosX=-483
-   NodePosY=459
-   NodeWidth=624
-   NodeHeight=384
+   NodePosX=-224
+   NodePosY=208
+   NodeWidth=688
+   NodeHeight=496
    NodeComment="Interact With Each Other"
    NodeGuid=03AD486248648E1233C902A47F8876D3
 End Object
 Begin Object Class=/Script/UnrealEd.EdGraphNode_Comment Name="EdGraphNode_Comment_2" ExportPath="/Script/UnrealEd.EdGraphNode_Comment'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.EdGraphNode_Comment_2'"
-   CommentColor=(R=1.000000,G=0.633723,B=0.005251,A=0.500000)
-   NodePosX=176
-   NodePosY=704
-   NodeWidth=1760
-   NodeHeight=992
+   CommentColor=(R=1.000000,G=0.630757,B=0.005182,A=0.501961)
+   NodePosX=656
+   NodePosY=192
+   NodeWidth=2528
+   NodeHeight=1632
    NodeComment="Investigate"
    NodeGuid=812C21354EE925E0B14F17A181F13702
 End Object
 Begin Object Class=/Script/UnrealEd.EdGraphNode_Comment Name="EdGraphNode_Comment_4" ExportPath="/Script/UnrealEd.EdGraphNode_Comment'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.EdGraphNode_Comment_4'"
    CommentColor=(R=1.000000,G=0.633723,B=0.005251,A=0.500000)
-   NodePosX=1392
-   NodeWidth=1086
-   NodeHeight=540
+   NodePosX=3344
+   NodePosY=208
+   NodeWidth=1472
+   NodeHeight=960
    NodeComment="Patrol"
    NodeGuid=C6CA30274A6CA9F2636F5B881DFD2E9B
-End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Name="BehaviorTreeGraphNode_Composite_5" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_5'"
-   Begin Object Class=/Script/AIModule.BTComposite_Selector Name="BTComposite_Selector_1" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_5.BTComposite_Selector_1'"
-   End Object
-   Begin Object Name="BTComposite_Selector_1" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_5.BTComposite_Selector_1'"
-      Children(0)=(ChildComposite="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_6.BTComposite_Sequence_1'",Decorators=("/Script/AIModule.BTDecorator_Blackboard'BehaviorTreeGraphNode_Decorator_149.BTDecorator_Blackboard_2'"))
-      Children(1)=(ChildTask="/Script/AIModule.BTTask_MoveTo'BehaviorTreeGraphNode_Task_0.BTTask_MoveTo_1'")
-      NodeName="Combat Decision"
-      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_0.BTComposite_Sequence_4'"
-   End Object
-   ClassData=(ClassName="BTComposite_Selector")
-   NodeInstance="/Script/AIModule.BTComposite_Selector'BTComposite_Selector_1'"
-   CopySubNodeIndex=19
-   NodePosX=-992
-   NodePosY=416
-   NodeGuid=D11A212C4798B638E97206A73E4A3405
-   CustomProperties Pin (PinId=589C0B43433EFEAADAAA0794CE955F2D,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_0 9F7A53C8439D486C612A3BAC2CBB321D,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-   CustomProperties Pin (PinId=183FD9204AE5DAD53DBFFE9EDFBD94CC,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_6 2CBC0CA0471DEFA95C3A0281AF13B88C,BehaviorTreeGraphNode_Task_0 E258A837449345DF9D6FF6A72789267E,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Name="BehaviorTreeGraphNode_Composite_6" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_6'"
    Begin Object Class=/Script/AIModule.BTComposite_Sequence Name="BTComposite_Sequence_1" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_6.BTComposite_Sequence_1'"
    End Object
    Begin Object Name="BTComposite_Sequence_1" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_6.BTComposite_Sequence_1'"
-      Children(0)=(ChildTask="/Script/AIModule.BTTask_RotateToFaceBBEntry'BehaviorTreeGraphNode_Task_20.BTTask_RotateToFaceBBEntry_1'")
-      Children(1)=(ChildTask="/Game/AI/BTTask_FireWeapon.BTTask_FireWeapon_C'BehaviorTreeGraphNode_Task_7.BTTask_FireWeapon_C_0'")
-      Children(2)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_14.BTTask_Wait_5'")
-      Services(0)="/Script/AIModule.BTService_DefaultFocus'BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_0'"
+      Children(0)=(ChildTask="/Game/AI/BTTask_FireWeapon.BTTask_FireWeapon_C'BehaviorTreeGraphNode_Task_7.BTTask_FireWeapon_C_0'")
+      Children(1)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_14.BTTask_Wait_5'")
+      Services(0)="/Script/AIModule.BTService_DefaultFocus'BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_3'"
+      Services(1)="/Game/AI/BTService_CombatRotation.BTService_CombatRotation_C'BehaviorTreeGraphNode_Service_7.BTService_CombatRotation_C_1'"
       NodeName="Attack"
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_5.BTComposite_Selector_1'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_11.BTComposite_Selector_5'"
    End Object
    Decorators(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_149'"
    Services(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service'BehaviorTreeGraphNode_Service_3'"
+   Services(1)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service'BehaviorTreeGraphNode_Service_7'"
    ClassData=(ClassName="BTComposite_Sequence")
    NodeInstance="/Script/AIModule.BTComposite_Sequence'BTComposite_Sequence_1'"
    SubNodes(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service'BehaviorTreeGraphNode_Service_3'"
-   SubNodes(1)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_149'"
-   CopySubNodeIndex=20
-   NodePosX=-1488
-   NodePosY=544
+   SubNodes(1)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service'BehaviorTreeGraphNode_Service_7'"
+   SubNodes(2)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_149'"
+   CopySubNodeIndex=13
+   NodePosX=-1408
+   NodePosY=704
    NodeGuid=DC6D8C3145D3444B08E2548132D147A2
-   CustomProperties Pin (PinId=2CBC0CA0471DEFA95C3A0281AF13B88C,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_5 183FD9204AE5DAD53DBFFE9EDFBD94CC,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-   CustomProperties Pin (PinId=BE169788497A347A0A4959880423FBE8,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_20 3E2EA21B449CA7EF1A46A793A006EF0F,BehaviorTreeGraphNode_Task_7 5F8CEA014D4D9B323F2471BDF98BB308,BehaviorTreeGraphNode_Task_14 8D2ADBC64AB2E89FCEDA8F80871F3C15,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_22" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_22'"
-   Begin Object Class=/Script/Project_StealthGhost.BTTask_RaiseAlarm Name="BTTask_RaiseAlarm_4" ExportPath="/Script/Project_StealthGhost.BTTask_RaiseAlarm'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_22.BTTask_RaiseAlarm_4'"
-   End Object
-   Begin Object Name="BTTask_RaiseAlarm_4" ExportPath="/Script/Project_StealthGhost.BTTask_RaiseAlarm'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_22.BTTask_RaiseAlarm_4'"
-      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_7.BTComposite_Selector_3'"
-   End Object
-   ClassData=(ClassName="BTTask_RaiseAlarm")
-   NodeInstance="/Script/Project_StealthGhost.BTTask_RaiseAlarm'BTTask_RaiseAlarm_4'"
-   CopySubNodeIndex=21
-   NodePosX=592
-   NodePosY=1552
-   NodeGuid=D7874F7B465B30448E06A4BC6B28634D
-   CustomProperties Pin (PinId=2CAA85BA4DE02E107DD80CA66B5332DE,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_7 7FE15F6144817C6F93FE2B93E72ED959,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=2CBC0CA0471DEFA95C3A0281AF13B88C,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_11 9201C5404FD910C9B8447CB7C377667C,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=BE169788497A347A0A4959880423FBE8,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_7 5F8CEA014D4D9B323F2471BDF98BB308,BehaviorTreeGraphNode_Task_14 8D2ADBC64AB2E89FCEDA8F80871F3C15,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_25" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_25'"
    Begin Object Class=/Script/Project_StealthGhost.BTTask_ClearBlackboardKey Name="BTTask_ClearBlackboardKey_2" ExportPath="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_25.BTTask_ClearBlackboardKey_2'"
@@ -464,101 +318,70 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="B
    Begin Object Name="BTTask_ClearBlackboardKey_2" ExportPath="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_25.BTTask_ClearBlackboardKey_2'"
       BlackboardKey=(SelectedKeyName="InvestigateLocation")
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_6'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_3'"
    End Object
    ClassData=(ClassName="BTTask_ClearBlackboardKey")
    NodeInstance="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'BTTask_ClearBlackboardKey_2'"
-   CopySubNodeIndex=22
-   NodePosX=1536
-   NodePosY=992
+   CopySubNodeIndex=14
+   NodePosX=2816
+   NodePosY=528
    NodeGuid=64B5396F48E5AF83469959BC17B3035E
    CustomProperties Pin (PinId=37D8E8BD48D8C91BC9F2929B46389155,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_3 C0AA6D8E49010A2615E4F8AE6D6371C4,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_8" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_8'"
-   Begin Object Class=/Script/Project_StealthGhost.BTTask_ClearBlackboardKey Name="BTTask_ClearBlackboardKey_1" ExportPath="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_8.BTTask_ClearBlackboardKey_1'"
-   End Object
-   Begin Object Name="BTTask_ClearBlackboardKey_1" ExportPath="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_8.BTTask_ClearBlackboardKey_1'"
-      BlackboardKey=(SelectedKeyName="bIsRaisingAlarm")
-      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_6'"
-   End Object
-   ClassData=(ClassName="BTTask_ClearBlackboardKey")
-   NodeInstance="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'BTTask_ClearBlackboardKey_1'"
-   CopySubNodeIndex=23
-   NodePosX=1056
-   NodePosY=1328
-   NodeGuid=0C317DFF4284329AE66B509B1760FF68
-   CustomProperties Pin (PinId=132393874F221E38E9D497B53CE9ADB6,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_3 C0AA6D8E49010A2615E4F8AE6D6371C4,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_23" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_23'"
-   Begin Object Class=/Script/AIModule.BTTask_Wait Name="BTTask_Wait_2" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_23.BTTask_Wait_2'"
-   End Object
-   Begin Object Name="BTTask_Wait_2" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_23.BTTask_Wait_2'"
-      WaitTime=(DefaultValue=4.000000)
-      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_7.BTComposite_Selector_3'"
-   End Object
-   ClassData=(ClassName="BTTask_Wait")
-   NodeInstance="/Script/AIModule.BTTask_Wait'BTTask_Wait_2'"
-   CopySubNodeIndex=24
-   NodePosX=976
-   NodePosY=1584
-   NodeGuid=9155B3C54BC1E2EECDA4D2830D0DF50C
-   CustomProperties Pin (PinId=39AD7A3E44A851F8F6DE5680F6354284,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_7 7FE15F6144817C6F93FE2B93E72ED959,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Name="BehaviorTreeGraphNode_Composite_7" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_7'"
    Begin Object Class=/Script/AIModule.BTComposite_Selector Name="BTComposite_Selector_3" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_7.BTComposite_Selector_3'"
    End Object
    Begin Object Name="BTComposite_Selector_3" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_7.BTComposite_Selector_3'"
-      Children(0)=(ChildTask="/Script/Project_StealthGhost.BTTask_RaiseAlarm'BehaviorTreeGraphNode_Task_22.BTTask_RaiseAlarm_4'")
-      Children(1)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_23.BTTask_Wait_2'")
+      Children(0)=(ChildTask="/Script/Project_StealthGhost.BTTask_RaiseAlarm'BehaviorTreeGraphNode_Task_18.BTTask_RaiseAlarm_0'")
+      Children(1)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_19.BTTask_Wait_2'")
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_6'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_13.BTComposite_Sequence_8'"
    End Object
    ClassData=(ClassName="BTComposite_Selector")
    NodeInstance="/Script/AIModule.BTComposite_Selector'BTComposite_Selector_3'"
-   CopySubNodeIndex=25
-   NodePosX=832
-   NodePosY=1360
+   CopySubNodeIndex=15
+   NodePosX=1856
+   NodePosY=1424
    NodeGuid=5C2574D749F068A467A275AF8D24CF4D
-   CustomProperties Pin (PinId=D167B3B34F9B9446B51095A57ACD28AC,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_3 C0AA6D8E49010A2615E4F8AE6D6371C4,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-   CustomProperties Pin (PinId=7FE15F6144817C6F93FE2B93E72ED959,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_22 2CAA85BA4DE02E107DD80CA66B5332DE,BehaviorTreeGraphNode_Task_23 39AD7A3E44A851F8F6DE5680F6354284,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=D167B3B34F9B9446B51095A57ACD28AC,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_13 6E95AEFF4BE18BA908A7BF8AC9253440,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=7FE15F6144817C6F93FE2B93E72ED959,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_18 EC55D6BF4D32DE6768C29AA98B2D865E,BehaviorTreeGraphNode_Task_19 1B8B0E2C429FC95D5C4391A67DE9A33D,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Name="BehaviorTreeGraphNode_Composite_8" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_8'"
-   Begin Object Class=/Script/AIModule.BTComposite_Sequence Name="BTComposite_Sequence_5" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_8.BTComposite_Sequence_5'"
+   Begin Object Class=/Script/AIModule.BTComposite_Sequence Name="BTComposite_Sequence_7" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_8.BTComposite_Sequence_7'"
    End Object
-   Begin Object Name="BTComposite_Sequence_5" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_8.BTComposite_Sequence_5'"
+   Begin Object Name="BTComposite_Sequence_7" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_8.BTComposite_Sequence_7'"
       Children(0)=(ChildTask="/Script/Project_StealthGhost.BTTask_FindSearchPoint'BehaviorTreeGraphNode_Task_24.BTTask_FindSearchPoint_0'")
       Children(1)=(ChildTask="/Script/AIModule.BTTask_MoveTo'BehaviorTreeGraphNode_Task_26.BTTask_MoveTo_3'")
-      Children(2)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_27.BTTask_Wait_6'")
+      Children(2)=(ChildTask="/Script/Project_StealthGhost.BTTask_ScanArea'BehaviorTreeGraphNode_Task_15.BTTask_ScanArea_0'")
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_6'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_13.BTComposite_Sequence_8'"
    End Object
    Decorators(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_16'"
    ClassData=(ClassName="BTComposite_Sequence")
-   NodeInstance="/Script/AIModule.BTComposite_Sequence'BTComposite_Sequence_5'"
+   NodeInstance="/Script/AIModule.BTComposite_Sequence'BTComposite_Sequence_7'"
    SubNodes(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_16'"
-   CopySubNodeIndex=26
-   NodePosX=1392
-   NodePosY=1136
+   CopySubNodeIndex=16
+   NodePosX=2368
+   NodePosY=1232
    NodeGuid=4B2C7A47498DEC30CA9CDE8E665BF00F
-   CustomProperties Pin (PinId=DC57DF0749CEC1DEC0429F81A50A76AD,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_3 C0AA6D8E49010A2615E4F8AE6D6371C4,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-   CustomProperties Pin (PinId=C39B20DB4A2354C06318478B919F2989,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_24 AAC64C814A9261C990A0A2B8D24340C4,BehaviorTreeGraphNode_Task_26 287CA8D2448E1515A795BFB6430791C0,BehaviorTreeGraphNode_Task_27 8674B2D243A77B47EDC3E4A237E58D0B,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=DC57DF0749CEC1DEC0429F81A50A76AD,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_13 6E95AEFF4BE18BA908A7BF8AC9253440,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=C39B20DB4A2354C06318478B919F2989,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_24 AAC64C814A9261C990A0A2B8D24340C4,BehaviorTreeGraphNode_Task_26 287CA8D2448E1515A795BFB6430791C0,BehaviorTreeGraphNode_Task_15 43125E834425FB876420BBACFAF07964,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_24" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_24'"
    Begin Object Class=/Script/Project_StealthGhost.BTTask_FindSearchPoint Name="BTTask_FindSearchPoint_0" ExportPath="/Script/Project_StealthGhost.BTTask_FindSearchPoint'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_24.BTTask_FindSearchPoint_0'"
    End Object
    Begin Object Name="BTTask_FindSearchPoint_0" ExportPath="/Script/Project_StealthGhost.BTTask_FindSearchPoint'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_24.BTTask_FindSearchPoint_0'"
+      SearchRadius=1000.000000
       InvestigateLocationKey=(SelectedKeyName="InvestigateLocation")
       SearchPointKey=(SelectedKeyName="SearchPoint")
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_8.BTComposite_Sequence_5'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_8.BTComposite_Sequence_7'"
    End Object
    ClassData=(ClassName="BTTask_FindSearchPoint")
    NodeInstance="/Script/Project_StealthGhost.BTTask_FindSearchPoint'BTTask_FindSearchPoint_0'"
-   CopySubNodeIndex=27
-   NodePosX=1168
-   NodePosY=1536
+   CopySubNodeIndex=17
+   NodePosX=2208
+   NodePosY=1584
    NodeGuid=69429757474EE41AB1B25086F99B8636
    CustomProperties Pin (PinId=AAC64C814A9261C990A0A2B8D24340C4,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_8 C39B20DB4A2354C06318478B919F2989,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
@@ -574,35 +397,18 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="B
       End Object
       Begin Object Name="BlackboardKey_Vector" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_26.BTTask_MoveTo_3.BlackboardKey_Vector'"
       End Object
+      bAllowStrafe=(DefaultValue=True)
       BlackboardKey=(SelectedKeyName="SearchPoint")
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_8.BTComposite_Sequence_5'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_8.BTComposite_Sequence_7'"
    End Object
    ClassData=(ClassName="BTTask_MoveTo")
    NodeInstance="/Script/AIModule.BTTask_MoveTo'BTTask_MoveTo_3'"
-   CopySubNodeIndex=28
-   NodePosX=1392
-   NodePosY=1568
+   CopySubNodeIndex=18
+   NodePosX=2400
+   NodePosY=1664
    NodeGuid=1AEE8D294A52A7E58E40E2AA53BEC2E6
    CustomProperties Pin (PinId=287CA8D2448E1515A795BFB6430791C0,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_8 C39B20DB4A2354C06318478B919F2989,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
-End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_27" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_27'"
-   Begin Object Class=/Script/AIModule.BTTask_Wait Name="BTTask_Wait_6" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_27.BTTask_Wait_6'"
-   End Object
-   Begin Object Name="BTTask_Wait_6" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_27.BTTask_Wait_6'"
-      WaitTime=(DefaultValue=3.000000)
-      RandomDeviation=(DefaultValue=1.000000)
-      NodeName="Search"
-      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_8.BTComposite_Sequence_5'"
-   End Object
-   ClassData=(ClassName="BTTask_Wait")
-   NodeInstance="/Script/AIModule.BTTask_Wait'BTTask_Wait_6'"
-   CopySubNodeIndex=29
-   NodePosX=1600
-   NodePosY=1552
-   NodeGuid=9BBC04974CE92C81D1EA22B7696A9DC6
-   CustomProperties Pin (PinId=8674B2D243A77B47EDC3E4A237E58D0B,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_8 C39B20DB4A2354C06318478B919F2989,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_7" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_7'"
    Begin Object Class=/Game/AI/BTTask_FireWeapon.BTTask_FireWeapon_C Name="BTTask_FireWeapon_C_0" ExportPath="/Game/AI/BTTask_FireWeapon.BTTask_FireWeapon_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_7.BTTask_FireWeapon_C_0'"
@@ -613,9 +419,9 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="B
    End Object
    ClassData=(AssetName="BTTask_FireWeapon",GeneratedClassPackage="/Game/AI/BTTask_FireWeapon",ClassName="BTTask_FireWeapon_C")
    NodeInstance="/Game/AI/BTTask_FireWeapon.BTTask_FireWeapon_C'BTTask_FireWeapon_C_0'"
-   CopySubNodeIndex=30
-   NodePosX=-1456
-   NodePosY=816
+   CopySubNodeIndex=19
+   NodePosX=-1536
+   NodePosY=992
    NodeGuid=1D64CF4C43EC7F0100FF39A58242DE00
    CustomProperties Pin (PinId=5F8CEA014D4D9B323F2471BDF98BB308,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_6 BE169788497A347A0A4959880423FBE8,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
@@ -630,45 +436,328 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="B
    End Object
    ClassData=(ClassName="BTTask_Wait")
    NodeInstance="/Script/AIModule.BTTask_Wait'BTTask_Wait_5'"
-   CopySubNodeIndex=31
-   NodePosX=-1216
-   NodePosY=816
+   CopySubNodeIndex=20
+   NodePosX=-1184
+   NodePosY=992
    NodeGuid=114135B548E58D8355F1F29A60E0B33B
    CustomProperties Pin (PinId=8D2ADBC64AB2E89FCEDA8F80871F3C15,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_6 BE169788497A347A0A4959880423FBE8,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_20" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_20'"
-   Begin Object Class=/Script/AIModule.BTTask_RotateToFaceBBEntry Name="BTTask_RotateToFaceBBEntry_1" ExportPath="/Script/AIModule.BTTask_RotateToFaceBBEntry'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_20.BTTask_RotateToFaceBBEntry_1'"
-      Begin Object Class=/Script/AIModule.BlackboardKeyType_Object Name="BlackboardKey_Object_0" Archetype="/Script/AIModule.BlackboardKeyType_Object'/Script/AIModule.Default__BTTask_RotateToFaceBBEntry:BlackboardKey_Object_0'" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_20.BTTask_RotateToFaceBBEntry_1.BlackboardKey_Object_0'"
-      End Object
-      Begin Object Class=/Script/AIModule.BlackboardKeyType_Vector Name="BlackboardKey_Vector" Archetype="/Script/AIModule.BlackboardKeyType_Vector'/Script/AIModule.Default__BTTask_RotateToFaceBBEntry:BlackboardKey_Vector'" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_20.BTTask_RotateToFaceBBEntry_1.BlackboardKey_Vector'"
-      End Object
-      Begin Object Class=/Script/AIModule.BlackboardKeyType_Rotator Name="BlackboardKey_Rotator" Archetype="/Script/AIModule.BlackboardKeyType_Rotator'/Script/AIModule.Default__BTTask_RotateToFaceBBEntry:BlackboardKey_Rotator'" ExportPath="/Script/AIModule.BlackboardKeyType_Rotator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_20.BTTask_RotateToFaceBBEntry_1.BlackboardKey_Rotator'"
-      End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_9" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_9'"
+   Begin Object Class=/Script/Project_StealthGhost.BTTask_TurnToNoise Name="BTTask_TurnToNoise_0" ExportPath="/Script/Project_StealthGhost.BTTask_TurnToNoise'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_9.BTTask_TurnToNoise_0'"
    End Object
-   Begin Object Name="BTTask_RotateToFaceBBEntry_1" ExportPath="/Script/AIModule.BTTask_RotateToFaceBBEntry'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_20.BTTask_RotateToFaceBBEntry_1'"
-      Begin Object Name="BlackboardKey_Object_0" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_20.BTTask_RotateToFaceBBEntry_1.BlackboardKey_Object_0'"
-      End Object
-      Begin Object Name="BlackboardKey_Vector" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_20.BTTask_RotateToFaceBBEntry_1.BlackboardKey_Vector'"
-      End Object
-      Begin Object Name="BlackboardKey_Rotator" ExportPath="/Script/AIModule.BlackboardKeyType_Rotator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_20.BTTask_RotateToFaceBBEntry_1.BlackboardKey_Rotator'"
-      End Object
-      Precision=(DefaultValue=5.000000)
-      BlackboardKey=(SelectedKeyName="TargetActor")
+   Begin Object Name="BTTask_TurnToNoise_0" ExportPath="/Script/Project_StealthGhost.BTTask_TurnToNoise'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_9.BTTask_TurnToNoise_0'"
+      ObservationDuration=4.000000
+      BlackboardKey=(SelectedKeyName="InvestigateLocation")
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_6.BTComposite_Sequence_1'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_5.BTComposite_Selector_1'"
    End Object
-   ClassData=(ClassName="BTTask_RotateToFaceBBEntry")
-   NodeInstance="/Script/AIModule.BTTask_RotateToFaceBBEntry'BTTask_RotateToFaceBBEntry_1'"
-   CopySubNodeIndex=32
-   NodePosX=-1728
+   Decorators(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_54'"
+   ClassData=(ClassName="BTTask_TurnToNoise")
+   NodeInstance="/Script/Project_StealthGhost.BTTask_TurnToNoise'BTTask_TurnToNoise_0'"
+   SubNodes(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_54'"
+   CopySubNodeIndex=21
+   NodePosX=720
    NodePosY=816
-   NodeGuid=0FC917CC405F34FA81AF0D9FA12E9D0D
-   CustomProperties Pin (PinId=3E2EA21B449CA7EF1A46A793A006EF0F,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_6 BE169788497A347A0A4959880423FBE8,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   NodeGuid=1FDFC3CA465786416CFCF284B1F4E52A
+   CustomProperties Pin (PinId=154186384A8260299936D08E258462B9,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_5 5953983F44F3CEB71068A5BFCA154E07,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_18" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_18'"
+   Begin Object Class=/Script/Project_StealthGhost.BTTask_RaiseAlarm Name="BTTask_RaiseAlarm_0" ExportPath="/Script/Project_StealthGhost.BTTask_RaiseAlarm'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_18.BTTask_RaiseAlarm_0'"
+   End Object
+   Begin Object Name="BTTask_RaiseAlarm_0" ExportPath="/Script/Project_StealthGhost.BTTask_RaiseAlarm'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_18.BTTask_RaiseAlarm_0'"
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_7.BTComposite_Selector_3'"
+   End Object
+   ClassData=(ClassName="BTTask_RaiseAlarm")
+   NodeInstance="/Script/Project_StealthGhost.BTTask_RaiseAlarm'BTTask_RaiseAlarm_0'"
+   CopySubNodeIndex=22
+   NodePosX=1632
+   NodePosY=1680
+   NodeGuid=5176B7A940D2359A769846BAE2BDF0E4
+   CustomProperties Pin (PinId=EC55D6BF4D32DE6768C29AA98B2D865E,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_7 7FE15F6144817C6F93FE2B93E72ED959,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_19" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_19'"
+   Begin Object Class=/Script/AIModule.BTTask_Wait Name="BTTask_Wait_2" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_19.BTTask_Wait_2'"
+   End Object
+   Begin Object Name="BTTask_Wait_2" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_19.BTTask_Wait_2'"
+      NodeName="Observe"
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_7.BTComposite_Selector_3'"
+   End Object
+   ClassData=(ClassName="BTTask_Wait")
+   NodeInstance="/Script/AIModule.BTTask_Wait'BTTask_Wait_2'"
+   CopySubNodeIndex=23
+   NodePosX=2016
+   NodePosY=1664
+   NodeGuid=31236E3B480B4978548381B9BC43C0EA
+   CustomProperties Pin (PinId=1B8B0E2C429FC95D5C4391A67DE9A33D,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_7 7FE15F6144817C6F93FE2B93E72ED959,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Name="BehaviorTreeGraphNode_Composite_9" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_9'"
+   Begin Object Class=/Script/AIModule.BTComposite_Selector Name="BTComposite_Selector_2" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_9.BTComposite_Selector_2'"
+   End Object
+   Begin Object Name="BTComposite_Selector_2" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_9.BTComposite_Selector_2'"
+      Children(0)=(ChildComposite="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_13.BTComposite_Sequence_8'",Decorators=("/Script/AIModule.BTDecorator_Blackboard'BehaviorTreeGraphNode_Decorator_104.BTDecorator_Blackboard_6'"))
+      Children(1)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_30.BTTask_Wait_7'")
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_3'"
+   End Object
+   ClassData=(ClassName="BTComposite_Selector")
+   NodeInstance="/Script/AIModule.BTComposite_Selector'BTComposite_Selector_2'"
+   CopySubNodeIndex=24
+   NodePosX=1920
+   NodePosY=720
+   NodeGuid=69E9C94943B5B9D2BBFCF9A129F5EF74
+   CustomProperties Pin (PinId=AA99E8E546F729EE822F6FB1D61CD532,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_3 C0AA6D8E49010A2615E4F8AE6D6371C4,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=CCC271E24ED878264F4A9185D8EADF30,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_13 E25857794A3875265C8E6288F49B5107,BehaviorTreeGraphNode_Task_30 660FE13744B381374CD631B669A85EE5,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_15" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_15'"
+   Begin Object Class=/Script/Project_StealthGhost.BTTask_ScanArea Name="BTTask_ScanArea_0" ExportPath="/Script/Project_StealthGhost.BTTask_ScanArea'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_15.BTTask_ScanArea_0'"
+   End Object
+   Begin Object Name="BTTask_ScanArea_0" ExportPath="/Script/Project_StealthGhost.BTTask_ScanArea'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_15.BTTask_ScanArea_0'"
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_8.BTComposite_Sequence_7'"
+   End Object
+   ClassData=(ClassName="BTTask_ScanArea")
+   NodeInstance="/Script/Project_StealthGhost.BTTask_ScanArea'BTTask_ScanArea_0'"
+   CopySubNodeIndex=25
+   NodePosX=2528
+   NodePosY=1568
+   NodeGuid=863D2DA64391ABF3BE1D89BDD11B9484
+   CustomProperties Pin (PinId=43125E834425FB876420BBACFAF07964,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_8 C39B20DB4A2354C06318478B919F2989,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_21" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_21'"
+   Begin Object Class=/Script/Project_StealthGhost.BTTask_ClearBlackboardKey Name="BTTask_ClearBlackboardKey_1" ExportPath="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_21.BTTask_ClearBlackboardKey_1'"
+   End Object
+   Begin Object Name="BTTask_ClearBlackboardKey_1" ExportPath="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_21.BTTask_ClearBlackboardKey_1'"
+      BlackboardKey=(SelectedKeyName="bWillWalkToNoise")
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_3'"
+   End Object
+   ClassData=(ClassName="BTTask_ClearBlackboardKey")
+   NodeInstance="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'BTTask_ClearBlackboardKey_1'"
+   CopySubNodeIndex=26
+   NodePosX=2560
+   NodePosY=544
+   NodeGuid=8F59DF3B45B0FC08741AB7BE56E0BD6F
+   CustomProperties Pin (PinId=D68ED4144F1C97F59B0B49B03D6BFEEC,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_3 C0AA6D8E49010A2615E4F8AE6D6371C4,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Name="BehaviorTreeGraphNode_Composite_13" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_13'"
+   Begin Object Class=/Script/AIModule.BTComposite_Sequence Name="BTComposite_Sequence_8" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_13.BTComposite_Sequence_8'"
+   End Object
+   Begin Object Name="BTComposite_Sequence_8" ExportPath="/Script/AIModule.BTComposite_Sequence'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_13.BTComposite_Sequence_8'"
+      Children(0)=(ChildTask="/Script/AIModule.BTTask_MoveTo'BehaviorTreeGraphNode_Task_28.BTTask_MoveTo_5'")
+      Children(1)=(ChildComposite="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_7.BTComposite_Selector_3'")
+      Children(2)=(ChildComposite="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_8.BTComposite_Sequence_7'",Decorators=("/Script/AIModule.BTDecorator_Loop'BehaviorTreeGraphNode_Decorator_16.BTDecorator_Loop_0'"))
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_9.BTComposite_Selector_2'"
+   End Object
+   Decorators(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_104'"
+   ClassData=(ClassName="BTComposite_Sequence")
+   NodeInstance="/Script/AIModule.BTComposite_Sequence'BTComposite_Sequence_8'"
+   SubNodes(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_104'"
+   CopySubNodeIndex=27
+   NodePosX=1840
+   NodePosY=992
+   NodeGuid=4A98257A4E5DC85C9B9E79AADEF5C6C9
+   CustomProperties Pin (PinId=E25857794A3875265C8E6288F49B5107,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_9 CCC271E24ED878264F4A9185D8EADF30,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=6E95AEFF4BE18BA908A7BF8AC9253440,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_28 CBD83E19422F40AEE5B096B19F7661D0,BehaviorTreeGraphNode_Composite_7 D167B3B34F9B9446B51095A57ACD28AC,BehaviorTreeGraphNode_Composite_8 DC57DF0749CEC1DEC0429F81A50A76AD,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_28" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_28'"
+   Begin Object Class=/Script/AIModule.BTTask_MoveTo Name="BTTask_MoveTo_5" ExportPath="/Script/AIModule.BTTask_MoveTo'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_28.BTTask_MoveTo_5'"
+      Begin Object Class=/Script/AIModule.BlackboardKeyType_Object Name="BlackboardKey_Object_0" Archetype="/Script/AIModule.BlackboardKeyType_Object'/Script/AIModule.Default__BTTask_MoveTo:BlackboardKey_Object_0'" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_28.BTTask_MoveTo_5.BlackboardKey_Object_0'"
+      End Object
+      Begin Object Class=/Script/AIModule.BlackboardKeyType_Vector Name="BlackboardKey_Vector" Archetype="/Script/AIModule.BlackboardKeyType_Vector'/Script/AIModule.Default__BTTask_MoveTo:BlackboardKey_Vector'" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_28.BTTask_MoveTo_5.BlackboardKey_Vector'"
+      End Object
+   End Object
+   Begin Object Name="BTTask_MoveTo_5" ExportPath="/Script/AIModule.BTTask_MoveTo'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_28.BTTask_MoveTo_5'"
+      Begin Object Name="BlackboardKey_Object_0" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_28.BTTask_MoveTo_5.BlackboardKey_Object_0'"
+      End Object
+      Begin Object Name="BlackboardKey_Vector" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_28.BTTask_MoveTo_5.BlackboardKey_Vector'"
+      End Object
+      BlackboardKey=(SelectedKeyName="InvestigateLocation")
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_13.BTComposite_Sequence_8'"
+   End Object
+   ClassData=(ClassName="BTTask_MoveTo")
+   NodeInstance="/Script/AIModule.BTTask_MoveTo'BTTask_MoveTo_5'"
+   CopySubNodeIndex=28
+   NodePosX=1520
+   NodePosY=1440
+   NodeGuid=F5C99142424065E7539BE49FDDD24B5C
+   CustomProperties Pin (PinId=CBD83E19422F40AEE5B096B19F7661D0,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_13 6E95AEFF4BE18BA908A7BF8AC9253440,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_30" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_30'"
+   Begin Object Class=/Script/AIModule.BTTask_Wait Name="BTTask_Wait_7" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_30.BTTask_Wait_7'"
+   End Object
+   Begin Object Name="BTTask_Wait_7" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_30.BTTask_Wait_7'"
+      WaitTime=(DefaultValue=3.000000)
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_9.BTComposite_Selector_2'"
+   End Object
+   ClassData=(ClassName="BTTask_Wait")
+   NodeInstance="/Script/AIModule.BTTask_Wait'BTTask_Wait_7'"
+   CopySubNodeIndex=29
+   NodePosX=2608
+   NodePosY=912
+   NodeGuid=F8DD55DA429EF976DF318D85C7A5F9B7
+   CustomProperties Pin (PinId=660FE13744B381374CD631B669A85EE5,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_9 CCC271E24ED878264F4A9185D8EADF30,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_31" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_31'"
+   Begin Object Class=/Script/Project_StealthGhost.BTTask_ClearBlackboardKey Name="BTTask_ClearBlackboardKey_3" ExportPath="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_31.BTTask_ClearBlackboardKey_3'"
+   End Object
+   Begin Object Name="BTTask_ClearBlackboardKey_3" ExportPath="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_31.BTTask_ClearBlackboardKey_3'"
+      BlackboardKey=(SelectedKeyName="bIsCombatSearch")
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_3'"
+   End Object
+   ClassData=(ClassName="BTTask_ClearBlackboardKey")
+   NodeInstance="/Script/Project_StealthGhost.BTTask_ClearBlackboardKey'BTTask_ClearBlackboardKey_3'"
+   CopySubNodeIndex=30
+   NodePosX=2304
+   NodePosY=544
+   NodeGuid=9AE144994F8321A1A48FDFA468AB7445
+   CustomProperties Pin (PinId=ADD8B89D4BD2E45A281D6D9EE7187B6A,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_3 C0AA6D8E49010A2615E4F8AE6D6371C4,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_8" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_8'"
+   Begin Object Class=/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C Name="BTTask_SetSpeed_C_2" ExportPath="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_8.BTTask_SetSpeed_C_2'"
+   End Object
+   Begin Object Name="BTTask_SetSpeed_C_2" ExportPath="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_8.BTTask_SetSpeed_C_2'"
+      NewSpeed=400.000000
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_10.BTComposite_Selector_4'"
+   End Object
+   Decorators(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_52'"
+   ClassData=(AssetName="BTTask_SetSpeed",GeneratedClassPackage="/Game/AI/BTTask_SetSpeed",ClassName="BTTask_SetSpeed_C")
+   NodeInstance="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'BTTask_SetSpeed_C_2'"
+   SubNodes(0)="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'BehaviorTreeGraphNode_Decorator_52'"
+   CopySubNodeIndex=31
+   NodePosX=1104
+   NodePosY=1024
+   NodeGuid=93B2ABB54566D522EE614B95A103B110
+   CustomProperties Pin (PinId=0A53FC124A66A002C6D4168EAEC32833,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_10 AB3404B24DE4C69A5E78BDB4CA4B2D3C,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Name="BehaviorTreeGraphNode_Composite_5" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_5'"
+   Begin Object Class=/Script/AIModule.BTComposite_Selector Name="BTComposite_Selector_1" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_5.BTComposite_Selector_1'"
+   End Object
+   Begin Object Name="BTComposite_Selector_1" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_5.BTComposite_Selector_1'"
+      Children(0)=(ChildTask="/Script/Project_StealthGhost.BTTask_TurnToNoise'BehaviorTreeGraphNode_Task_9.BTTask_TurnToNoise_0'",Decorators=("/Script/AIModule.BTDecorator_Blackboard'BehaviorTreeGraphNode_Decorator_54.BTDecorator_Blackboard_5'"))
+      Children(1)=(ChildTask="/Script/AIModule.BTTask_Wait'BehaviorTreeGraphNode_Task_12.BTTask_Wait_3'")
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_3'"
+   End Object
+   ClassData=(ClassName="BTComposite_Selector")
+   NodeInstance="/Script/AIModule.BTComposite_Selector'BTComposite_Selector_1'"
+   CopySubNodeIndex=32
+   NodePosX=992
+   NodePosY=608
+   NodeGuid=1E3D2F2C4FBFFA4D4096FE8B2064BBCD
+   CustomProperties Pin (PinId=888F4C584321F5F876EE98A7B030FDD2,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_3 C0AA6D8E49010A2615E4F8AE6D6371C4,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=5953983F44F3CEB71068A5BFCA154E07,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_9 154186384A8260299936D08E258462B9,BehaviorTreeGraphNode_Task_12 A35A760D4EBB38B2096E9082236FB55D,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_12" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_12'"
+   Begin Object Class=/Script/AIModule.BTTask_Wait Name="BTTask_Wait_3" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_12.BTTask_Wait_3'"
+   End Object
+   Begin Object Name="BTTask_Wait_3" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_12.BTTask_Wait_3'"
+      WaitTime=(DefaultValue=1.000000)
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_5.BTComposite_Selector_1'"
+   End Object
+   ClassData=(ClassName="BTTask_Wait")
+   NodeInstance="/Script/AIModule.BTTask_Wait'BTTask_Wait_3'"
+   CopySubNodeIndex=33
+   NodePosX=1216
+   NodePosY=864
+   NodeGuid=B8B1783A4BA643BEF595CC900BD7CD3F
+   CustomProperties Pin (PinId=A35A760D4EBB38B2096E9082236FB55D,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_5 5953983F44F3CEB71068A5BFCA154E07,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Name="BehaviorTreeGraphNode_Composite_10" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_10'"
+   Begin Object Class=/Script/AIModule.BTComposite_Selector Name="BTComposite_Selector_4" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_10.BTComposite_Selector_4'"
+   End Object
+   Begin Object Name="BTComposite_Selector_4" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_10.BTComposite_Selector_4'"
+      Children(0)=(ChildTask="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'BehaviorTreeGraphNode_Task_8.BTTask_SetSpeed_C_2'",Decorators=("/Script/AIModule.BTDecorator_Blackboard'BehaviorTreeGraphNode_Decorator_52.BTDecorator_Blackboard_7'"))
+      Children(1)=(ChildTask="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'BehaviorTreeGraphNode_Task_16.BTTask_SetSpeed_C_3'")
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_3'"
+   End Object
+   ClassData=(ClassName="BTComposite_Selector")
+   NodeInstance="/Script/AIModule.BTComposite_Selector'BTComposite_Selector_4'"
+   CopySubNodeIndex=34
+   NodePosX=1408
+   NodePosY=864
+   NodeGuid=87BDD8C843620C99255364BF2852E42D
+   CustomProperties Pin (PinId=1D734B874DEE2EA3B8DB0FB1D159C4B2,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_3 C0AA6D8E49010A2615E4F8AE6D6371C4,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=AB3404B24DE4C69A5E78BDB4CA4B2D3C,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Task_8 0A53FC124A66A002C6D4168EAEC32833,BehaviorTreeGraphNode_Task_16 8C3107CC419909D4D0862F8B87EA5A8A,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_16" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_16'"
+   Begin Object Class=/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C Name="BTTask_SetSpeed_C_3" ExportPath="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_16.BTTask_SetSpeed_C_3'"
+   End Object
+   Begin Object Name="BTTask_SetSpeed_C_3" ExportPath="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_16.BTTask_SetSpeed_C_3'"
+      NewSpeed=250.000000
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_10.BTComposite_Selector_4'"
+   End Object
+   ClassData=(AssetName="BTTask_SetSpeed",GeneratedClassPackage="/Game/AI/BTTask_SetSpeed",ClassName="BTTask_SetSpeed_C")
+   NodeInstance="/Game/AI/BTTask_SetSpeed.BTTask_SetSpeed_C'BTTask_SetSpeed_C_3'"
+   CopySubNodeIndex=35
+   NodePosX=1568
+   NodePosY=1056
+   NodeGuid=AFC5DC7C4636CECD45AF6CB4B0899DF5
+   CustomProperties Pin (PinId=8C3107CC419909D4D0862F8B87EA5A8A,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_10 AB3404B24DE4C69A5E78BDB4CA4B2D3C,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite Name="BehaviorTreeGraphNode_Composite_11" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Composite'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_11'"
+   Begin Object Class=/Script/AIModule.BTComposite_Selector Name="BTComposite_Selector_5" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_11.BTComposite_Selector_5'"
+   End Object
+   Begin Object Name="BTComposite_Selector_5" ExportPath="/Script/AIModule.BTComposite_Selector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Composite_11.BTComposite_Selector_5'"
+      Children(0)=(ChildComposite="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_6.BTComposite_Sequence_1'",Decorators=("/Script/AIModule.BTDecorator_Blackboard'BehaviorTreeGraphNode_Decorator_149.BTDecorator_Blackboard_4'"))
+      Children(1)=(ChildTask="/Script/AIModule.BTTask_MoveTo'BehaviorTreeGraphNode_Task_0.BTTask_MoveTo_1'")
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_0.BTComposite_Sequence_4'"
+   End Object
+   ClassData=(ClassName="BTComposite_Selector")
+   NodeInstance="/Script/AIModule.BTComposite_Selector'BTComposite_Selector_5'"
+   CopySubNodeIndex=36
+   NodePosX=-944
+   NodePosY=496
+   NodeGuid=40B4B0384E6AB99D613324BEF4E6A02A
+   CustomProperties Pin (PinId=D183CD6349C684C45F953299A96CCD24,PinName="In",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_0 9F7A53C8439D486C612A3BAC2CBB321D,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+   CustomProperties Pin (PinId=9201C5404FD910C9B8447CB7C377667C,PinName="Out",Direction="EGPD_Output",PinType.PinCategory="MultipleNodes",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_6 2CBC0CA0471DEFA95C3A0281AF13B88C,BehaviorTreeGraphNode_Task_0 E258A837449345DF9D6FF6A72789267E,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_22" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_22'"
+   Begin Object Class=/Script/AIModule.BTTask_Wait Name="BTTask_Wait_8" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_22.BTTask_Wait_8'"
+   End Object
+   Begin Object Name="BTTask_Wait_8" ExportPath="/Script/AIModule.BTTask_Wait'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_22.BTTask_Wait_8'"
+      WaitTime=(DefaultValue=6.000000)
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_2.BTComposite_Sequence_2'"
+   End Object
+   ClassData=(ClassName="BTTask_Wait")
+   NodeInstance="/Script/AIModule.BTTask_Wait'BTTask_Wait_8'"
+   CopySubNodeIndex=37
+   NodePosX=4688
+   NodePosY=720
+   NodeGuid=212FA86A4DBC3F3BAB5FE2A58073FC52
+   CustomProperties Pin (PinId=D63580394E3E30D22E166A80B7C2F075,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_2 F1BBECFE420802D811A64DB54AEB65BB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task Name="BehaviorTreeGraphNode_Task_2" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Task'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_2'"
+   Begin Object Class=/Game/AI/BTTask_AlignWithTargetPoint.BTTask_AlignWithTargetPoint_C Name="BTTask_AlignWithTargetPoint_C_0" ExportPath="/Game/AI/BTTask_AlignWithTargetPoint.BTTask_AlignWithTargetPoint_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_2.BTTask_AlignWithTargetPoint_C_0'"
+   End Object
+   Begin Object Name="BTTask_AlignWithTargetPoint_C_0" ExportPath="/Game/AI/BTTask_AlignWithTargetPoint.BTTask_AlignWithTargetPoint_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Task_2.BTTask_AlignWithTargetPoint_C_0'"
+      TargetPointKey=(SelectedKeyName="PatrolLocation")
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_2.BTComposite_Sequence_2'"
+   End Object
+   ClassData=(AssetName="BTTask_AlignWithTargetPoint",GeneratedClassPackage="/Game/AI/BTTask_AlignWithTargetPoint",ClassName="BTTask_AlignWithTargetPoint_C")
+   NodeInstance="/Game/AI/BTTask_AlignWithTargetPoint.BTTask_AlignWithTargetPoint_C'BTTask_AlignWithTargetPoint_C_0'"
+   CopySubNodeIndex=38
+   NodePosX=4032
+   NodePosY=736
+   NodeGuid=14C1D98E4442B72579360A844B8880D8
+   CustomProperties Pin (PinId=EB3724CD47BAA4AF21A119B4C0CB619D,PinName="In",PinType.PinCategory="SingleComposite",PinType.PinSubCategory="",PinType.PinSubCategoryObject=None,PinType.PinSubCategoryMemberReference=(),PinType.PinValueType=(),PinType.ContainerType=None,PinType.bIsReference=False,PinType.bIsConst=False,PinType.bIsWeakPointer=False,PinType.bIsUObjectWrapper=False,PinType.bSerializeAsSinglePrecisionFloat=False,LinkedTo=(BehaviorTreeGraphNode_Composite_2 F1BBECFE420802D811A64DB54AEB65BB,),PersistentGuid=00000000000000000000000000000000,bHidden=False,bNotConnectable=False,bDefaultValueIsReadOnly=False,bDefaultValueIsIgnored=False,bAdvancedView=False,bOrphanedPin=False,)
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Name="BehaviorTreeGraphNode_Decorator_32" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_32'"
-   Begin Object Class=/Script/AIModule.BTDecorator_Blackboard Name="BTDecorator_Blackboard_1" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_32.BTDecorator_Blackboard_1'"
+   Begin Object Class=/Script/AIModule.BTDecorator_Blackboard Name="BTDecorator_Blackboard_0" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_32.BTDecorator_Blackboard_0'"
    End Object
-   Begin Object Name="BTDecorator_Blackboard_1" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_32.BTDecorator_Blackboard_1'"
+   Begin Object Name="BTDecorator_Blackboard_0" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_32.BTDecorator_Blackboard_0'"
       CachedDescription="TargetActor is Is Set"
       BlackboardKey=(SelectedKeyName="TargetActor")
       FlowAbortMode=Both
@@ -676,44 +765,61 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Na
       ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_1.BTComposite_Selector_0'"
    End Object
    ClassData=(ClassName="BTDecorator_Blackboard")
-   NodeInstance="/Script/AIModule.BTDecorator_Blackboard'BTDecorator_Blackboard_1'"
-   CopySubNodeIndex=8
+   NodeInstance="/Script/AIModule.BTDecorator_Blackboard'BTDecorator_Blackboard_0'"
+   CopySubNodeIndex=6
    NodeGuid=C8F336FD45AE3E04F057F4873E05C705
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service Name="BehaviorTreeGraphNode_Service_25" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_25'"
-   Begin Object Class=/Script/Project_StealthGhost.BTService_CheckAttackRange Name="BTService_CheckAttackRange_0" ExportPath="/Script/Project_StealthGhost.BTService_CheckAttackRange'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_25.BTService_CheckAttackRange_0'"
+   Begin Object Class=/Script/Project_StealthGhost.BTService_CheckAttackRange Name="BTService_CheckAttackRange_1" ExportPath="/Script/Project_StealthGhost.BTService_CheckAttackRange'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_25.BTService_CheckAttackRange_1'"
    End Object
-   Begin Object Name="BTService_CheckAttackRange_0" ExportPath="/Script/Project_StealthGhost.BTService_CheckAttackRange'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_25.BTService_CheckAttackRange_0'"
-      AttackRange=1000.000000
-      LoseAttackRange=1500.000000
+   Begin Object Name="BTService_CheckAttackRange_1" ExportPath="/Script/Project_StealthGhost.BTService_CheckAttackRange'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_25.BTService_CheckAttackRange_1'"
+      AttackRange=1500.000000
+      LoseAttackRange=2000.000000
       BlackboardKey=(SelectedKeyName="TargetActor")
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
       ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_0.BTComposite_Sequence_4'"
    End Object
    ClassData=(ClassName="BTService_CheckAttackRange")
-   NodeInstance="/Script/Project_StealthGhost.BTService_CheckAttackRange'BTService_CheckAttackRange_0'"
-   CopySubNodeIndex=8
+   NodeInstance="/Script/Project_StealthGhost.BTService_CheckAttackRange'BTService_CheckAttackRange_1'"
+   CopySubNodeIndex=6
    NodeGuid=EF0E742747724CAE16C6DAAFABBD2FC3
 End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Name="BehaviorTreeGraphNode_Decorator_33" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_33'"
-   Begin Object Class=/Script/AIModule.BTDecorator_Blackboard Name="BTDecorator_Blackboard_3" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_33.BTDecorator_Blackboard_3'"
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Name="BehaviorTreeGraphNode_Decorator_17" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_17'"
+   Begin Object Class=/Script/AIModule.BTDecorator_Blackboard Name="BTDecorator_Blackboard_1" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_17.BTDecorator_Blackboard_1'"
    End Object
-   Begin Object Name="BTDecorator_Blackboard_3" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_33.BTDecorator_Blackboard_3'"
+   Begin Object Name="BTDecorator_Blackboard_1" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_17.BTDecorator_Blackboard_1'"
+      CachedDescription="TargetActor is Is Not Set"
+      OperationType=1
+      BasicOperation=NotSet
+      BlackboardKey=(SelectedKeyName="TargetActor")
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_1.BTComposite_Selector_0'"
+   End Object
+   ClassData=(ClassName="BTDecorator_Blackboard")
+   NodeInstance="/Script/AIModule.BTDecorator_Blackboard'BTDecorator_Blackboard_1'"
+   CopySubNodeIndex=8
+   NodeGuid=30AF2D6D4275BE640C90148B19B6EBCA
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Name="BehaviorTreeGraphNode_Decorator_33" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_33'"
+   Begin Object Class=/Script/AIModule.BTDecorator_Blackboard Name="BTDecorator_Blackboard_2" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_33.BTDecorator_Blackboard_2'"
+   End Object
+   Begin Object Name="BTDecorator_Blackboard_2" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_33.BTDecorator_Blackboard_2'"
       CachedDescription="InvestigateLocation is Is Set"
+      NotifyObserver=ValueChange
       BlackboardKey=(SelectedKeyName="InvestigateLocation")
       FlowAbortMode=Both
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
       ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_1.BTComposite_Selector_0'"
    End Object
    ClassData=(ClassName="BTDecorator_Blackboard")
-   NodeInstance="/Script/AIModule.BTDecorator_Blackboard'BTDecorator_Blackboard_3'"
-   CopySubNodeIndex=10
+   NodeInstance="/Script/AIModule.BTDecorator_Blackboard'BTDecorator_Blackboard_2'"
+   CopySubNodeIndex=8
    NodeGuid=CE8723B141EFBD91DF1F4CAD63546631
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Name="BehaviorTreeGraphNode_Decorator_34" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_34'"
-   Begin Object Class=/Script/AIModule.BTDecorator_Blackboard Name="BTDecorator_Blackboard_0" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_34.BTDecorator_Blackboard_0'"
+   Begin Object Class=/Script/AIModule.BTDecorator_Blackboard Name="BTDecorator_Blackboard_3" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_34.BTDecorator_Blackboard_3'"
    End Object
-   Begin Object Name="BTDecorator_Blackboard_0" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_34.BTDecorator_Blackboard_0'"
+   Begin Object Name="BTDecorator_Blackboard_3" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_34.BTDecorator_Blackboard_3'"
       CachedDescription="IsInteracting? is Is Set"
       BlackboardKey=(SelectedKeyName="IsInteracting?")
       FlowAbortMode=Both
@@ -721,76 +827,135 @@ Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Na
       ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_1.BTComposite_Selector_0'"
    End Object
    ClassData=(ClassName="BTDecorator_Blackboard")
-   NodeInstance="/Script/AIModule.BTDecorator_Blackboard'BTDecorator_Blackboard_0'"
-   CopySubNodeIndex=14
+   NodeInstance="/Script/AIModule.BTDecorator_Blackboard'BTDecorator_Blackboard_3'"
+   CopySubNodeIndex=9
    NodeGuid=EDDD5F0648DEE0C988424396B23E28FB
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service Name="BehaviorTreeGraphNode_Service_4" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4'"
-   Begin Object Class=/Script/AIModule.BTService_DefaultFocus Name="BTService_DefaultFocus_1" ExportPath="/Script/AIModule.BTService_DefaultFocus'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_1'"
-      Begin Object Class=/Script/AIModule.BlackboardKeyType_Object Name="BlackboardKey_Object_0" Archetype="/Script/AIModule.BlackboardKeyType_Object'/Script/AIModule.Default__BTService_DefaultFocus:BlackboardKey_Object_0'" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_1.BlackboardKey_Object_0'"
+   Begin Object Class=/Script/AIModule.BTService_DefaultFocus Name="BTService_DefaultFocus_2" ExportPath="/Script/AIModule.BTService_DefaultFocus'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_2'"
+      Begin Object Class=/Script/AIModule.BlackboardKeyType_Object Name="BlackboardKey_Object_0" Archetype="/Script/AIModule.BlackboardKeyType_Object'/Script/AIModule.Default__BTService_DefaultFocus:BlackboardKey_Object_0'" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_2.BlackboardKey_Object_0'"
       End Object
-      Begin Object Class=/Script/AIModule.BlackboardKeyType_Vector Name="BlackboardKey_Vector" Archetype="/Script/AIModule.BlackboardKeyType_Vector'/Script/AIModule.Default__BTService_DefaultFocus:BlackboardKey_Vector'" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_1.BlackboardKey_Vector'"
+      Begin Object Class=/Script/AIModule.BlackboardKeyType_Vector Name="BlackboardKey_Vector" Archetype="/Script/AIModule.BlackboardKeyType_Vector'/Script/AIModule.Default__BTService_DefaultFocus:BlackboardKey_Vector'" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_2.BlackboardKey_Vector'"
       End Object
    End Object
-   Begin Object Name="BTService_DefaultFocus_1" ExportPath="/Script/AIModule.BTService_DefaultFocus'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_1'"
-      Begin Object Name="BlackboardKey_Object_0" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_1.BlackboardKey_Object_0'"
+   Begin Object Name="BTService_DefaultFocus_2" ExportPath="/Script/AIModule.BTService_DefaultFocus'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_2'"
+      Begin Object Name="BlackboardKey_Object_0" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_2.BlackboardKey_Object_0'"
       End Object
-      Begin Object Name="BlackboardKey_Vector" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_1.BlackboardKey_Vector'"
+      Begin Object Name="BlackboardKey_Vector" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_4.BTService_DefaultFocus_2.BlackboardKey_Vector'"
       End Object
       BlackboardKey=(SelectedKeyName="InteractTarget")
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
       ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_4.BTComposite_Sequence_0'"
    End Object
    ClassData=(ClassName="BTService_DefaultFocus")
-   NodeInstance="/Script/AIModule.BTService_DefaultFocus'BTService_DefaultFocus_1'"
-   CopySubNodeIndex=14
+   NodeInstance="/Script/AIModule.BTService_DefaultFocus'BTService_DefaultFocus_2'"
+   CopySubNodeIndex=9
    NodeGuid=0B442B684D8C905CBF054C987693554A
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service Name="BehaviorTreeGraphNode_Service_3" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3'"
-   Begin Object Class=/Script/AIModule.BTService_DefaultFocus Name="BTService_DefaultFocus_0" ExportPath="/Script/AIModule.BTService_DefaultFocus'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_0'"
-      Begin Object Class=/Script/AIModule.BlackboardKeyType_Object Name="BlackboardKey_Object_0" Archetype="/Script/AIModule.BlackboardKeyType_Object'/Script/AIModule.Default__BTService_DefaultFocus:BlackboardKey_Object_0'" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_0.BlackboardKey_Object_0'"
+   Begin Object Class=/Script/AIModule.BTService_DefaultFocus Name="BTService_DefaultFocus_3" ExportPath="/Script/AIModule.BTService_DefaultFocus'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_3'"
+      Begin Object Class=/Script/AIModule.BlackboardKeyType_Object Name="BlackboardKey_Object_0" Archetype="/Script/AIModule.BlackboardKeyType_Object'/Script/AIModule.Default__BTService_DefaultFocus:BlackboardKey_Object_0'" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_3.BlackboardKey_Object_0'"
       End Object
-      Begin Object Class=/Script/AIModule.BlackboardKeyType_Vector Name="BlackboardKey_Vector" Archetype="/Script/AIModule.BlackboardKeyType_Vector'/Script/AIModule.Default__BTService_DefaultFocus:BlackboardKey_Vector'" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_0.BlackboardKey_Vector'"
+      Begin Object Class=/Script/AIModule.BlackboardKeyType_Vector Name="BlackboardKey_Vector" Archetype="/Script/AIModule.BlackboardKeyType_Vector'/Script/AIModule.Default__BTService_DefaultFocus:BlackboardKey_Vector'" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_3.BlackboardKey_Vector'"
       End Object
    End Object
-   Begin Object Name="BTService_DefaultFocus_0" ExportPath="/Script/AIModule.BTService_DefaultFocus'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_0'"
-      Begin Object Name="BlackboardKey_Object_0" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_0.BlackboardKey_Object_0'"
+   Begin Object Name="BTService_DefaultFocus_3" ExportPath="/Script/AIModule.BTService_DefaultFocus'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_3'"
+      Begin Object Name="BlackboardKey_Object_0" ExportPath="/Script/AIModule.BlackboardKeyType_Object'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_3.BlackboardKey_Object_0'"
       End Object
-      Begin Object Name="BlackboardKey_Vector" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_0.BlackboardKey_Vector'"
+      Begin Object Name="BlackboardKey_Vector" ExportPath="/Script/AIModule.BlackboardKeyType_Vector'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_3.BTService_DefaultFocus_3.BlackboardKey_Vector'"
       End Object
       BlackboardKey=(SelectedKeyName="TargetActor")
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
       ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_6.BTComposite_Sequence_1'"
    End Object
    ClassData=(ClassName="BTService_DefaultFocus")
-   NodeInstance="/Script/AIModule.BTService_DefaultFocus'BTService_DefaultFocus_0'"
-   CopySubNodeIndex=20
+   NodeInstance="/Script/AIModule.BTService_DefaultFocus'BTService_DefaultFocus_3'"
+   CopySubNodeIndex=13
    NodeGuid=2D0D08A54490FB081A2B848232C75AA6
 End Object
-Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Name="BehaviorTreeGraphNode_Decorator_149" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_149'"
-   Begin Object Class=/Script/AIModule.BTDecorator_Blackboard Name="BTDecorator_Blackboard_2" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_149.BTDecorator_Blackboard_2'"
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service Name="BehaviorTreeGraphNode_Service_7" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Service'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_7'"
+   Begin Object Class=/Game/AI/BTService_CombatRotation.BTService_CombatRotation_C Name="BTService_CombatRotation_C_1" ExportPath="/Game/AI/BTService_CombatRotation.BTService_CombatRotation_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_7.BTService_CombatRotation_C_1'"
    End Object
-   Begin Object Name="BTDecorator_Blackboard_2" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_149.BTDecorator_Blackboard_2'"
+   Begin Object Name="BTService_CombatRotation_C_1" ExportPath="/Game/AI/BTService_CombatRotation.BTService_CombatRotation_C'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Service_7.BTService_CombatRotation_C_1'"
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_6.BTComposite_Sequence_1'"
+   End Object
+   ClassData=(AssetName="BTService_CombatRotation",GeneratedClassPackage="/Game/AI/BTService_CombatRotation",ClassName="BTService_CombatRotation_C")
+   NodeInstance="/Game/AI/BTService_CombatRotation.BTService_CombatRotation_C'BTService_CombatRotation_C_1'"
+   CopySubNodeIndex=13
+   NodeGuid=160D85764980C51DDB7792B8E23D228A
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Name="BehaviorTreeGraphNode_Decorator_149" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_149'"
+   Begin Object Class=/Script/AIModule.BTDecorator_Blackboard Name="BTDecorator_Blackboard_4" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_149.BTDecorator_Blackboard_4'"
+   End Object
+   Begin Object Name="BTDecorator_Blackboard_4" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_149.BTDecorator_Blackboard_4'"
       CachedDescription="CanAttack is Is Set"
       BlackboardKey=(SelectedKeyName="CanAttack")
       FlowAbortMode=Both
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_5.BTComposite_Selector_1'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_11.BTComposite_Selector_5'"
    End Object
    ClassData=(ClassName="BTDecorator_Blackboard")
-   NodeInstance="/Script/AIModule.BTDecorator_Blackboard'BTDecorator_Blackboard_2'"
-   CopySubNodeIndex=20
+   NodeInstance="/Script/AIModule.BTDecorator_Blackboard'BTDecorator_Blackboard_4'"
+   CopySubNodeIndex=13
    NodeGuid=CFCD36F8465ECCD3AB92FD933F30EF7C
 End Object
 Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Name="BehaviorTreeGraphNode_Decorator_16" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_16'"
-   Begin Object Class=/Script/AIModule.BTDecorator_Loop Name="BTDecorator_Loop_1" ExportPath="/Script/AIModule.BTDecorator_Loop'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_16.BTDecorator_Loop_1'"
+   Begin Object Class=/Script/AIModule.BTDecorator_Loop Name="BTDecorator_Loop_0" ExportPath="/Script/AIModule.BTDecorator_Loop'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_16.BTDecorator_Loop_0'"
    End Object
-   Begin Object Name="BTDecorator_Loop_1" ExportPath="/Script/AIModule.BTDecorator_Loop'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_16.BTDecorator_Loop_1'"
+   Begin Object Name="BTDecorator_Loop_0" ExportPath="/Script/AIModule.BTDecorator_Loop'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_16.BTDecorator_Loop_0'"
       TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
-      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_3.BTComposite_Sequence_6'"
+      ParentNode="/Script/AIModule.BTComposite_Sequence'BehaviorTreeGraphNode_Composite_13.BTComposite_Sequence_8'"
    End Object
    ClassData=(ClassName="BTDecorator_Loop")
-   NodeInstance="/Script/AIModule.BTDecorator_Loop'BTDecorator_Loop_1'"
-   CopySubNodeIndex=26
+   NodeInstance="/Script/AIModule.BTDecorator_Loop'BTDecorator_Loop_0'"
+   CopySubNodeIndex=16
    NodeGuid=0E826CB94AF320E763E7B9AF73150E13
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Name="BehaviorTreeGraphNode_Decorator_54" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_54'"
+   Begin Object Class=/Script/AIModule.BTDecorator_Blackboard Name="BTDecorator_Blackboard_5" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_54.BTDecorator_Blackboard_5'"
+   End Object
+   Begin Object Name="BTDecorator_Blackboard_5" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_54.BTDecorator_Blackboard_5'"
+      CachedDescription="bIsCombatSearch is Is Not Set"
+      OperationType=1
+      BasicOperation=NotSet
+      BlackboardKey=(SelectedKeyName="bIsCombatSearch")
+      FlowAbortMode=Self
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_5.BTComposite_Selector_1'"
+   End Object
+   ClassData=(ClassName="BTDecorator_Blackboard")
+   NodeInstance="/Script/AIModule.BTDecorator_Blackboard'BTDecorator_Blackboard_5'"
+   CopySubNodeIndex=21
+   NodeGuid=7ECEF32D4841B25849A3479F6D38F833
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Name="BehaviorTreeGraphNode_Decorator_104" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_104'"
+   Begin Object Class=/Script/AIModule.BTDecorator_Blackboard Name="BTDecorator_Blackboard_6" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_104.BTDecorator_Blackboard_6'"
+   End Object
+   Begin Object Name="BTDecorator_Blackboard_6" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_104.BTDecorator_Blackboard_6'"
+      CachedDescription="bWillWalkToNoise is Is Set"
+      NotifyObserver=ValueChange
+      BlackboardKey=(SelectedKeyName="bWillWalkToNoise")
+      FlowAbortMode=Both
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_9.BTComposite_Selector_2'"
+   End Object
+   ClassData=(ClassName="BTDecorator_Blackboard")
+   NodeInstance="/Script/AIModule.BTDecorator_Blackboard'BTDecorator_Blackboard_6'"
+   CopySubNodeIndex=27
+   NodeGuid=7A32EE364D519E055A8732ACE3A2D8CE
+End Object
+Begin Object Class=/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator Name="BehaviorTreeGraphNode_Decorator_52" ExportPath="/Script/BehaviorTreeEditor.BehaviorTreeGraphNode_Decorator'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_52'"
+   Begin Object Class=/Script/AIModule.BTDecorator_Blackboard Name="BTDecorator_Blackboard_7" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_52.BTDecorator_Blackboard_7'"
+   End Object
+   Begin Object Name="BTDecorator_Blackboard_7" ExportPath="/Script/AIModule.BTDecorator_Blackboard'/Game/AI/BT_GhostGuard.BT_GhostGuard:Behavior Tree.BehaviorTreeGraphNode_Decorator_52.BTDecorator_Blackboard_7'"
+      CachedDescription="bIsCombatSearch is Is Set"
+      BlackboardKey=(SelectedKeyName="bIsCombatSearch")
+      TreeAsset="/Script/AIModule.BehaviorTree'/Game/AI/BT_GhostGuard.BT_GhostGuard'"
+      ParentNode="/Script/AIModule.BTComposite_Selector'BehaviorTreeGraphNode_Composite_10.BTComposite_Selector_4'"
+   End Object
+   ClassData=(ClassName="BTDecorator_Blackboard")
+   NodeInstance="/Script/AIModule.BTDecorator_Blackboard'BTDecorator_Blackboard_7'"
+   CopySubNodeIndex=31
+   NodeGuid=C840BE724529D801F4402AB1AF64CB21
 End Object

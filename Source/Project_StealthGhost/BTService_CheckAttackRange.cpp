@@ -32,7 +32,8 @@ void UBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 			bool bCurrentlyAttacking = BlackboardComp->GetValueAsBool(FName("CanAttack"));
 
 			// Not attacking and player is in range then attack
-			if (!bCurrentlyAttacking && Distance <= AttackRange)
+			// LineOfSightTo automatically handles the raycast to ensure no walls are in the way!
+			if (!bCurrentlyAttacking && Distance <= AttackRange && AIController->LineOfSightTo(TargetActor))
 			{
 				BlackboardComp->SetValueAsBool(FName("CanAttack"), true);
 			}

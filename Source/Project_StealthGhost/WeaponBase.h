@@ -74,6 +74,10 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Events")
 	void OnWeaponFired();
 
+	// Tells the Blueprint to draw the visual bullet trail
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Events")
+	void DrawWeaponTracer(FVector MuzzleLocation, FVector HitLocation);
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Events")
 	void OnAimStateChanged(bool bIsAiming);
 

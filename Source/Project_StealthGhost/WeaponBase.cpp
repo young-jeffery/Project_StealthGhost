@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "AIController.h"
 #include "Perception/AISense_Hearing.h"
+#include "Project_StealthGhostCharacter.h"
 
 void AWeaponBase::StartAiming()
 {
@@ -118,7 +119,7 @@ void AWeaponBase::UseAction()
 
 	// --- DEBUG VISUALS ---
 	// Draw a thin red laser showing the exact center of our crosshair
-	DrawDebugLine(GetWorld(), MuzzleLoc, TargetPoint, FColor::Red, false, 2.0f, 0, 1.0f);
+	//DrawDebugLine(GetWorld(), MuzzleLoc, TargetPoint, FColor::Red, false, 2.0f, 0, 1.0f);
 
 	if (bHit && BulletHit.GetActor())
 	{
@@ -144,15 +145,29 @@ void AWeaponBase::UseAction()
 
 			// Apply Damage to the enemy
 			BulletHit.GetActor()->TakeDamage(FinalDamage, FDamageEvent(), OwnerChar->GetController(), this);
+
+			// Roll for headshot health restore for the player
+			if (OwnerChar->IsPlayerControlled())
+			{
+				if (AProject_StealthGhostCharacter* PlayerChar = Cast<AProject_StealthGhostCharacter>(OwnerChar))
+				{
+					// Only restore on headshots, not body shots
+					if (BulletHit.PhysMaterial.IsValid() && BulletHit.PhysMaterial->SurfaceType == SurfaceType1)
+					{
+						if (FMath::FRand() <= PlayerChar->HeadshotHealChance)
+						{
+							PlayerChar->RestoreHealth(PlayerChar->HeadshotHealAmount, TEXT("Headshot"));
+						}
+					}
+				}
+			}
 		}
 	}
-
-	// --- AUDIO & NEAR MISS SYSTEM ---
 
 	// The boom of the gun (Only if not silenced)
 	if (!bIsSilenced)
 	{
-		UAISense_Hearing::ReportNoiseEvent(GetWorld(), MuzzleLoc, 1.0f, OwnerChar, 2000.0f, FName("Alarm"));
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), MuzzleLoc, 1.0f, OwnerChar, 6000.0f, FName("Alarm"));
 	}
 
 	// The crack of the bullet hitting a surface (Near Miss!)
@@ -166,6 +181,9 @@ void AWeaponBase::UseAction()
 	// Did the bullet fly past anyone's head?
 	// Figure out exactly where the bullet stopped
 	FVector ActualEndPoint = bHit ? BulletHit.ImpactPoint : TargetPoint;
+
+	// Triggers visual trail
+	DrawWeaponTracer(MuzzleLoc, ActualEndPoint);
 
 	TArray<FHitResult> WhizHits;
 	FCollisionShape WhizShape = FCollisionShape::MakeSphere(WhizByRadius);
@@ -189,7 +207,7 @@ void AWeaponBase::UseAction()
 				if (OverlappedActor != BulletHit.GetActor() && OverlappedActor != OwnerChar)
 				{
 					// Trigger a noise event exactly at the location where the bullet passed them!
-					UAISense_Hearing::ReportNoiseEvent(GetWorld(), WhizHit.ImpactPoint, 1.0f, OwnerChar, 600.0f, FName("BulletWhiz"));
+					UAISense_Hearing::ReportNoiseEvent(GetWorld(), WhizHit.ImpactPoint, 1.0f, OwnerChar, 300.0f, FName("BulletWhiz"));
 
 					// DEBUG VISUAL: Draw a yellow sphere where the bullet buzzed them, and a line to their body
 					if (GEngine)

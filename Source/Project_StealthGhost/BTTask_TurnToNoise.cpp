@@ -40,7 +40,7 @@ EBTNodeResult::Type UBTTask_TurnToNoise::ExecuteTask(UBehaviorTreeComponent& Own
     AICon->SetFocalPoint(TargetLocation);
 
     // Reset our timer
-    TimeSpentWaiting = 0.0f;
+    TaskStartTime = AICon->GetWorld()->GetTimeSeconds();
 
     // Tell the BT to pause here and wait for the Tick function to finish
     return EBTNodeResult::InProgress;
@@ -48,29 +48,30 @@ EBTNodeResult::Type UBTTask_TurnToNoise::ExecuteTask(UBehaviorTreeComponent& Own
 
 void UBTTask_TurnToNoise::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-    // Add to our timer
-    TimeSpentWaiting += DeltaSeconds;
+	// Get the AI Controller
+    AAIController* AICon = OwnerComp.GetAIOwner();
+    if (!AICon) return;
 
-    // Has our 1-second "What was that?" pause finished?
-    if (TimeSpentWaiting >= ObservationDuration)
+	// Calculate how long we've been waiting
+    float Elapsed = AICon->GetWorld()->GetTimeSeconds() - TaskStartTime;
+
+	// If we've waited long enough, finish the task and let the BT move on
+    if (Elapsed >= ObservationDuration)
     {
-        // We are done staring. Clear the focus so the AI can walk normally again.
-        if (AAIController* AICon = OwnerComp.GetAIOwner())
-        {
-            AICon->ClearFocus(EAIFocusPriority::Gameplay);
+		// Clear the focus so the AI can resume normal behavior
+        AICon->ClearFocus(EAIFocusPriority::Gameplay);
 
-            // Restore normal walking orientation
-            if (APawn* AIPawn = AICon->GetPawn())
+        // Restore normal walking orientation
+        if (APawn* AIPawn = AICon->GetPawn())
+        {
+            if (ACharacter* AIChar = Cast<ACharacter>(AIPawn))
             {
-                if (ACharacter* AIChar = Cast<ACharacter>(AIPawn))
-                {
-                    AIChar->GetCharacterMovement()->bUseControllerDesiredRotation = false;
-                    AIChar->GetCharacterMovement()->bOrientRotationToMovement = true;
-                }
+                AIChar->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+                AIChar->GetCharacterMovement()->bOrientRotationToMovement = true;
             }
         }
 
-        // DEBUG: Will pop up green so you know it waited the full duration
+        // DEBUG
         if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("DEBUG: Snap Task Finished!"));
 
         // Successfully finish the task to let the BT move to the next node

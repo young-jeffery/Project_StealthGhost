@@ -23,10 +23,10 @@ protected:
 
 	// Distance to switch from chasing to shooting
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Guard Combat")
-	float AttackRange = 500.0f;
+	float AttackRange = 600.0f;
 
 	// Distance to switch from shooting to chasing
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Guard Combat")
-	float LoseAttackRange = 1000.0f;
+	float LoseAttackRange = 1500.0f;
 	
 };

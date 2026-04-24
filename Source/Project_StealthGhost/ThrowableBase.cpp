@@ -72,7 +72,6 @@ void AThrowableBase::Tick(float DeltaTime)
 void AThrowableBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Only make a distraction noise on the very first bounce.
-	// We don't want the AI investigating the 3rd tiny bounce instead of the initial impact.
 	if (!bHasMadeNoise && OtherActor != this)
 	{
 		// Get how fast the object was moving at the moment of impact. We can use this to make louder noises for faster throws, and softer noises for gentle drops
@@ -87,8 +86,6 @@ void AThrowableBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 		bHasMadeNoise = true;
 
 		// Dynamic Loudness Math
-		// We divide the speed by 1500 (a standard hard throw speed) to get a percentage.
-		// Then we clamp it between 0.3 (30%) and 1.0 (100%) so it's never too quiet or absurdly loud.
 		float SpeedMultiplier = FMath::Clamp(ImpactSpeed / 1500.0f, 0.3f, 1.0f);
 
 		float FinalLoudness = DistractionLoudness * SpeedMultiplier;
@@ -98,7 +95,7 @@ void AThrowableBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 		AActor* NoiseInstigator = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 
 		// Broadcast the noise. 
-		// We tag it "Distraction" so the AI can distinguish it from footsteps or alarms later.
+		// We tag it "Distraction" so the AI can distinguish it from footsteps or alarms
 		UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), FinalLoudness, NoiseInstigator, FinalRange, FName("Distraction"));
 
 		// Debug visual
@@ -108,4 +105,10 @@ void AThrowableBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, DebugMsg);
 		}
 	}
+}
+
+FString AThrowableBase::GetInteractText_Implementation()
+{
+	// The text that will appear when you look at the stone
+	return TEXT("Press [Q] / Circle to Pick Up Stone");
 }

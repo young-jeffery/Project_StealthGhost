@@ -29,7 +29,19 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
 	void Interact(AActor* Interactor);
 
+	// Tells the item to show its floating UI
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	void ShowPrompt();
+
+	// Tells the item to hide its floating UI
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	void HidePrompt();
+
 	// A helper function so the UI knows what text to display (e.g., "Press E to Pick Up Stone")
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
 	FString GetInteractText();
+
+	// Checks if the item requires the player to hold the button
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	bool DoesRequireHold();
 };

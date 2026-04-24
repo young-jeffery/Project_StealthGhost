@@ -38,12 +38,8 @@ EBTNodeResult::Type UBTTask_GetNextPatrolPoint::ExecuteTask(UBehaviorTreeCompone
 	AActor* TargetPoint = GhostGuard->PatrolRoute[CurrentIndex];
 	if (TargetPoint)
 	{
-		// Write the Target Point location to the blackboard for the guard
-		BlackboardComp->SetValueAsVector(GetSelectedBlackboardKey(), TargetPoint->GetActorLocation());
-
-		// Add 1 to the bookmark to get to the next point and then loop back once it reaches the end
-		//int32 NextIndex = (CurrentIndex + 1) % GhostGuard->PatrolRoute.Num();
-		//BlackboardComp->SetValueAsInt(PatrolIndexKey.SelectedKeyName, NextIndex);
+		// Write the actual Target Point OBJECT to the blackboard so we can read its rotation later
+		BlackboardComp->SetValueAsObject(GetSelectedBlackboardKey(), TargetPoint);
 
 		return EBTNodeResult::Succeeded;
 	}

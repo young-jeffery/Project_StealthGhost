@@ -38,14 +38,10 @@ void AEquippableBase::Equip(USceneComponent* TargetParent, FName SocketName)
 
 void AEquippableBase::Unequip()
 {
-	// For now, we will just destroy the actor when it's unequipped.
-	// Later, you could attach it to a "Holster" socket on the player's hip!
 	Destroy();
 }
 
 // --- VIRTUAL FUNCTIONS ---
-// These are intentionally empty! The Pistol and the Stone will override these 
-// to do their specific logic (like firing a bullet or drawing a trajectory arc).
 
 void AEquippableBase::StartAiming()
 {
